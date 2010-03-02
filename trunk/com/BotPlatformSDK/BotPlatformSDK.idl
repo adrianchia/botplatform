@@ -1,0 +1,282 @@
+// BotPlatformSDK.idl : BotPlatformSDK 的 IDL 源
+//
+
+// 此文件将由 MIDL 工具处理以
+// 产生类型库(BotPlatformSDK.tlb)和封送处理代码。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+interface IRobotServer;
+interface IRobotUsers;
+interface IRobotMessage;
+
+
+[
+	object,
+	uuid(0FC14674-3B40-4557-93DE-B46A4AC19F8A),
+	helpstring("IRobotServerFactory 接口"),
+	pointer_default(unique)
+]
+interface IRobotServerFactory : IUnknown{
+    [helpstring("方法Init")] HRESULT Init([in] LONG threadCount);
+    [helpstring("方法Destroy")] HRESULT Destroy();
+    [helpstring("方法CreateRobotServer")] HRESULT CreateRobotServer([in] BSTR ip, [in] LONG port, [out,retval] IRobotServer** ppRobotServer);
+};
+[
+	object,
+	uuid(2946B103-2983-478C-B64A-E1F91E7FAEFA),
+	helpstring("IRobotServer 接口"),
+	pointer_default(unique)
+]
+interface IRobotServer : IUnknown{
+    [helpstring("方法Login")] HRESULT Login([in] BSTR spid, [in] BSTR sppwd, [in] LONG timeout);
+    [helpstring("方法Logout")] HRESULT Logout(void);
+    [helpstring("方法SetDisplayName")] HRESULT SetDisplayName([in] BSTR robotAccount, [in] BSTR displayName);
+    [helpstring("方法SetPersonalMessage")] HRESULT SetPersonalMessage([in] BSTR robotAccount, [in] BSTR personalMessage);
+    [helpstring("方法SetDisplayPicture")] HRESULT SetDisplayPicture([in] BSTR robotAccount, [in] BSTR displayPicture);
+    [helpstring("方法SetDisplayPictureEx")] HRESULT SetDisplayPictureEx([in] BSTR robotAccount, [in] BSTR displayPicture, [in] BSTR largePicture);
+    [helpstring("方法SetScene")] HRESULT SetScene([in] BSTR robotAccount, [in] BSTR scene);
+    [helpstring("方法SetColorScheme")] HRESULT SetColorScheme([in] BSTR robotAccount, [in] LONG colorScheme);
+    [helpstring("方法CreateSession")] HRESULT CreateSession([in] BSTR robot, [in] BSTR user);
+    [helpstring("方法PushMessage")] HRESULT PushMessage([in] BSTR robot, [in] BSTR user, [in] BSTR message);
+    [helpstring("方法RequestContactList")] HRESULT RequestContactList([in] BSTR robot);
+};
+[
+	object,
+	uuid(7D4CABF5-F710-43F4-AA31-EC10D89CCB04),
+	helpstring("IRobotResource 接口"),
+	pointer_default(unique)
+]
+interface IRobotResource : IUnknown{
+    [propget, helpstring("属性 Name")] HRESULT Name([out, retval] BSTR* pVal);
+    [propget, helpstring("属性 Digest")] HRESULT Digest([out, retval] BSTR* pVal);
+    [propget, helpstring("属性 Size")] HRESULT Size([out, retval] LONG* pVal);
+};
+[
+	object,
+	uuid(FCD31720-D9A9-4570-AEAB-BACA0A4E8122),
+	helpstring("IRobotUser 接口"),
+	pointer_default(unique)
+]
+interface IRobotUser : IUnknown{
+    [propget, helpstring("属性 ID")] HRESULT ID([out, retval] BSTR* pVal);
+    [propget, helpstring("属性 FriendlyName")] HRESULT FriendlyName([out, retval] BSTR* pVal);
+    [propget, helpstring("属性 Status")] HRESULT Status([out, retval] BSTR* pVal);
+    [propget, helpstring("属性 ClientID")] HRESULT ClientID([out, retval] LONG* pVal);
+};
+[
+	object,
+	uuid(2A9E67CD-E103-493E-8B48-A29D39D2A203),
+	helpstring("IRobotTransInvitation 接口"),
+	pointer_default(unique)
+]
+interface IRobotTransInvitation : IUnknown{
+    [propget, helpstring("属性 Name")] HRESULT Name([out, retval] BSTR* pVal);
+    [propget, helpstring("属性 Size")] HRESULT Size([out, retval] LONG* pVal);
+    [propget, helpstring("属性 Thumbnail")] HRESULT Thumbnail([out, retval] BSTR* pVal);
+};
+[
+	object,
+	uuid(4BC1EC51-F46D-4C28-8CB6-2F9DD3D786E5),
+	helpstring("IRobotSession 接口"),
+	pointer_default(unique)
+]
+interface IRobotSession : IUnknown{
+    [helpstring("方法CreateMessage")] HRESULT CreateMessage([out,retval] IRobotMessage** message);
+    [helpstring("方法SendText")] HRESULT SendText([in] BSTR message);
+    [helpstring("方法SendMsg")] HRESULT SendIM([in]IRobotMessage* message);
+    [helpstring("方法SendNudge")] HRESULT SendNudge(void);
+    [helpstring("方法SendActivity")] HRESULT SendActivity([in] BSTR url, [in] BSTR friendlyName);
+    [helpstring("方法SendActivityEx")] HRESULT SendActivityEx([in] BSTR appid, [in] BSTR appname, [in] BSTR data);
+    [propget, helpstring("属性 ActivityOpened")] HRESULT ActivityOpened([out,retval] VARIANT_BOOL* pVal);
+    [helpstring("方法SendTyping")] HRESULT SendTyping(void);
+    [helpstring("方法GetUser")] HRESULT GetUser([in] BSTR userid, [out,retval] IRobotUser** ppUser);
+    [propget, helpstring("属性 Users")] HRESULT Users([out,retval] IRobotUsers** ppUsers);
+    [propget, helpstring("属性 Robot")] HRESULT Robot([out,retval] BSTR* pStr);
+    [propget, helpstring("属性 OpenMode")] HRESULT OpenMode([out,retval] LONG* pVal);
+    [propget, helpstring("属性 Closed")] HRESULT Closed([out,retval] VARIANT_BOOL* pVal);
+    [helpstring("方法Close")] HRESULT Close(void);
+    [helpstring("方法InviteUser")] HRESULT InviteUser([in] BSTR user);
+    [helpstring("方法SendFile")] HRESULT SendFile([in] BSTR uri, [in] BSTR friendlyName);
+    [helpstring("方法SendInk")] HRESULT SendInk([in] BSTR inkData);
+    [helpstring("方法SendWink")] HRESULT SendWink([in] BSTR uri, [in] BSTR stamp);
+    [helpstring("方法SendVoiceclip")] HRESULT SendVoiceclip([in] BSTR uri);
+    [helpstring("方法SendWebcam")] HRESULT SendWebcam([in] BSTR serverIP, [in] LONG serverPort, [in] LONG recipientid, [in] LONG sessionid);
+    
+};
+[
+	object,
+	uuid(1AAA6D20-7304-4171-BC35-A2B67968FCBC),
+	helpstring("IRobotUsers 接口"),
+	pointer_default(unique)
+]
+interface IRobotUsers : IUnknown{
+    [helpstring("方法Item")] HRESULT Item([in] LONG idx, [out,retval] IRobotUser** ppUser);
+    [helpstring("方法Count")] HRESULT Count([out,retval] LONG* pVal);
+};
+[
+	object,
+	uuid(2B04A06E-F876-4753-A586-76FFB972F8D1),
+	helpstring("IRobotMessage 接口"),
+	pointer_default(unique)
+]
+interface IRobotMessage : IUnknown{
+    [propget, helpstring("属性 Signature")] HRESULT Signature([out, retval] BSTR* pVal);
+    [propput, helpstring("属性 Signature")] HRESULT Signature([in] BSTR newVal);
+    [propget, helpstring("属性 FontStyle")] HRESULT FontStyle([out, retval] LONG* pVal);
+    [propput, helpstring("属性 FontStyle")] HRESULT FontStyle([in] LONG newVal);
+    [propget, helpstring("属性 FontName")] HRESULT FontName([out, retval] BSTR* pVal);
+    [propput, helpstring("属性 FontName")] HRESULT FontName([in] BSTR newVal);
+    [propget, helpstring("属性 FontColor")] HRESULT FontColor([out, retval] LONG* pVal);
+    [propput, helpstring("属性 FontColor")] HRESULT FontColor([in] LONG newVal);
+    [propget, helpstring("属性 Text")] HRESULT Text([out, retval] BSTR* pVal);
+    [propput, helpstring("属性 Text")] HRESULT Text([in] BSTR newVal);
+    [helpstring("方法RegisterEmoticon")] HRESULT RegisterEmoticon([in] BSTR shortcut, [in] BSTR filename);
+    [helpstring("方法DeregisterEmoticon")] HRESULT DeregisterEmoticon([in] BSTR shortcut);
+};
+[
+	uuid(3B6053CA-50DC-4BBC-BB6E-EE2680B8A882),
+	version(1.0),
+	helpstring("BotPlatformSDK 1.0 类型库")
+]
+library BotPlatformSDKLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(966D1E16-2044-4734-B8BC-6D56B513FCC8),
+		helpstring("RobotServerFactory Class")
+	]
+	coclass RobotServerFactory
+	{
+		[default] interface IRobotServerFactory;
+	};
+	[
+		uuid(9CAFA9E9-4204-493A-9791-1F435FC845DF),
+		helpstring("_IRobotServerEvents 接口")
+	]
+	dispinterface _IRobotServerEvents
+	{
+		properties:
+		methods:
+            [id(1), helpstring("方法SessionOpened")] HRESULT SessionOpened([in] IRobotSession* session);
+            [id(2), helpstring("方法SessionClosed")] HRESULT SessionClosed([in] IRobotSession* session);
+            [id(3), helpstring("方法MessageReceived")] HRESULT MessageReceived([in] IRobotSession* session, [in] IRobotMessage* message);
+            [id(4), helpstring("方法NudgeReceived")] HRESULT NudgeReceived([in] IRobotSession* session);
+            [id(5), helpstring("方法ActivityAccepted")] HRESULT ActivityAccepted([in] IRobotSession* session);
+            [id(6), helpstring("方法ActivityRejected")] HRESULT ActivityRejected([in] IRobotSession* session);
+            [id(7), helpstring("方法ActivityReceived")] HRESULT ActivityReceived([in] IRobotSession* session, [in] BSTR data);
+            [id(8), helpstring("方法ActivityLoaded")] HRESULT ActivityLoaded([in] IRobotSession* session);
+            [id(9), helpstring("方法ActivityClosed")] HRESULT ActivityClosed([in] IRobotSession* session);
+            [id(10), helpstring("方法UserJoined")] HRESULT UserJoined([in] IRobotSession* session, [in] IRobotUser* user);
+            [id(11), helpstring("方法UserLeft")] HRESULT UserLeft([in] IRobotSession* session, [in] IRobotUser* user);
+            [id(12), helpstring("方法UserAdd")] HRESULT UserAdd([in] BSTR robot, [in] BSTR user);
+            [id(13), helpstring("方法UserRemove")] HRESULT UserRemove([in] BSTR robot, [in] BSTR user);
+            [id(14), helpstring("方法ExceptionCaught")] HRESULT ExceptionCaught([in] IRobotSession* session, [in] LONG cause);
+            [id(15), helpstring("方法FileAccepted")] HRESULT FileAccepted([in] IRobotSession* session);
+            [id(16), helpstring("方法FileRejected")] HRESULT FileRejected([in] IRobotSession* session);
+            [id(17), helpstring("方法FileTransferEnded")] HRESULT FileTransferEnded([in] IRobotSession* session);
+            [id(18), helpstring("方法FileTransferCancelled")] HRESULT FileTransferCancelled([in] IRobotSession* session);
+            [id(19), helpstring("方法FileTransferError")] HRESULT FileTransferError([in] IRobotSession* session);
+            [id(20), helpstring("方法FileInvited")] HRESULT FileInvited([in] IRobotSession* session, [in] IRobotTransInvitation* invitation);
+            [id(21), helpstring("方法WebcamAccepted")] HRESULT WebcamAccepted([in] IRobotSession* session);
+            [id(22), helpstring("方法WebcamRejected")] HRESULT WebcamRejected([in] IRobotSession* session);
+            [id(23), helpstring("方法WebcamClosed")] HRESULT WebcamClosed([in] IRobotSession* session);
+            [id(24), helpstring("方法WebcamError")] HRESULT WebcamError([in] IRobotSession* session);
+            [id(25), helpstring("方法UserUpdated")] HRESULT UserUpdated([in] BSTR robot, [in] IRobotUser* user);
+            [id(26), helpstring("方法PersonalMessageUpdated")] HRESULT PersonalMessageUpdated([in] BSTR robot, [in] BSTR user, [in] BSTR personalMessage);
+            [id(27), helpstring("方法ContactListReceived")] HRESULT ContactListReceived([in] BSTR robot, [in] IRobotUsers* contactList);
+            [id(28), helpstring("方法InkReceived")] HRESULT InkReceived([in] IRobotSession* session, [in] BSTR ink);
+            [id(29), helpstring("方法WinkReceived")] HRESULT WinkReceived([in] IRobotSession* session, [in] IRobotResource* resource);
+            [id(30), helpstring("方法VoiceclipReceived")] HRESULT VoiceclipReceived([in] IRobotSession* session, [in] IRobotResource* resource);
+            [id(31), helpstring("方法TypingReceived")] HRESULT TypingReceived([in] IRobotSession* session);
+            [id(32), helpstring("方法SceneUpdated")] HRESULT SceneUpdated([in] BSTR robot, [in] BSTR user, [in] IRobotResource* resource);
+            [id(33), helpstring("方法DisplayPictureUpdated")] HRESULT DisplayPictureUpdated([in] BSTR robot, [in] BSTR user, [in] IRobotResource* resource);
+            [id(34), helpstring("方法ColorSchemeUpdated")] HRESULT ColorSchemeUpdated([in] BSTR robot, [in] BSTR user, [in] LONG colorScheme);
+    };
+	[
+		uuid(E3008899-DB59-4ECF-B013-7996A3732ACC),
+		helpstring("RobotServer Class"),
+        noncreatable
+	]
+	coclass RobotServer
+	{
+		[default] interface IRobotServer;
+		[default, source] dispinterface _IRobotServerEvents;
+	};
+	[
+		uuid(5A2F30DF-61AA-4442-AE39-62D86AF6EC8F),
+		helpstring("RobotResource Class"),
+        noncreatable
+	]
+	coclass RobotResource
+	{
+		[default] interface IRobotResource;
+	};
+	[
+		uuid(888A3308-0684-4E16-BE5E-A589EBD6129E),
+		helpstring("RobotUser Class"),
+        noncreatable
+	]
+	coclass RobotUser
+	{
+		[default] interface IRobotUser;
+	};
+	[
+		uuid(55864F42-352D-47CE-9F4C-635D27BA4524),
+		helpstring("RobotTransInvitation Class"),
+        noncreatable
+	]
+	coclass RobotTransInvitation
+	{
+		[default] interface IRobotTransInvitation;
+	};
+	[
+		uuid(894AE690-8003-4C54-9620-02C0A260253D),
+		helpstring("RobotSession Class"),
+        noncreatable
+	]
+	coclass RobotSession
+	{
+		[default] interface IRobotSession;
+	};
+	[
+		uuid(97A74B33-1A0A-440C-B187-BC9EE149A9C7),
+		helpstring("RobotUsers Class"),
+        noncreatable
+	]
+	coclass RobotUsers
+	{
+		[default] interface IRobotUsers;
+	};
+    [
+		uuid(44DAC651-78DC-4013-89D3-EB8689C4E45F),
+		helpstring("RobotMessage Class"),
+        noncreatable
+	]
+	coclass RobotMessage
+	{
+		[default] interface IRobotMessage;
+	};
+
+    typedef [public]
+    enum 
+    {
+        OPEN_MODE_UNKONW    = 0,
+        OPEN_MODE_CONV_OPEN = 1,
+        OPEN_MODE_TIMEOUT   = 2,
+        OPEN_MODE_ROBOT     = 3
+    } OPEN_MODE;
+
+    typedef [public]
+    enum
+    {
+        STYLE_BOLD          = 1,
+        STYLE_ITALIC        = 2,
+        STYLE_UNDERLINE     = 4,
+        STYLE_STRIKE        = 8,
+        STYLE_BOLD_ITALIC   = 3,
+        STYLE_ALL           = 15
+    } FONT_STYLE;
+};
+

@@ -1,0 +1,10 @@
+; BotPlatformSDK.def : 定义模块参数。
+
+LIBRARY      "BotPlatformSDK.DLL"
+
+EXPORTS
+	DllCanUnloadNow		PRIVATE
+	DllGetClassObject	PRIVATE
+	DllRegisterServer	PRIVATE
+	DllUnregisterServer	PRIVATE
+	DllInstall		PRIVATE

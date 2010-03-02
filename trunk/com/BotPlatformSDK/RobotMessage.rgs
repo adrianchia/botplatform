@@ -1,0 +1,25 @@
+HKCR
+{
+	BotPlatformSDK.RobotMessage.1 = s 'RobotMessage Class'
+	{
+		CLSID = s '{44DAC651-78DC-4013-89D3-EB8689C4E45F}'
+	}
+	BotPlatformSDK.RobotMessage = s 'RobotMessage Class'
+	{
+		CLSID = s '{44DAC651-78DC-4013-89D3-EB8689C4E45F}'
+		CurVer = s 'BotPlatformSDK.RobotMessage.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {44DAC651-78DC-4013-89D3-EB8689C4E45F} = s 'RobotMessage Class'
+		{
+			ProgID = s 'BotPlatformSDK.RobotMessage.1'
+			VersionIndependentProgID = s 'BotPlatformSDK.RobotMessage'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3B6053CA-50DC-4BBC-BB6E-EE2680B8A882}'
+		}
+	}
+}
