@@ -14,7 +14,7 @@ protected:
 protected:
     bool Init( boost::asio::io_service& io_service );
 
-    bool Connect( boost::asio::io_service& io_service, const std::string& ip, int port );
+    bool Connect( boost::asio::io_service& io_service, const std::string& host, int port );
 
     bool Send( const void* data, size_t dataLen );
 

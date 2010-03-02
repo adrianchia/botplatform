@@ -5,13 +5,13 @@
 #include "RobotUsers.h"
 #include "RobotUser.h"
 #include "RobotResource.h"
-#include "RobotTransInvitation.h"
 #include "RobotMessage.h"
+//#include "RobotTransInvitation.h"
+#include "RobotFileDescriptor.h"
 #include "Misc.h"
 
 
-//////////////////////////////////////////////////////////////////////////
-
+// user's properties updated
 class JSonCmdUserUpdated : public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("userupdated")
@@ -31,6 +31,7 @@ public:
     }
 };
 
+// user's personal message updated
 class JSonCmdPsmUpdated : public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("psmupdated")
@@ -38,12 +39,12 @@ class JSonCmdPsmUpdated : public JSonCmdServerBase
 public:
     virtual void doTask( CRobotServer* pServer, std::string robotId, std::string userId, std::string sessionId, Json::Value& root )
     {
-        std::string psm = root["body"].asString();
-        
+        std::string psm = root["body"].asString();      
         pServer->Fire_PersonalMessageUpdated( UTF8_2_BSTR(robotId), UTF8_2_BSTR(userId), UTF8_2_BSTR(psm) );
     }
 };
 
+// user's display picture updated
 class JSonCmdDpUpdated : public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("dpupdated")
@@ -63,6 +64,7 @@ public:
     }
 };
 
+// user's scene updated
 class JSonCmdSceneUpdated : public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("sceneupdated")
@@ -82,6 +84,7 @@ public:
     }
 };
 
+// user's theme color updated
 class JSonCmdColorUpdated : public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("colorupdated")
@@ -95,6 +98,7 @@ public:
     }
 };
 
+// user added a robot
 class JSonCmdUserAdded : public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("useradded")
@@ -106,6 +110,7 @@ public:
     }
 };
 
+// user removed a robot
 class JSonCmdUserRemoved : public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("userremoved")
@@ -117,6 +122,7 @@ public:
     }
 };
 
+// conversation opened
 class JSonCmdSessionOpened : public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("sessionopened")
@@ -148,6 +154,7 @@ public:
     }
 };
 
+// conversation closed
 class JSonCmdSessionClosed: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("sessionclosed")
@@ -161,6 +168,7 @@ public:
     }
 };
 
+// receive a message from one user
 class JSonCmdMsg: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("msg")
@@ -180,6 +188,7 @@ public:
     }
 };
 
+// user joined in conversation
 class JSonCmdJoin: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("join")
@@ -201,6 +210,7 @@ public:
     }
 };
 
+// user left conversation
 class JSonCmdPart: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("part")
@@ -216,6 +226,7 @@ public:
     }
 };
 
+// receive a nudge from one user
 class JSonCmdNudge: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("nudge")
@@ -228,6 +239,7 @@ public:
     }
 };
 
+// receive typing from one user
 class JSonCmdTyping: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("typing")
@@ -240,6 +252,7 @@ public:
     }
 };
 
+// receive ink from one user
 class JSonCmdInkmsg: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("inkmsg")
@@ -253,6 +266,7 @@ public:
     }
 };
 
+// receive wink from one user
 class JSonCmdWinkevent: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("winkevent")
@@ -273,6 +287,7 @@ public:
     }
 };
 
+// receive voice clip from one user
 class JSonCmdVoliceclipevent: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("voliceclipevent")
@@ -293,6 +308,7 @@ public:
     }
 };
 
+// receive activity message from one user
 class JSonCmdAppmsg: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("appmsg")
@@ -307,6 +323,7 @@ public:
     }
 };
 
+// activity accepted/rejected/ready/close from one user
 class JSonCmdAppevent: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("appevent")
@@ -339,6 +356,7 @@ public:
     }
 };
 
+// file transport invite/accepted/rejected/canceled/error from one user
 class JSonCmdFileevent: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("fileevent")
@@ -346,43 +364,34 @@ class JSonCmdFileevent: public JSonCmdServerBase
 public:
     virtual void doTask( CRobotServer* pServer, std::string robotId, std::string userId, std::string sessionId, Json::Value& root )
     {
-        std::string repl = root["body"].asString();
+        CComPtr<IRobotFileDescriptor> desc;
+        CRobotFileDescriptor* realDesc = NULL;
 
-        CRobotSession* session = pServer->GetSession( sessionId );
-
-        if ( repl == "accept" )
-            pServer->Fire_FileAccepted( session );
-        else if ( repl == "reject" )
-            pServer->Fire_FileRejected( session );
-        else if ( repl == "close" )
-            pServer->Fire_FileTransferEnded( session );
-        else if ( repl == "cancel" )
-            pServer->Fire_FileTransferCancelled( session );
-        else if ( repl == "error" )
-            pServer->Fire_FileTransferError( session );
-    }
-};
-
-class JSonCmdFileinvite: public JSonCmdServerBase
-{
-    JSON_CMD_TYPE_NAME("fileinvite")
-
-public:
-    virtual void doTask( CRobotServer* pServer, std::string robotId, std::string userId, std::string sessionId, Json::Value& root )
-    {
-        CComPtr<IRobotTransInvitation> tinv;
-        CRobotTransInvitation* realTinv = NULL;
-
-        HRESULT hr = CreateRealObject( &tinv, &realTinv );
+        HRESULT hr = CreateRealObject( &desc, &realDesc );
         if ( FAILED(hr) )
             return;
 
-        realTinv->setAll( root["body"] );
-        CRobotSession* session = pServer->GetSession( sessionId );
-        pServer->Fire_FileInvited( session, tinv );
+        std::string    eve      = root["body"]["event"].asString();
+        CRobotSession* session  = pServer->GetSession( sessionId );
+
+        realDesc->setAll( root["body"] );
+
+        if ( eve == "invite" )
+            pServer->Fire_FileInvited( session, desc );
+        if ( eve == "accept" )
+            pServer->Fire_FileAccepted( session, desc );
+        else if ( eve == "reject" )
+            pServer->Fire_FileRejected( session, desc );
+        else if ( eve == "close" )
+            pServer->Fire_FileTransferEnded( session, desc );
+        else if ( eve == "cancel" )
+            pServer->Fire_FileTransferCancelled( session, desc );
+        else if ( eve == "error" )
+            pServer->Fire_FileTransferError( session, desc );
     }
 };
 
+// webcam accepted/rejected/close/error from one user
 class JSonCmdWebcamevent: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("webcamevent")
@@ -446,7 +455,6 @@ void RegisterAllJSonCmds( CManagerBase* man )
     REGISTER_CMD(JSonCmdAppmsg);
     REGISTER_CMD(JSonCmdAppevent);
     REGISTER_CMD(JSonCmdFileevent);
-    REGISTER_CMD(JSonCmdFileinvite);
     REGISTER_CMD(JSonCmdWebcamevent);
     REGISTER_CMD(JSonCmdError);
 }

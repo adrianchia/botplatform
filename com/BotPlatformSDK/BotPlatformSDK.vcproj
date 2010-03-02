@@ -238,6 +238,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RobotFileDescriptor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RobotFileDescriptor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\RobotMessage.cpp"
 				>
 			</File>
@@ -401,6 +409,10 @@
 			</File>
 			<File
 				RelativePath=".\BotPlatformSDK.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\RobotFileDescriptor.rgs"
 				>
 			</File>
 			<File

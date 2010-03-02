@@ -3,6 +3,8 @@
 
 
 //////////////////////////////////////////////////////////////////////////
+// base class for json cmd
+
 #define JSON_CMD_TYPE_NAME(s)  public: static const char* GetTypeName() { return s; }
 
 class CRobotServer;
@@ -23,7 +25,4 @@ public:
 protected:
     virtual void doTask( CRobotServer* pServer, std::string robotId, std::string userId, std::string sessionId, Json::Value& root ) = 0;
 };
-
-
-
 

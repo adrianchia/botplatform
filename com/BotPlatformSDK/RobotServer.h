@@ -22,9 +22,9 @@ class ATL_NO_VTABLE CRobotServer :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CRobotServer, &CLSID_RobotServer>,
 	public IConnectionPointContainerImpl<CRobotServer>,
-     public CProxy_IRobotServerEvents<CRobotServer>,
     public IRobotServer,
-    public CClientBase
+    public CClientBase,
+    public CProxy_IRobotServerEvents<CRobotServer>
 {
 public:
     enum 

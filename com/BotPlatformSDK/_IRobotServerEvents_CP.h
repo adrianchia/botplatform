@@ -382,137 +382,7 @@ public:
 		}
 		return hr;
 	}
-	HRESULT Fire_FileAccepted( IRobotSession * session)
-	{
-		HRESULT hr = S_OK;
-		T * pThis = static_cast<T *>(this);
-		int cConnections = m_vec.GetSize();
-
-		for (int iConnection = 0; iConnection < cConnections; iConnection++)
-		{
-			pThis->Lock();
-			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
-			pThis->Unlock();
-
-			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
-
-			if (pConnection)
-			{
-				CComVariant avarParams[1];
-				avarParams[0] = session;
-				CComVariant varResult;
-
-				DISPPARAMS params = { avarParams, NULL, 1, 0 };
-				hr = pConnection->Invoke(15, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
-			}
-		}
-		return hr;
-	}
-	HRESULT Fire_FileRejected( IRobotSession * session)
-	{
-		HRESULT hr = S_OK;
-		T * pThis = static_cast<T *>(this);
-		int cConnections = m_vec.GetSize();
-
-		for (int iConnection = 0; iConnection < cConnections; iConnection++)
-		{
-			pThis->Lock();
-			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
-			pThis->Unlock();
-
-			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
-
-			if (pConnection)
-			{
-				CComVariant avarParams[1];
-				avarParams[0] = session;
-				CComVariant varResult;
-
-				DISPPARAMS params = { avarParams, NULL, 1, 0 };
-				hr = pConnection->Invoke(16, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
-			}
-		}
-		return hr;
-	}
-	HRESULT Fire_FileTransferEnded( IRobotSession * session)
-	{
-		HRESULT hr = S_OK;
-		T * pThis = static_cast<T *>(this);
-		int cConnections = m_vec.GetSize();
-
-		for (int iConnection = 0; iConnection < cConnections; iConnection++)
-		{
-			pThis->Lock();
-			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
-			pThis->Unlock();
-
-			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
-
-			if (pConnection)
-			{
-				CComVariant avarParams[1];
-				avarParams[0] = session;
-				CComVariant varResult;
-
-				DISPPARAMS params = { avarParams, NULL, 1, 0 };
-				hr = pConnection->Invoke(17, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
-			}
-		}
-		return hr;
-	}
-	HRESULT Fire_FileTransferCancelled( IRobotSession * session)
-	{
-		HRESULT hr = S_OK;
-		T * pThis = static_cast<T *>(this);
-		int cConnections = m_vec.GetSize();
-
-		for (int iConnection = 0; iConnection < cConnections; iConnection++)
-		{
-			pThis->Lock();
-			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
-			pThis->Unlock();
-
-			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
-
-			if (pConnection)
-			{
-				CComVariant avarParams[1];
-				avarParams[0] = session;
-				CComVariant varResult;
-
-				DISPPARAMS params = { avarParams, NULL, 1, 0 };
-				hr = pConnection->Invoke(18, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
-			}
-		}
-		return hr;
-	}
-	HRESULT Fire_FileTransferError( IRobotSession * session)
-	{
-		HRESULT hr = S_OK;
-		T * pThis = static_cast<T *>(this);
-		int cConnections = m_vec.GetSize();
-
-		for (int iConnection = 0; iConnection < cConnections; iConnection++)
-		{
-			pThis->Lock();
-			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
-			pThis->Unlock();
-
-			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
-
-			if (pConnection)
-			{
-				CComVariant avarParams[1];
-				avarParams[0] = session;
-				CComVariant varResult;
-
-				DISPPARAMS params = { avarParams, NULL, 1, 0 };
-				hr = pConnection->Invoke(19, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
-			}
-		}
-		return hr;
-	}
-	HRESULT Fire_FileInvited( IRobotSession * session,  IRobotTransInvitation * invitation)
+	HRESULT Fire_FileAccepted( IRobotSession * session,  IRobotFileDescriptor * fileDescriptor)
 	{
 		HRESULT hr = S_OK;
 		T * pThis = static_cast<T *>(this);
@@ -530,7 +400,142 @@ public:
 			{
 				CComVariant avarParams[2];
 				avarParams[1] = session;
-				avarParams[0] = invitation;
+				avarParams[0] = fileDescriptor;
+				CComVariant varResult;
+
+				DISPPARAMS params = { avarParams, NULL, 2, 0 };
+				hr = pConnection->Invoke(15, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
+			}
+		}
+		return hr;
+	}
+	HRESULT Fire_FileRejected( IRobotSession * session,  IRobotFileDescriptor * fileDescriptor)
+	{
+		HRESULT hr = S_OK;
+		T * pThis = static_cast<T *>(this);
+		int cConnections = m_vec.GetSize();
+
+		for (int iConnection = 0; iConnection < cConnections; iConnection++)
+		{
+			pThis->Lock();
+			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
+			pThis->Unlock();
+
+			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
+
+			if (pConnection)
+			{
+				CComVariant avarParams[2];
+				avarParams[1] = session;
+				avarParams[0] = fileDescriptor;
+				CComVariant varResult;
+
+				DISPPARAMS params = { avarParams, NULL, 2, 0 };
+				hr = pConnection->Invoke(16, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
+			}
+		}
+		return hr;
+	}
+	HRESULT Fire_FileTransferEnded( IRobotSession * session,  IRobotFileDescriptor * fileDescriptor)
+	{
+		HRESULT hr = S_OK;
+		T * pThis = static_cast<T *>(this);
+		int cConnections = m_vec.GetSize();
+
+		for (int iConnection = 0; iConnection < cConnections; iConnection++)
+		{
+			pThis->Lock();
+			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
+			pThis->Unlock();
+
+			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
+
+			if (pConnection)
+			{
+				CComVariant avarParams[2];
+				avarParams[1] = session;
+				avarParams[0] = fileDescriptor;
+				CComVariant varResult;
+
+				DISPPARAMS params = { avarParams, NULL, 2, 0 };
+				hr = pConnection->Invoke(17, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
+			}
+		}
+		return hr;
+	}
+	HRESULT Fire_FileTransferCancelled( IRobotSession * session,  IRobotFileDescriptor * fileDescriptor)
+	{
+		HRESULT hr = S_OK;
+		T * pThis = static_cast<T *>(this);
+		int cConnections = m_vec.GetSize();
+
+		for (int iConnection = 0; iConnection < cConnections; iConnection++)
+		{
+			pThis->Lock();
+			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
+			pThis->Unlock();
+
+			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
+
+			if (pConnection)
+			{
+				CComVariant avarParams[2];
+				avarParams[1] = session;
+				avarParams[0] = fileDescriptor;
+				CComVariant varResult;
+
+				DISPPARAMS params = { avarParams, NULL, 2, 0 };
+				hr = pConnection->Invoke(18, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
+			}
+		}
+		return hr;
+	}
+	HRESULT Fire_FileTransferError( IRobotSession * session,  IRobotFileDescriptor * fileDescriptor)
+	{
+		HRESULT hr = S_OK;
+		T * pThis = static_cast<T *>(this);
+		int cConnections = m_vec.GetSize();
+
+		for (int iConnection = 0; iConnection < cConnections; iConnection++)
+		{
+			pThis->Lock();
+			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
+			pThis->Unlock();
+
+			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
+
+			if (pConnection)
+			{
+				CComVariant avarParams[2];
+				avarParams[1] = session;
+				avarParams[0] = fileDescriptor;
+				CComVariant varResult;
+
+				DISPPARAMS params = { avarParams, NULL, 2, 0 };
+				hr = pConnection->Invoke(19, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &varResult, NULL, NULL);
+			}
+		}
+		return hr;
+	}
+	HRESULT Fire_FileInvited( IRobotSession * session,  IRobotFileDescriptor * fileDescriptor)
+	{
+		HRESULT hr = S_OK;
+		T * pThis = static_cast<T *>(this);
+		int cConnections = m_vec.GetSize();
+
+		for (int iConnection = 0; iConnection < cConnections; iConnection++)
+		{
+			pThis->Lock();
+			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
+			pThis->Unlock();
+
+			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
+
+			if (pConnection)
+			{
+				CComVariant avarParams[2];
+				avarParams[1] = session;
+				avarParams[0] = fileDescriptor;
 				CComVariant varResult;
 
 				DISPPARAMS params = { avarParams, NULL, 2, 0 };
