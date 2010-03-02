@@ -88,11 +88,11 @@ _ATL_FUNC_INFO  s_info_OnUserRemove             = { CC_STDCALL, VT_EMPTY, 2, { V
 
 _ATL_FUNC_INFO  s_info_OnExceptionCaught        = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_I4 } };
 
-_ATL_FUNC_INFO  s_info_OnFileAccepted           = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnFileRejected           = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnFileTransferEnded      = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnFileTransferCancelled  = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnFileTransferError      = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_OnFileAccepted           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_OnFileRejected           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_OnFileTransferEnded      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_OnFileTransferCancelled  = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_OnFileTransferError      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_OnFileInvited            = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 
 _ATL_FUNC_INFO  s_info_OnWebcamAccepted         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
@@ -399,35 +399,45 @@ private:
         END_
     }
 
-    HRESULT __stdcall OnFileAccepted(IRobotSession* session)
+    HRESULT __stdcall OnFileAccepted(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        PRINT_NULL(OnFileAccepted);
+        BEGIN_(OnFileAccepted)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        END_
     }
 
-    HRESULT __stdcall OnFileRejected(IRobotSession* session)
+    HRESULT __stdcall OnFileRejected(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        PRINT_NULL(OnFileRejected);
+        BEGIN_(OnFileRejected)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        END_
     }
 
-    HRESULT __stdcall OnFileTransferEnded(IRobotSession* session)
+    HRESULT __stdcall OnFileTransferEnded(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        PRINT_NULL(OnFileTransferEnded);
+        BEGIN_(OnFileTransferEnded)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        END_
     }
 
-    HRESULT __stdcall OnFileTransferCancelled(IRobotSession* session)
+    HRESULT __stdcall OnFileTransferCancelled(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        PRINT_NULL(OnFileTransferCancelled);
+        BEGIN_(OnFileTransferCancelled)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        END_
     }
 
-    HRESULT __stdcall OnFileTransferError(IRobotSession* session)
+    HRESULT __stdcall OnFileTransferError(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        PRINT_NULL(OnFileTransferError);
+        BEGIN_(OnFileTransferError)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        END_
     }
 
-    HRESULT __stdcall OnFileInvited(IRobotSession* session, IRobotTransInvitation* invitation)
+    HRESULT __stdcall OnFileInvited(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
         BEGIN_(OnFileInvited)
-        PRINT_EVENT( std::string("name=") + invitation->Name + ",size=" + NumToStr(invitation->Size) + ",thumbnail=" + invitation->Thumbnail );
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) + ",thumbnail=" + fileDescriptor->Thumbnail );
         END_
     }
 

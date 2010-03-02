@@ -16,12 +16,13 @@ CClientBase::~CClientBase()
 
 bool CClientBase::Init( boost::asio::io_service& io_service )
 {
+    // initialize socket by io-service
     ATLASSERT( !m_socket );
     m_socket = new boost::asio::ip::tcp::socket( io_service );
     return true;
 }
 
-bool CClientBase::Connect( boost::asio::io_service& io_service, const std::string& ip, int port )
+bool CClientBase::Connect( boost::asio::io_service& io_service, const std::string& host, int port )
 {
     if ( !m_socket )
         return false;
@@ -31,17 +32,17 @@ bool CClientBase::Connect( boost::asio::io_service& io_service, const std::strin
     try
     {
         tcp::resolver resolver(io_service);
-        tcp::resolver::query query(ip, NumToStr(port));
+        tcp::resolver::query query(host, NumToStr(port));
 
         tcp::resolver::iterator beg = resolver.resolve(query);
         tcp::resolver::iterator end;
 
-        // 得到所有ip列表
+        // get all ip-list by host name
         std::vector<tcp::resolver::iterator> ipList;
         for ( tcp::resolver::iterator it = beg; it != end; ++it )
             ipList.push_back(it);
 
-        // 随机从一个位置开始测试
+        // get a random ip from ip-list
         size_t ipfirst = rand() % ipList.size();
 
         boost::system::error_code error = boost::asio::error::host_not_found;
@@ -53,7 +54,8 @@ bool CClientBase::Connect( boost::asio::io_service& io_service, const std::strin
             m_socket->close();
             m_socket->connect( *(ipList[pos]), error );
 
-            if ( !error ) // 成功
+            // ok
+            if ( !error )
                 return true;
         }
     }
@@ -61,7 +63,8 @@ bool CClientBase::Connect( boost::asio::io_service& io_service, const std::strin
     {
     }
 
-    m_failed = true;
+    // failed connect
+    SetFailed();
     return false;
 }
 
@@ -79,7 +82,7 @@ bool CClientBase::Send( const void* data, size_t dataLen )
     }
     catch (...)
     {
-        m_failed = true;
+        SetFailed();
         return false;
     }
 }
@@ -96,7 +99,7 @@ bool CClientBase::SyncSend( const void* data, size_t dataLen )
     }
     catch (...)
     {
-        m_failed = true;
+        SetFailed();
         return false;
     }
 }
@@ -118,7 +121,7 @@ bool CClientBase::Recv( size_t dataLen )
     }
     catch ( ... )
     {
-        m_failed = true;
+        SetFailed();
         return false;
     }
 }
@@ -138,23 +141,20 @@ bool CClientBase::SyncRecv( size_t dataLen )
     }
     catch (...)
     {
-        m_failed = true;
+        SetFailed();
         return false;
     }
 }
 
 bool CClientBase::Close()
 {
-    m_failed = false;
-
     if ( !m_socket )
         return false;
 
+    ClearFailed();
+
     try
     {
-        //boost::asio::socket_base::linger option(true, 0);
-        //m_socket->set_option(option);
-
         m_socket->shutdown( boost::asio::ip::tcp::socket::shutdown_both );
     }
     catch (...)
@@ -179,6 +179,7 @@ bool CClientBase::OnSend( const boost::system::error_code& error, size_t bytes_t
 
 bool CClientBase::OnRecv( const boost::system::error_code& error, size_t bytes_transferred )
 {
+    // if error happened, close
     if ( error )
     {
         Close();
@@ -190,7 +191,6 @@ bool CClientBase::OnRecv( const boost::system::error_code& error, size_t bytes_t
 
 void CClientBase::SendCallback( CClientBase* p, const boost::system::error_code& error, size_t bytes_transferred )
 {
-    // 不实现
 }
 
 void CClientBase::RecvCallback( HandleType handle, const boost::system::error_code& error, size_t bytes_transferred )
@@ -200,6 +200,7 @@ void CClientBase::RecvCallback( HandleType handle, const boost::system::error_co
 
 void CClientBase::SafeCallRecv( CClientBase* p, const boost::system::error_code& error, size_t bytes_transferred )
 {
+    // check self valid and no exception will be throw
     BEGIN_SAFE
 
     if ( p )
@@ -207,3 +208,4 @@ void CClientBase::SafeCallRecv( CClientBase* p, const boost::system::error_code&
 
     END_SAFE
 }
+

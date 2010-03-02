@@ -56,6 +56,9 @@ public:
     STDMETHOD(Close)(void);
     STDMETHOD(InviteUser)(BSTR user);
     STDMETHOD(SendFile)(BSTR uri, BSTR friendlyName);
+    STDMETHOD(SendFileAcceptance)(BSTR transferId, BSTR saveUrl);
+    STDMETHOD(SendFileRejection)(BSTR transferId);
+    STDMETHOD(SendFileCancellation)(BSTR transferId);
     STDMETHOD(SendInk)(BSTR inkData);
     STDMETHOD(SendWink)(BSTR uri, BSTR stamp);
     STDMETHOD(SendVoiceclip)(BSTR uri);

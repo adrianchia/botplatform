@@ -99,6 +99,9 @@ interface IRobotSession : IUnknown{
     [helpstring("方法Close")] HRESULT Close(void);
     [helpstring("方法InviteUser")] HRESULT InviteUser([in] BSTR user);
     [helpstring("方法SendFile")] HRESULT SendFile([in] BSTR uri, [in] BSTR friendlyName);
+    [helpstring("方法SendFileAcceptance")] HRESULT SendFileAcceptance([in] BSTR transferId, [in] BSTR saveUrl);
+    [helpstring("方法SendFileRejection")] HRESULT SendFileRejection([in] BSTR transferId);
+    [helpstring("方法SendFileCancellation")] HRESULT SendFileCancellation([in] BSTR transferId);
     [helpstring("方法SendInk")] HRESULT SendInk([in] BSTR inkData);
     [helpstring("方法SendWink")] HRESULT SendWink([in] BSTR uri, [in] BSTR stamp);
     [helpstring("方法SendVoiceclip")] HRESULT SendVoiceclip([in] BSTR uri);
@@ -134,6 +137,18 @@ interface IRobotMessage : IUnknown{
     [propput, helpstring("属性 Text")] HRESULT Text([in] BSTR newVal);
     [helpstring("方法RegisterEmoticon")] HRESULT RegisterEmoticon([in] BSTR shortcut, [in] BSTR filename);
     [helpstring("方法DeregisterEmoticon")] HRESULT DeregisterEmoticon([in] BSTR shortcut);
+};
+[
+	object,
+	uuid(EE89BCB6-C403-433E-A032-61D92F126AD9),
+	helpstring("IRobotFileDescriptor 接口"),
+	pointer_default(unique)
+]
+interface IRobotFileDescriptor : IUnknown{
+    [propget, helpstring("属性 TransferId")] HRESULT TransferId([out, retval] BSTR* pVal);
+    [propget, helpstring("属性 Name")] HRESULT Name([out, retval] BSTR* pVal);
+    [propget, helpstring("属性 Size")] HRESULT Size([out, retval] LONG* pVal);
+    [propget, helpstring("属性 Thumbnail")] HRESULT Thumbnail([out, retval] BSTR* pVal);
 };
 [
 	uuid(3B6053CA-50DC-4BBC-BB6E-EE2680B8A882),
@@ -173,12 +188,12 @@ library BotPlatformSDKLib
             [id(12), helpstring("方法UserAdd")] HRESULT UserAdd([in] BSTR robot, [in] BSTR user);
             [id(13), helpstring("方法UserRemove")] HRESULT UserRemove([in] BSTR robot, [in] BSTR user);
             [id(14), helpstring("方法ExceptionCaught")] HRESULT ExceptionCaught([in] IRobotSession* session, [in] LONG cause);
-            [id(15), helpstring("方法FileAccepted")] HRESULT FileAccepted([in] IRobotSession* session);
-            [id(16), helpstring("方法FileRejected")] HRESULT FileRejected([in] IRobotSession* session);
-            [id(17), helpstring("方法FileTransferEnded")] HRESULT FileTransferEnded([in] IRobotSession* session);
-            [id(18), helpstring("方法FileTransferCancelled")] HRESULT FileTransferCancelled([in] IRobotSession* session);
-            [id(19), helpstring("方法FileTransferError")] HRESULT FileTransferError([in] IRobotSession* session);
-            [id(20), helpstring("方法FileInvited")] HRESULT FileInvited([in] IRobotSession* session, [in] IRobotTransInvitation* invitation);
+            [id(15), helpstring("方法FileAccepted")] HRESULT FileAccepted([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            [id(16), helpstring("方法FileRejected")] HRESULT FileRejected([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            [id(17), helpstring("方法FileTransferEnded")] HRESULT FileTransferEnded([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            [id(18), helpstring("方法FileTransferCancelled")] HRESULT FileTransferCancelled([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            [id(19), helpstring("方法FileTransferError")] HRESULT FileTransferError([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            [id(20), helpstring("方法FileInvited")] HRESULT FileInvited([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
             [id(21), helpstring("方法WebcamAccepted")] HRESULT WebcamAccepted([in] IRobotSession* session);
             [id(22), helpstring("方法WebcamRejected")] HRESULT WebcamRejected([in] IRobotSession* session);
             [id(23), helpstring("方法WebcamClosed")] HRESULT WebcamClosed([in] IRobotSession* session);
@@ -230,6 +245,15 @@ library BotPlatformSDKLib
 	coclass RobotTransInvitation
 	{
 		[default] interface IRobotTransInvitation;
+	};
+    [
+		uuid(C1B84F2F-010D-42D8-879A-2584EF766222),
+		helpstring("RobotFileDescriptor Class"),
+        noncreatable
+	]
+	coclass RobotFileDescriptor
+	{
+		[default] interface IRobotFileDescriptor;
 	};
 	[
 		uuid(894AE690-8003-4C54-9620-02C0A260253D),

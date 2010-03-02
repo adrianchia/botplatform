@@ -270,6 +270,61 @@ STDMETHODIMP CRobotSession::SendFile(BSTR uri, BSTR friendlyName)
     return S_OK;
 }
 
+STDMETHODIMP CRobotSession::SendFileAcceptance(BSTR transferId, BSTR saveUrl)
+{
+    if ( !m_pParent )
+        return E_FAIL;
+
+    if ( !transferId || !saveUrl )
+        return E_INVALIDARG;
+
+    Json::Value body;
+    body["cmd"]         = "accept";
+    body["transferId"]  = UnicToUtf8(transferId);
+    body["saveUrl"]     = UnicToUtf8(saveUrl);
+
+    if ( !Send( "filecmd", &body ) )
+        return E_FAIL;
+
+    return S_OK;
+}
+
+STDMETHODIMP CRobotSession::SendFileRejection(BSTR transferId)
+{
+    if ( !m_pParent )
+        return E_FAIL;
+
+    if ( !transferId )
+        return E_INVALIDARG;
+
+    Json::Value body;
+    body["cmd"]         = "reject";
+    body["transferId"]  = UnicToUtf8(transferId);
+
+    if ( !Send( "filecmd", &body ) )
+        return E_FAIL;
+
+    return S_OK;
+}
+
+STDMETHODIMP CRobotSession::SendFileCancellation(BSTR transferId)
+{
+    if ( !m_pParent )
+        return E_FAIL;
+
+    if ( !transferId )
+        return E_INVALIDARG;
+
+    Json::Value body;
+    body["cmd"]         = "cancel";
+    body["transferId"]  = UnicToUtf8(transferId);
+
+    if ( !Send( "filecmd", &body ) )
+        return E_FAIL;
+
+    return S_OK;
+}
+
 STDMETHODIMP CRobotSession::SendInk(BSTR inkData)
 {
     // TODO: 在此添加实现代码

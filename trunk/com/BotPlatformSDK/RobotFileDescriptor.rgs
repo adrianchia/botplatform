@@ -1,0 +1,25 @@
+HKCR
+{
+	BotPlatformSDK.RobotFileDescriptor.1 = s 'RobotFileDescriptor Class'
+	{
+		CLSID = s '{C1B84F2F-010D-42D8-879A-2584EF766222}'
+	}
+	BotPlatformSDK.RobotFileDescriptor = s 'RobotFileDescriptor Class'
+	{
+		CLSID = s '{C1B84F2F-010D-42D8-879A-2584EF766222}'
+		CurVer = s 'BotPlatformSDK.RobotFileDescriptor.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C1B84F2F-010D-42D8-879A-2584EF766222} = s 'RobotFileDescriptor Class'
+		{
+			ProgID = s 'BotPlatformSDK.RobotFileDescriptor.1'
+			VersionIndependentProgID = s 'BotPlatformSDK.RobotFileDescriptor'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3B6053CA-50DC-4BBC-BB6E-EE2680B8A882}'
+		}
+	}
+}

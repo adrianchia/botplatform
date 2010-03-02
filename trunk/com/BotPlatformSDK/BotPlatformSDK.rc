@@ -106,6 +106,7 @@ IDR_ROBOTTRANSINVITATION REGISTRY                "RobotTransInvitation.rgs"
 IDR_ROBOTSESSION        REGISTRY                "RobotSession.rgs"
 IDR_ROBOTUSERS          REGISTRY                "RobotUsers.rgs"
 IDR_ROBOTMESSAGE        REGISTRY                "RobotMessage.rgs"
+IDR_ROBOTFILEDESCRIPTOR REGISTRY                "RobotFileDescriptor.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //
