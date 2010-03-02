@@ -2,11 +2,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>incesoft</groupId>
-  <artifactId>ibotplatform-sdk</artifactId>
+  <artifactId>botplatform-sdk</artifactId>
   <packaging>jar</packaging>
   <version>3.0</version>
-  <name>ibotplatform-sdk</name>
-  <url>http://www.incesoft.com</url>
+  <name>botplatform-sdk</name>
+  <url>http://botplatform.com</url>
   <build>
 		<extensions>
 			<extension>
