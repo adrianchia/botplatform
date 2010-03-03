@@ -106,6 +106,15 @@ public:
     l = v; \
     return S_OK;
 
+template<class T>
+void SafeRelease(T*& p)
+{
+    if ( p )
+    {
+        p->Release();
+        p = NULL;
+    }
+}
 
 // json routine
 #define BEGIN_JSON_PARSE(jv)        if ( !jv.isNull() ) { Json::Value& jval = jv;

@@ -1,5 +1,3 @@
-// RobotServerFactory.cpp : CRobotServerFactory 的实现
-
 #include "stdafx.h"
 #include "RobotServerFactory.h"
 #include "RobotServer.h"
@@ -8,10 +6,10 @@
 
 void RegisterAllJSonCmds( CManagerBase* man );
 
+
 // CRobotServerFactory
 STDMETHODIMP CRobotServerFactory::CreateRobotServer(BSTR ip, LONG port, IRobotServer** ppRobotServer)
 {
-    // TODO: 在此添加实现代码
     CRobotServer* realServer = NULL;
     HRESULT hr = CreateRealObject<CRobotServer>( ppRobotServer, &realServer );
     if ( FAILED(hr) )
@@ -29,7 +27,6 @@ CRobotServerFactory::CRobotServerFactory()
 
 STDMETHODIMP CRobotServerFactory::Init(LONG threadCount)
 {
-    // TODO: 在此添加实现代码
     if ( threadCount <= 0 )
         return E_INVALIDARG;
 
@@ -44,3 +41,4 @@ STDMETHODIMP CRobotServerFactory::Destroy()
     CManagerBase::ClearCmds();
     return S_OK;
 }
+

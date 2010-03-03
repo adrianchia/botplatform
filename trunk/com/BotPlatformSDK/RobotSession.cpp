@@ -1,5 +1,3 @@
-// RobotSession.cpp : CRobotSession 的实现
-
 #include "stdafx.h"
 #include "RobotSession.h"
 #include "RobotUsers.h"
@@ -10,22 +8,20 @@
 
 // CRobotSession
 
-CRobotSession::CRobotSession() : m_pParent(0), m_pRobotUsers(0), m_mode(0), m_closed(false), m_active(false)
+CRobotSession::CRobotSession() : m_server(NULL), m_robotUsers(NULL), m_mode(0), m_closed(false), m_active(false)
 {
 }
 
 HRESULT CRobotSession::FinalConstruct()
 {
     IRobotUsers* users = 0;
-    return CreateRealObject( &users, &m_pRobotUsers );
+    return CreateRealObject( &users, &m_robotUsers );
 }
 
 void CRobotSession::FinalRelease()
 {
     Close();
-
-    if ( m_pRobotUsers )
-        m_pRobotUsers->Release();
+    SafeRelease(m_robotUsers);
 }
 
 STDMETHODIMP CRobotSession::CreateMessage(IRobotMessage** message)
@@ -35,7 +31,6 @@ STDMETHODIMP CRobotSession::CreateMessage(IRobotMessage** message)
 
 STDMETHODIMP CRobotSession::SendText(BSTR message)
 {
-    // TODO: 在此添加实现代码
     if ( !message )
         return E_INVALIDARG;
 
@@ -43,7 +38,7 @@ STDMETHODIMP CRobotSession::SendText(BSTR message)
 
     body["text"] = UnicToUtf8(message);
 
-    if ( !Send( "msg", &body ) )
+    if ( !sendCmd( "msg", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -51,7 +46,6 @@ STDMETHODIMP CRobotSession::SendText(BSTR message)
 
 STDMETHODIMP CRobotSession::SendIM(IRobotMessage* message)
 {
-    // TODO: 在此添加实现代码
     if ( !message )
         return E_INVALIDARG;
 
@@ -79,29 +73,28 @@ STDMETHODIMP CRobotSession::SendIM(IRobotMessage* message)
         body["emoticons"][it->first] = it->second;
     }
 
-    if ( !Send( "msg", &body ) )
+    if ( !sendCmd( "msg", &body ) )
         return E_FAIL;
 
     return S_OK;
 }
 
-bool CRobotSession::SendBase( const std::string& userId, const std::string& type, Json::Value* body )
+bool CRobotSession::sendCmd( const std::string& userId, const std::string& type, Json::Value* body )
 {
-    if ( !m_pParent )
+    if ( !m_server )
         return false;
 
-    return m_pParent->Send( m_robotId, userId, m_sessionId, type, body );
+    return m_server->Send( m_robotId, userId, m_sessionId, type, body );
 }
 
-bool CRobotSession::Send( const std::string& type, Json::Value* body )
+bool CRobotSession::sendCmd( const std::string& type, Json::Value* body )
 {
-    return SendBase( m_userId, type, body );
+    return sendCmd( m_userId, type, body );
 }
 
 STDMETHODIMP CRobotSession::SendNudge(void)
 {
-    // TODO: 在此添加实现代码
-    if ( !Send( "nudge", NULL ) )
+    if ( !sendCmd( "nudge", NULL ) )
         return E_FAIL;
 
     return S_OK;
@@ -109,7 +102,6 @@ STDMETHODIMP CRobotSession::SendNudge(void)
 
 STDMETHODIMP CRobotSession::SendActivity(BSTR url, BSTR friendlyName)
 {
-    // TODO: 在此添加实现代码
     if ( !url || !friendlyName )
         return E_INVALIDARG;
 
@@ -118,7 +110,7 @@ STDMETHODIMP CRobotSession::SendActivity(BSTR url, BSTR friendlyName)
     body["name"] = UnicToUtf8(friendlyName);
     body["data"] = UnicToUtf8(url);
 
-    if ( !Send( "appmsg", &body ) )
+    if ( !sendCmd( "appmsg", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -126,7 +118,6 @@ STDMETHODIMP CRobotSession::SendActivity(BSTR url, BSTR friendlyName)
 
 STDMETHODIMP CRobotSession::SendActivityEx(BSTR appid, BSTR appname, BSTR data)
 {
-    // TODO: 在此添加实现代码
     if ( !appid || !appname || !data )
         return E_INVALIDARG;
 
@@ -136,7 +127,7 @@ STDMETHODIMP CRobotSession::SendActivityEx(BSTR appid, BSTR appname, BSTR data)
     body["name"] = UnicToUtf8(appname);
     body["data"] = UnicToUtf8(data);
 
-    if ( !Send( "appmsg", &body ) )
+    if ( !sendCmd( "appmsg", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -144,18 +135,12 @@ STDMETHODIMP CRobotSession::SendActivityEx(BSTR appid, BSTR appname, BSTR data)
 
 STDMETHODIMP CRobotSession::get_ActivityOpened(VARIANT_BOOL* pVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !pVal )
-        return E_INVALIDARG;
-
-    *pVal = m_active;
-    return S_OK;
+    IMPL_GET_LONG(pVal, m_active)
 }
 
 STDMETHODIMP CRobotSession::SendTyping(void)
 {
-    // TODO: 在此添加实现代码
-    if ( !Send( "typing", NULL ) )
+    if ( !sendCmd( "typing", NULL ) )
         return E_FAIL;
 
     return S_OK;
@@ -163,13 +148,12 @@ STDMETHODIMP CRobotSession::SendTyping(void)
 
 STDMETHODIMP CRobotSession::GetUser(BSTR userid, IRobotUser** ppUser)
 {
-    // TODO: 在此添加实现代码
     if ( !userid || !ppUser )
         return E_INVALIDARG;
 
-    *ppUser = 0;
+    *ppUser = NULL;
 
-    CRobotUser* user = m_pRobotUsers->getUser( UnicToUtf8(userid) );
+    CRobotUser* user = m_robotUsers->getUser( UnicToUtf8(userid) );
     if ( !user )
         return E_INVALIDARG;
 
@@ -180,55 +164,37 @@ STDMETHODIMP CRobotSession::GetUser(BSTR userid, IRobotUser** ppUser)
 
 STDMETHODIMP CRobotSession::get_Users(IRobotUsers** ppUsers)
 {
-    // TODO: 在此添加实现代码
     if ( !ppUsers )
         return E_INVALIDARG;
 
-    m_pRobotUsers->AddRef();
-    *ppUsers = m_pRobotUsers;
+    m_robotUsers->AddRef();
+    *ppUsers = m_robotUsers;
     return S_OK;
 }
 
 STDMETHODIMP CRobotSession::get_Robot(BSTR* pStr)
 {
-    // TODO: 在此添加实现代码
-    if ( !pStr )
-        return E_INVALIDARG;
-
-    CComBSTR str( Utf8ToUnic(m_robotId).c_str() );
-    *pStr = str.Detach();
-    return S_OK;
+    IMPL_GET_BSTR(pStr, m_robotId)
 }
 
 STDMETHODIMP CRobotSession::get_OpenMode(LONG* pVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !pVal )
-        return E_INVALIDARG;
-
-    *pVal = m_mode;
-    return S_OK;
+    IMPL_GET_LONG(pVal, m_mode)
 }
 
 STDMETHODIMP CRobotSession::get_Closed(VARIANT_BOOL* pVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !pVal )
-        return E_FAIL;
-
-    *pVal = m_closed;
-    return S_OK;
+    IMPL_GET_LONG(pVal, m_closed)
 }
 
 STDMETHODIMP CRobotSession::Close(void)
 {
-    // TODO: 在此添加实现代码
     if ( m_closed )
         return S_OK;
 
     m_closed = true;
 
-    if ( !Send( "closesession", NULL ) )
+    if ( !sendCmd( "closesession", NULL ) )
         return E_FAIL;
 
     return S_OK;
@@ -236,14 +202,10 @@ STDMETHODIMP CRobotSession::Close(void)
 
 STDMETHODIMP CRobotSession::InviteUser(BSTR user)
 {
-    // TODO: 在此添加实现代码
-    if ( !m_pParent )
-        return E_FAIL;
-
     if ( !user )
         return E_INVALIDARG;
 
-    if ( !SendBase( UnicToUtf8(user), "invite", NULL ) )
+    if ( !sendCmd( UnicToUtf8(user), "invite", NULL ) )
         return E_FAIL;
 
     return S_OK;
@@ -251,20 +213,17 @@ STDMETHODIMP CRobotSession::InviteUser(BSTR user)
 
 STDMETHODIMP CRobotSession::SendFile(BSTR uri, BSTR friendlyName)
 {
-    // TODO: 在此添加实现代码
-    if ( !m_pParent )
-        return E_FAIL;
-
     if ( !uri || !friendlyName )
         return E_INVALIDARG;
 
     Json::Value body;
+
     body["location"] = UnicToUtf8(uri);
 
     if ( friendlyName && *friendlyName != 0 )
         body["name"] = UnicToUtf8(friendlyName);
 
-    if ( !Send( "file", &body ) )
+    if ( !sendCmd( "file", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -272,18 +231,16 @@ STDMETHODIMP CRobotSession::SendFile(BSTR uri, BSTR friendlyName)
 
 STDMETHODIMP CRobotSession::SendFileAcceptance(BSTR transferId, BSTR saveUrl)
 {
-    if ( !m_pParent )
-        return E_FAIL;
-
     if ( !transferId || !saveUrl )
         return E_INVALIDARG;
 
     Json::Value body;
+
     body["cmd"]         = "accept";
     body["transferId"]  = UnicToUtf8(transferId);
     body["saveUrl"]     = UnicToUtf8(saveUrl);
 
-    if ( !Send( "filecmd", &body ) )
+    if ( !sendCmd( "filecmd", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -291,17 +248,15 @@ STDMETHODIMP CRobotSession::SendFileAcceptance(BSTR transferId, BSTR saveUrl)
 
 STDMETHODIMP CRobotSession::SendFileRejection(BSTR transferId)
 {
-    if ( !m_pParent )
-        return E_FAIL;
-
     if ( !transferId )
         return E_INVALIDARG;
 
     Json::Value body;
+
     body["cmd"]         = "reject";
     body["transferId"]  = UnicToUtf8(transferId);
 
-    if ( !Send( "filecmd", &body ) )
+    if ( !sendCmd( "filecmd", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -309,17 +264,15 @@ STDMETHODIMP CRobotSession::SendFileRejection(BSTR transferId)
 
 STDMETHODIMP CRobotSession::SendFileCancellation(BSTR transferId)
 {
-    if ( !m_pParent )
-        return E_FAIL;
-
     if ( !transferId )
         return E_INVALIDARG;
 
     Json::Value body;
+
     body["cmd"]         = "cancel";
     body["transferId"]  = UnicToUtf8(transferId);
 
-    if ( !Send( "filecmd", &body ) )
+    if ( !sendCmd( "filecmd", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -327,14 +280,14 @@ STDMETHODIMP CRobotSession::SendFileCancellation(BSTR transferId)
 
 STDMETHODIMP CRobotSession::SendInk(BSTR inkData)
 {
-    // TODO: 在此添加实现代码
     if ( !inkData )
         return E_INVALIDARG;
 
     Json::Value body;
+
     body = UnicToUtf8(inkData);
 
-    if ( !Send( "inkmsg", &body ) )
+    if ( !sendCmd( "inkmsg", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -342,15 +295,15 @@ STDMETHODIMP CRobotSession::SendInk(BSTR inkData)
 
 STDMETHODIMP CRobotSession::SendWink(BSTR uri, BSTR stamp)
 {
-    // TODO: 在此添加实现代码
     if ( !uri || !stamp )
         return E_INVALIDARG;
 
     Json::Value body;
+
     body["location"] = UnicToUtf8(uri);
     body["stamp"]    = UnicToUtf8(stamp);
 
-    if ( !Send( "wink", &body ) )
+    if ( !sendCmd( "wink", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -358,14 +311,14 @@ STDMETHODIMP CRobotSession::SendWink(BSTR uri, BSTR stamp)
 
 STDMETHODIMP CRobotSession::SendVoiceclip(BSTR uri)
 {
-    // TODO: 在此添加实现代码
     if ( !uri )
         return E_INVALIDARG;
 
     Json::Value body;
+
     body["location"] = UnicToUtf8(uri);
 
-    if ( !Send( "voiceclip", &body ) )
+    if ( !sendCmd( "voiceclip", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -373,17 +326,17 @@ STDMETHODIMP CRobotSession::SendVoiceclip(BSTR uri)
 
 STDMETHODIMP CRobotSession::SendWebcam(BSTR serverIP, LONG serverPort, LONG recipientid, LONG sessionid)
 {
-    // TODO: 在此添加实现代码
     if ( !serverIP )
         return E_INVALIDARG;
 
     Json::Value body;
+
     body["host"] = UnicToUtf8(serverIP);
     body["port"] = serverPort;
     body["rid"]  = recipientid;
     body["wid"]  = sessionid;
 
-    if ( !Send( "webcam", &body ) )
+    if ( !sendCmd( "webcam", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -391,12 +344,10 @@ STDMETHODIMP CRobotSession::SendWebcam(BSTR serverIP, LONG serverPort, LONG reci
 
 void CRobotSession::init( CRobotServer* server, const std::string& robotId, const std::string& userId, const std::string& sessionId, int openMode ) 
 {
-    m_pParent   = server;
+    m_server   = server;
     m_robotId   = robotId;
     m_sessionId = sessionId;
     m_userId    = userId;
     m_mode      = openMode;
 }
-
-
 
