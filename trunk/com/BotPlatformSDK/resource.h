@@ -8,7 +8,6 @@
 #define IDR_ROBOTSERVER                 103
 #define IDR_ROBOTRESOURCE               104
 #define IDR_ROBOTUSER                   105
-#define IDR_ROBOTTRANSINVITATION        106
 #define IDR_ROBOTSESSION                107
 #define IDR_ROBOTUSERS                  108
 #define IDR_ROBOTMESSAGE                109

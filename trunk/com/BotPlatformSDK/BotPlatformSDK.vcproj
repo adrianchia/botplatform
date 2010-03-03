@@ -286,14 +286,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RobotTransInvitation.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\RobotTransInvitation.h"
-				>
-			</File>
-			<File
 				RelativePath=".\RobotUser.cpp"
 				>
 			</File>
@@ -433,10 +425,6 @@
 			</File>
 			<File
 				RelativePath=".\RobotSession.rgs"
-				>
-			</File>
-			<File
-				RelativePath=".\RobotTransInvitation.rgs"
 				>
 			</File>
 			<File
