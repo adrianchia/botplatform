@@ -4,6 +4,7 @@
 #include "RobotServer.h"
 #include "ManagerBase.h"
 #include "RobotSession.h"
+#include "RobotResource.h"
 #include "Misc.h"
 
 
@@ -259,9 +260,37 @@ STDMETHODIMP CRobotServer::PushMessage(BSTR robot, BSTR user, BSTR message)
 
 STDMETHODIMP CRobotServer::RequestContactList(BSTR robot)
 {
-    // TODO: 在此添加实现代码
+    if ( !robot )
+        return E_INVALIDARG;
 
-    return E_NOTIMPL;
+    std::string u8_robot = UnicToUtf8(robot);
+
+    if ( !Send( u8_robot, "", "", "getuserlist", NULL ) )
+        return E_FAIL;
+
+    return S_OK;
+}
+
+STDMETHODIMP CRobotServer::RequestResource(BSTR robot, BSTR user, IRobotResource* resource, BSTR saveUrl)
+{
+    if ( !robot || !user || !resource || !saveUrl )
+        return E_INVALIDARG;
+
+    std::string u8_robot = UnicToUtf8(robot);
+    std::string u8_user  = UnicToUtf8(user);
+
+    CRobotResource* realRes = static_cast<CRobotResource*>(resource);
+
+    Json::Value body;
+
+    body["name"]    = realRes->getName();
+    body["digest"]  = realRes->getDigest();
+    body["size"]    = NumToStr(realRes->getSize());
+    
+    if ( !Send( u8_robot, u8_user, "", "getresource", &body ) )
+        return E_FAIL;
+
+    return S_OK;
 }
 
 STDMETHODIMP CRobotServer::SetScene(BSTR robotAccount, BSTR scene)

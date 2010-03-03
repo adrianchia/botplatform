@@ -10,7 +10,7 @@ import "ocidl.idl";
 interface IRobotServer;
 interface IRobotUsers;
 interface IRobotMessage;
-
+interface IRobotResource;
 
 [
 	object,
@@ -41,6 +41,7 @@ interface IRobotServer : IUnknown{
     [helpstring("方法CreateSession")] HRESULT CreateSession([in] BSTR robot, [in] BSTR user);
     [helpstring("方法PushMessage")] HRESULT PushMessage([in] BSTR robot, [in] BSTR user, [in] BSTR message);
     [helpstring("方法RequestContactList")] HRESULT RequestContactList([in] BSTR robot);
+    [helpstring("方法RequestResource")] HRESULT RequestResource([in] BSTR robot, [in] BSTR user, [in] IRobotResource* resource, [in] BSTR saveUrl);
 };
 [
 	object,

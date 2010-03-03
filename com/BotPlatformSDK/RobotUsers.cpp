@@ -46,18 +46,18 @@ STDMETHODIMP CRobotUsers::Count(LONG* pVal)
     return S_OK;
 }
 
-void CRobotUsers::addUser( const std::string& userId, CRobotUser* user )
+void CRobotUsers::addUser( CRobotUser* user )
 {
-    if ( !user )
+    if ( !user || user->getID().empty() )
         return;
 
     boost::lock_guard<boost::mutex> guard_(m_userMutex);
 
-    if ( m_userMap.find(userId) != m_userMap.end() )
+    if ( m_userMap.find(user->getID()) != m_userMap.end() )
         return;
 
     m_userVector.push_back( user );
-    m_userMap.insert( RobotUserMap::value_type(userId, user) );
+    m_userMap.insert( RobotUserMap::value_type(user->getID(), user) );
 }
 
 void CRobotUsers::removeUser( const std::string& userId )

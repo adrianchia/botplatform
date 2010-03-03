@@ -45,7 +45,6 @@ END_COM_MAP()
 	}
 
 public:
-
     STDMETHOD(get_Name)(BSTR* pVal);
     STDMETHOD(get_Digest)(BSTR* pVal);
     STDMETHOD(get_Size)(LONG* pVal);
@@ -54,6 +53,10 @@ public:
     void setName( const std::string& name ) { m_name = name; }
     void setDigest( const std::string& digest ) { m_digest = digest; }
     void setSize( int size ) { m_size = size; }
+
+    const std::string& getName()   const { return m_name; }
+    const std::string& getDigest() const { return m_digest; }
+    int                getSize()   const { return m_size; }
 
     void setAll( Json::Value& val );
 

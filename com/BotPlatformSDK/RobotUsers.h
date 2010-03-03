@@ -48,18 +48,17 @@ END_COM_MAP()
 	void FinalRelease();
 
 public:
-
     STDMETHOD(Item)(LONG idx, IRobotUser** ppUser);
     STDMETHOD(Count)(LONG* pVal);
 
 public:
-    void addUser( const std::string& userId, CRobotUser* user );
+    void addUser( CRobotUser* user );
     void removeUser( const std::string& userId );
     
     CRobotUser* getUser( const std::string& userId );
     CRobotUser* getUser( size_t idx );
 
-    size_t      getUserCount();
+    size_t getUserCount();
 
 private:
     RobotUserMap    m_userMap;

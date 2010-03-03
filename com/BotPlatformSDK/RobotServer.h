@@ -86,7 +86,7 @@ public:
     STDMETHOD(CreateSession)(BSTR robot, BSTR user);
     STDMETHOD(PushMessage)(BSTR robot, BSTR user, BSTR message);
     STDMETHOD(RequestContactList)(BSTR robot);
-    
+    STDMETHOD(RequestResource)(BSTR robot, BSTR user, IRobotResource* resource, BSTR saveUrl);
 
 public:
     void Init( CManagerBase* man, BSTR ip, int port );
