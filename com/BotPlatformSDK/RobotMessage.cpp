@@ -1,115 +1,62 @@
-// RobotMessage.cpp : CRobotMessage 的实现
-
 #include "stdafx.h"
 #include "RobotMessage.h"
-#include "Misc.h"
 
 // CRobotMessage
 
 
 STDMETHODIMP CRobotMessage::get_Signature(BSTR* pVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !pVal )
-        return E_INVALIDARG;
-
-    CComBSTR str( Utf8ToUnic(m_signature).c_str() );
-    *pVal = str.Detach();
-    return S_OK;
+    IMPL_GET_BSTR(pVal, m_signature)
 }
 
 STDMETHODIMP CRobotMessage::put_Signature(BSTR newVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !newVal )
-        return E_INVALIDARG;
-
-    m_signature = UnicToUtf8(newVal);
-    return S_OK;
+    IMPL_SET_BSTR(m_signature, newVal)
 }
 
 STDMETHODIMP CRobotMessage::get_FontStyle(LONG* pVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !pVal )
-        return E_INVALIDARG;
-
-    *pVal = m_fontStyle;
-    return S_OK;
+    IMPL_GET_LONG(pVal, m_fontStyle)
 }
 
 STDMETHODIMP CRobotMessage::put_FontStyle(LONG newVal)
 {
-    // TODO: 在此添加实现代码
-    m_fontStyle = newVal;
-    return S_OK;
+    IMPL_SET_LONG(m_fontStyle, newVal)
 }
 
 STDMETHODIMP CRobotMessage::get_FontName(BSTR* pVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !pVal )
-        return E_INVALIDARG;
-
-    CComBSTR str( Utf8ToUnic(m_fontName).c_str() );
-    *pVal = str.Detach();
-    return S_OK;
+    IMPL_GET_BSTR(pVal, m_fontName)
 }
 
 STDMETHODIMP CRobotMessage::put_FontName(BSTR newVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !newVal )
-        return E_INVALIDARG;
-
-    m_fontName = UnicToUtf8(newVal);
-    return S_OK;
+    IMPL_SET_BSTR(m_fontName, newVal)
 }
 
 STDMETHODIMP CRobotMessage::get_FontColor(LONG* pVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !pVal )
-        return E_INVALIDARG;
-
-    *pVal = m_fontColor ? *m_fontColor : 0;
-    return S_OK;
+    IMPL_GET_LONG(pVal, getFontColor())
 }
 
 STDMETHODIMP CRobotMessage::put_FontColor(LONG newVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !m_fontColor )
-        m_fontColor = new int;
-
-    *m_fontColor = newVal;
+    setFontColor(newVal);
     return S_OK;
 }
 
 STDMETHODIMP CRobotMessage::get_Text(BSTR* pVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !pVal )
-        return E_INVALIDARG;
-
-    CComBSTR str( Utf8ToUnic(m_text).c_str() );
-    *pVal = str.Detach();
-    return S_OK;
+    IMPL_GET_BSTR(pVal, m_text)
 }
 
 STDMETHODIMP CRobotMessage::put_Text(BSTR newVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !newVal )
-        return E_INVALIDARG;
-
-    m_text = UnicToUtf8(newVal);
-    return S_OK;
+    IMPL_SET_BSTR(m_text, newVal)
 }
 
 STDMETHODIMP CRobotMessage::RegisterEmoticon(BSTR shortcut, BSTR filename)
 {
-    // TODO: 在此添加实现代码
     if ( !shortcut || !filename )
         return E_INVALIDARG;
 
@@ -125,7 +72,6 @@ STDMETHODIMP CRobotMessage::RegisterEmoticon(BSTR shortcut, BSTR filename)
 
 STDMETHODIMP CRobotMessage::DeregisterEmoticon(BSTR shortcut)
 {
-    // TODO: 在此添加实现代码
     if ( !shortcut )
         return E_INVALIDARG;
 
@@ -141,24 +87,25 @@ STDMETHODIMP CRobotMessage::DeregisterEmoticon(BSTR shortcut)
     return S_OK;
 }
 
+void CRobotMessage::setFontColor( int c )
+{
+    if ( !m_fontColor )
+        m_fontColor = new int;
+
+    *m_fontColor = c;
+}
+
 void CRobotMessage::setAll( Json::Value& val )
 {
-    if ( val.isNull() )
-        return;
-
-    if ( !val["text"].isNull() )
-        m_text = val["text"].asString();
-
-    if ( !val["fontName"].isNull() )
-        m_fontName = val["fontName"].asString();
-
-    if ( !val["fontColor"].isNull() )
-        put_FontColor( val["fontColor"].asInt() );
-
-    if ( !val["fontStyle"].isNull() )
-        m_fontStyle = val["fontStyle"].asInt();
-
-    if ( !val["signature"].isNull() )
-        m_signature = val["signature"].asString();
+    BEGIN_JSON_PARSE(val)
+        JSON_BIND_STR(m_signature,  signature)
+        JSON_BIND_STR(m_text,       text)
+        JSON_BIND_STR(m_fontName,   fontName)
+        JSON_BIND_INT(m_fontStyle,  fontStyle)
+        {
+            if ( !val["fontColor"].isNull() )
+                setFontColor( val["fontColor"].asInt() );
+        }
+    END_JSON_PARSE()
 }
 

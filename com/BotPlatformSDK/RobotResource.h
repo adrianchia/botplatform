@@ -1,13 +1,11 @@
-// RobotResource.h : CRobotResource 的声明
-
 #pragma once
-#include "resource.h"       // 主符号
-
+#include "resource.h"
 #include "BotPlatformSDK_i.h"
+#include "Misc.h"
 
 
 #if defined(_WIN32_WCE) && !defined(_CE_DCOM) && !defined(_CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA)
-#error "Windows CE 平台(如不提供完全 DCOM 支持的 Windows Mobile 平台)上无法正确支持单线程 COM 对象。定义 _CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA 可强制 ATL 支持创建单线程 COM 对象实现并允许使用其单线程 COM 对象实现。rgs 文件中的线程模型已被设置为“Free”，原因是该模型是非 DCOM Windows CE 平台支持的唯一线程模型。"
+#error "Single-threaded COM objects are not properly supported on Windows CE platform, such as the Windows Mobile platforms that do not include full DCOM support. Define _CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA to force ATL to support creating single-thread COM object's and allow use of it's single-threaded COM object implementations. The threading model in your rgs file was set to 'Free' as that is the only threading model supported in non DCOM Windows CE platforms."
 #endif
 
 
@@ -50,20 +48,13 @@ public:
     STDMETHOD(get_Size)(LONG* pVal);
 
 public:
-    void setName( const std::string& name ) { m_name = name; }
-    void setDigest( const std::string& digest ) { m_digest = digest; }
-    void setSize( int size ) { m_size = size; }
-
-    const std::string& getName()   const { return m_name; }
-    const std::string& getDigest() const { return m_digest; }
-    int                getSize()   const { return m_size; }
-
     void setAll( Json::Value& val );
 
 private:
-    std::string m_name;
-    std::string m_digest;
-    int         m_size;
+    DEFINE_STR_PROP(m_name,   Name)
+    DEFINE_STR_PROP(m_digest, Digest)
+    DEFINE_INT_PROP(m_size,   Size)
 };
 
 //OBJECT_ENTRY_AUTO(__uuidof(RobotResource), CRobotResource)
+
