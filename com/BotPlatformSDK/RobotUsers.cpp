@@ -1,5 +1,3 @@
-// RobotUsers.cpp : CRobotUsers 的实现
-
 #include "stdafx.h"
 #include "RobotUsers.h"
 #include "RobotUser.h"
@@ -13,8 +11,7 @@ void CRobotUsers::FinalRelease()
     for ( RobotUserMap::iterator it = m_userMap.begin(); it != m_userMap.end(); ++it )
     {
         CRobotUser* p = it->second;
-        if ( p )
-            p->Release();
+        SafeRelease(p);
     }
 
     m_userMap.clear();
@@ -23,9 +20,8 @@ void CRobotUsers::FinalRelease()
 
 STDMETHODIMP CRobotUsers::Item(LONG idx, IRobotUser** ppUser)
 {
-    // TODO: 在此添加实现代码
     if ( !ppUser )
-        return E_FAIL;
+        return E_INVALIDARG;
 
     CRobotUser* user = getUser( idx );
     if ( !user )
@@ -38,12 +34,7 @@ STDMETHODIMP CRobotUsers::Item(LONG idx, IRobotUser** ppUser)
 
 STDMETHODIMP CRobotUsers::Count(LONG* pVal)
 {
-    // TODO: 在此添加实现代码
-    if ( !pVal )
-        return E_INVALIDARG;
-
-    *pVal = getUserCount();
-    return S_OK;
+    IMPL_GET_LONG(pVal, getUserCount())
 }
 
 void CRobotUsers::addUser( CRobotUser* user )
@@ -53,10 +44,14 @@ void CRobotUsers::addUser( CRobotUser* user )
 
     boost::lock_guard<boost::mutex> guard_(m_userMutex);
 
+    // check if already exist
     if ( m_userMap.find(user->getID()) != m_userMap.end() )
         return;
 
+    // insert to vector
     m_userVector.push_back( user );
+
+    // insert to map
     m_userMap.insert( RobotUserMap::value_type(user->getID(), user) );
 }
 
@@ -68,19 +63,23 @@ void CRobotUsers::removeUser( const std::string& userId )
     if ( it != m_userMap.end() )
     {
         CRobotUser* user = it->second;
+
+        // erase in map
         m_userMap.erase(it);
         
+        // erase in vector
         RobotUserVector::iterator vit = std::find( m_userVector.begin(), m_userVector.end(), user );
         ATLASSERT ( vit != m_userVector.end() );
         m_userVector.erase( vit );
 
-        if ( user )
-            user->Release();
+        // release user
+        SafeRelease(user);
     }
 }
 
 CRobotUser* CRobotUsers::getUser( const std::string& userId )
 {
+    // get user by userId
     boost::lock_guard<boost::mutex> guard_(m_userMutex);
 
     RobotUserMap::iterator it = m_userMap.find( userId );
@@ -94,6 +93,7 @@ CRobotUser* CRobotUsers::getUser( const std::string& userId )
 
 CRobotUser* CRobotUsers::getUser( size_t idx )
 {
+    // get user by index
     boost::lock_guard<boost::mutex> guard_(m_userMutex);
 
     if ( idx < m_userVector.size() )

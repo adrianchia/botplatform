@@ -1,13 +1,10 @@
-// RobotSession.h : CRobotSession 的声明
-
 #pragma once
-#include "resource.h"       // 主符号
-
+#include "resource.h"
 #include "BotPlatformSDK_i.h"
 
 
 #if defined(_WIN32_WCE) && !defined(_CE_DCOM) && !defined(_CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA)
-#error "Windows CE 平台(如不提供完全 DCOM 支持的 Windows Mobile 平台)上无法正确支持单线程 COM 对象。定义 _CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA 可强制 ATL 支持创建单线程 COM 对象实现并允许使用其单线程 COM 对象实现。rgs 文件中的线程模型已被设置为“Free”，原因是该模型是非 DCOM Windows CE 平台支持的唯一线程模型。"
+#error "Single-threaded COM objects are not properly supported on Windows CE platform, such as the Windows Mobile platforms that do not include full DCOM support. Define _CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA to force ATL to support creating single-thread COM object's and allow use of it's single-threaded COM object implementations. The threading model in your rgs file was set to 'Free' as that is the only threading model supported in non DCOM Windows CE platforms."
 #endif
 
 class CRobotServer;
@@ -64,19 +61,21 @@ public:
     STDMETHOD(SendVoiceclip)(BSTR uri);
     STDMETHOD(SendWebcam)(BSTR serverIP, LONG serverPort, LONG recipientid, LONG sessionid);
     
-
 private:
-    bool SendBase( const std::string& userId, const std::string& type, Json::Value* body );
-    bool Send( const std::string& type, Json::Value* body );
+    bool sendCmd( const std::string& userId, const std::string& type, Json::Value* body );
+
+    bool sendCmd( const std::string& type, Json::Value* body );
 
 public:
     void init( CRobotServer* server, const std::string& robotId, const std::string& userId, const std::string& sessionId, int openMode );
+
     void setActive( bool b ) { m_active = b; }
-    CRobotUsers* getUsers() const { return m_pRobotUsers; }
+
+    CRobotUsers* getUsers() const { return m_robotUsers; }
 
 private:
-    CRobotServer* m_pParent;
-    CRobotUsers*  m_pRobotUsers;
+    CRobotServer* m_server;
+    CRobotUsers*  m_robotUsers;
 
     std::string   m_robotId;
     std::string   m_userId;
@@ -88,3 +87,4 @@ private:
 };
 
 //OBJECT_ENTRY_AUTO(__uuidof(RobotSession), CRobotSession)
+
