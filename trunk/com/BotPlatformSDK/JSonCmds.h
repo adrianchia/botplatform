@@ -23,6 +23,6 @@ public:
     }
 
 protected:
-    virtual void doTask( CRobotServer* pServer, std::string robotId, std::string userId, std::string sessionId, Json::Value& root ) = 0;
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root ) = 0;
 };
 

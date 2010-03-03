@@ -45,17 +45,21 @@ END_COM_MAP()
 	}
 
 public:
-
     STDMETHOD(get_ID)(BSTR* pVal);
     STDMETHOD(get_FriendlyName)(BSTR* pVal);
     STDMETHOD(get_Status)(BSTR* pVal);
     STDMETHOD(get_ClientID)(LONG* pVal);
 
 public:
-    void setID( const std::string& id ) { m_id = id; }
-    void setFriendlyName( const std::string& name ) { m_name = name; }
-    void setStatus( const std::string& s ) { m_status = s; }
-    void setClientID( int id ) { m_clientID = id; }
+    void setID( const std::string& id )             { m_id       = id;   }
+    void setFriendlyName( const std::string& name ) { m_name     = name; }
+    void setStatus( const std::string& s )          { m_status   = s;    }
+    void setClientID( int id )                      { m_clientID = id;   }
+
+    const std::string& getID()           const { return m_id;       }
+    const std::string& getFriendlyName() const { return m_name;     }
+    const std::string& getStatus()       const { return m_status;   }
+    int                getClientID()     const { return m_clientID; }
 
     void setAll( Json::Value& val );
 
@@ -67,3 +71,4 @@ private:
 };
 
 //OBJECT_ENTRY_AUTO(__uuidof(RobotUser), CRobotUser)
+
