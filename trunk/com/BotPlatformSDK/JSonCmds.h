@@ -19,10 +19,10 @@ public:
         std::string sessionId = root["sessionId"].asString();
 
         CRobotServer* pServer = (CRobotServer*)para;
-        doTask( pServer, robotId, userId, sessionId, root );
+        DoTask( pServer, robotId, userId, sessionId, root );
     }
 
 protected:
-    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root ) = 0;
+    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root ) = 0;
 };
 

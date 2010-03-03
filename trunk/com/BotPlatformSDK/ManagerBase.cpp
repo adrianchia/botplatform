@@ -36,7 +36,7 @@ void CManagerBase::Init( int threadCount )
 {
     m_tp = new boost::threadpool::pool(threadCount);
 
-    // 根据cpu数目创建
+    // create work threads according to count of cpu
     SYSTEM_INFO siSysInfo = {0};
     GetSystemInfo(&siSysInfo); 
 
@@ -53,8 +53,10 @@ void CManagerBase::Init( int threadCount )
 
 void CManagerBase::Close()
 {
+    // thread loop break
     m_run = false;
 
+    // close thread pool
     if ( m_tp )
     {
         m_tp->wait();
@@ -62,10 +64,13 @@ void CManagerBase::Close()
         m_tp = NULL;
     }
 
+    // close io-service
     m_ioService.stop();
 
+    // ensure io event no block
     StartRun();
 
+    // close io-service threads
     for ( size_t i = 0; i < m_runth.size(); ++i )
     {
         m_runth[i]->join();
@@ -73,6 +78,7 @@ void CManagerBase::Close()
     }
     m_runth.clear();
 
+    // close check thread
     if ( m_checkth )
     {
         m_checkth->join();
@@ -80,6 +86,7 @@ void CManagerBase::Close()
         m_checkth = NULL;
     }
 
+    // close io event handles
     for ( size_t i = 0; i < m_ioevent.size(); ++i )
         CloseHandle( m_ioevent[i] );
 
@@ -154,3 +161,4 @@ void CManagerBase::RunCheckTime()
         }
     }
 }
+

@@ -1,13 +1,11 @@
-// RobotMessage.h : CRobotMessage 的声明
-
 #pragma once
-#include "resource.h"       // 主符号
-
+#include "resource.h"
 #include "BotPlatformSDK_i.h"
+#include "Misc.h"
 
 
 #if defined(_WIN32_WCE) && !defined(_CE_DCOM) && !defined(_CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA)
-#error "Windows CE 平台(如不提供完全 DCOM 支持的 Windows Mobile 平台)上无法正确支持单线程 COM 对象。定义 _CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA 可强制 ATL 支持创建单线程 COM 对象实现并允许使用其单线程 COM 对象实现。rgs 文件中的线程模型已被设置为“Free”，原因是该模型是非 DCOM Windows CE 平台支持的唯一线程模型。"
+#error "Single-threaded COM objects are not properly supported on Windows CE platform, such as the Windows Mobile platforms that do not include full DCOM support. Define _CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA to force ATL to support creating single-thread COM object's and allow use of it's single-threaded COM object implementations. The threading model in your rgs file was set to 'Free' as that is the only threading model supported in non DCOM Windows CE platforms."
 #endif
 
 
@@ -23,7 +21,7 @@ public:
     typedef boost::unordered_map<std::string, std::string> StringMap;
 
 public:
-    CRobotMessage() : m_fontStyle(0), m_fontColor(0)
+    CRobotMessage() : m_fontStyle(0), m_fontColor(NULL)
 	{
 	}
 
@@ -53,7 +51,6 @@ END_COM_MAP()
 	}
 
 public:
-
     STDMETHOD(get_Signature)(BSTR* pVal);
     STDMETHOD(put_Signature)(BSTR newVal);
     STDMETHOD(get_FontStyle)(LONG* pVal);
@@ -70,13 +67,23 @@ public:
 public:
     void setAll( Json::Value& val );
 
-public:
-    std::string m_signature;
-    int         m_fontStyle;
-    std::string m_fontName;
-    int*        m_fontColor;
-    std::string m_text;
-    StringMap   m_emoticons;
+    bool hasFontColor() const { return m_fontColor != NULL; }
+
+    int  getFontColor() const { return m_fontColor ? *m_fontColor : 0; }
+
+    void setFontColor( int c );
+
+private:
+    DEFINE_STR_PROP(m_signature, Signature)
+    DEFINE_STR_PROP(m_fontName,  FontName)
+    DEFINE_INT_PROP(m_fontStyle, FontStyle)
+    DEFINE_STR_PROP(m_text,      Text)
+
+    DEFINE_TYPE_PROP(StringMap, m_emoticons, Emoticons)
+
+private:
+    int* m_fontColor;
 };
 
 //OBJECT_ENTRY_AUTO(__uuidof(RobotMessage), CRobotMessage)
+

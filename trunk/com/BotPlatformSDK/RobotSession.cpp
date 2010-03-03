@@ -59,22 +59,22 @@ STDMETHODIMP CRobotSession::SendIM(IRobotMessage* message)
 
     CRobotMessage* msg = static_cast<CRobotMessage*>(message);
 
-    if ( !msg->m_text.empty() )
-        body["text"] = msg->m_text;
+    if ( !msg->getText().empty() )
+        body["text"] = msg->getText();
 
-    if ( !msg->m_fontName.empty() )
-        body["fontName"] = msg->m_fontName;
+    if ( !msg->getFontName().empty() )
+        body["fontName"] = msg->getFontName();
     
-    if ( msg->m_fontColor )
-        body["fontColor"] = *(msg->m_fontColor);
+    if ( msg->hasFontColor() )
+        body["fontColor"] = msg->getFontColor();
     
-    if ( msg->m_fontStyle > 0 )
-        body["fontStyle"] = msg->m_fontStyle;
+    if ( msg->getFontStyle() != 0 )
+        body["fontStyle"] = msg->getFontStyle();
 
-    if ( !msg->m_signature.empty() )
-        body["signature"] = msg->m_signature;
+    if ( !msg->getSignature().empty() )
+        body["signature"] = msg->getSignature();
 
-    for ( CRobotMessage::StringMap::iterator it = msg->m_emoticons.begin(); it != msg->m_emoticons.end(); ++it )
+    for ( CRobotMessage::StringMap::const_iterator it = msg->getEmoticons().begin(); it != msg->getEmoticons().end(); ++it )
     {
         body["emoticons"][it->first] = it->second;
     }

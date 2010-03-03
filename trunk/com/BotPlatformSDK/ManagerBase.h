@@ -58,6 +58,7 @@ protected:
 
 public:
     CManagerBase();
+
     virtual ~CManagerBase();
 
 public:
