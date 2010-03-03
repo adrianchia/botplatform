@@ -6,7 +6,6 @@
 #include "RobotUser.h"
 #include "RobotResource.h"
 #include "RobotMessage.h"
-//#include "RobotTransInvitation.h"
 #include "RobotFileDescriptor.h"
 #include "Misc.h"
 

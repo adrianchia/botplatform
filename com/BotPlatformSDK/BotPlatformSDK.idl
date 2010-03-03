@@ -68,17 +68,6 @@ interface IRobotUser : IUnknown{
 };
 [
 	object,
-	uuid(2A9E67CD-E103-493E-8B48-A29D39D2A203),
-	helpstring("IRobotTransInvitation 接口"),
-	pointer_default(unique)
-]
-interface IRobotTransInvitation : IUnknown{
-    [propget, helpstring("属性 Name")] HRESULT Name([out, retval] BSTR* pVal);
-    [propget, helpstring("属性 Size")] HRESULT Size([out, retval] LONG* pVal);
-    [propget, helpstring("属性 Thumbnail")] HRESULT Thumbnail([out, retval] BSTR* pVal);
-};
-[
-	object,
 	uuid(4BC1EC51-F46D-4C28-8CB6-2F9DD3D786E5),
 	helpstring("IRobotSession 接口"),
 	pointer_default(unique)
@@ -237,15 +226,6 @@ library BotPlatformSDKLib
 	coclass RobotUser
 	{
 		[default] interface IRobotUser;
-	};
-	[
-		uuid(55864F42-352D-47CE-9F4C-635D27BA4524),
-		helpstring("RobotTransInvitation Class"),
-        noncreatable
-	]
-	coclass RobotTransInvitation
-	{
-		[default] interface IRobotTransInvitation;
 	};
     [
 		uuid(C1B84F2F-010D-42D8-879A-2584EF766222),
