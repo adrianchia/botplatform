@@ -1,6 +1,9 @@
 package com.incesoft.botplatform.sdk.protocol.msg;
 
-public class FileTransCommand {
+import java.io.Serializable;
+
+public class FileTransCommand implements Serializable{
+	private static final long serialVersionUID = 6110926541489833753L;
 	private String cmd;
 	private String transferId;
 	private String saveUrl;

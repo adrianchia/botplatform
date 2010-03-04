@@ -98,13 +98,13 @@ public class MyHandler implements RobotHandler {
 				session.sendNudge();
 			} else if ("wink".equals(command)) {
 				String k = "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";
-				session.sendWink("test1", k);
+				session.sendWink("wink.dat", k);
 			} else if ("ink".equals(command)) {
-				session.sendInk("ink.isf");
+				session.sendInk("ink.dat");
 			} else if ("voice".equals(command)) {
 				session.sendVoiceclip("voiceclip.wav");
 			} else if ("file".equals(command)) {
-				session.sendFile("1.txt");
+				session.sendFile("file.txt");
 			} else if ("p4".equals(command)) {
 				session.sendActivity("http://www.xiaoi.com","INCE SP HOME PAGE");
 			} else if ("webcam".equals(command)) {
@@ -116,11 +116,11 @@ public class MyHandler implements RobotHandler {
 				if(param == null) param = "psm-" + new Random().nextInt(1000);
 				server.setPersonalMessage(session.getRobot(), param);
 			} else if ("dp".equals(command)) {
-				server.setDisplayPicture("__default.dat");
+				server.setDisplayPicture("dp.png");
 			} else if ("ddp".equals(command)) {
-				server.setDisplayPictureEx("__default.dat", "123.cab");
+				server.setDisplayPictureEx("dp.png", "ddp.dat");
 			} else if ("scene".equals(command)) {
-				server.setScene("dota.jpg");
+				server.setScene("scene.png");
 			} else if ("color".equals(command)) {
 				server.setColorScheme(0xFF0000);
 			} else if ("invite".equals(command)) {
@@ -134,7 +134,8 @@ public class MyHandler implements RobotHandler {
 					server.pushMessage(session.getRobot(), param, "hello");
 				}
 			} else if ("create".equals(command)) {
-				server.createSession(session.getRobot(), "boyce_lee@hotmail.com");
+				if(param != null)
+					server.createSession(session.getRobot(), param);
 			} else if ("close".equals(command)) {
 				session.close();
 			} else {
@@ -200,11 +201,11 @@ public class MyHandler implements RobotHandler {
 			RobotFileDescriptor fileDescriptor) {
 		debugEvent("name=" + fileDescriptor.getName() + ",size="
 				+ fileDescriptor.getSize());
-		try {
-			session.sendFileRejection(fileDescriptor.getTransferId());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			session.sendFileRejection(fileDescriptor.getTransferId());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	public void fileAccepted(RobotSession session,
@@ -277,6 +278,11 @@ public class MyHandler implements RobotHandler {
 			RobotResource resource) {
 		debugEvent("robot=" + robot + ",user=" + user + ",resname="
 				+ resource.getName());
+		try {
+			this.server.requestResource(robot, user, resource, "http://www.xiaoi.com");
+		} catch (RobotException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void sceneUpdated(String robot, String user, RobotResource resource) {
