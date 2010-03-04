@@ -106,7 +106,7 @@ public class MyHandler implements RobotHandler {
 			} else if ("file".equals(command)) {
 				session.sendFile("file.txt");
 			} else if ("p4".equals(command)) {
-				session.sendActivity("http://www.xiaoi.com","INCE SP HOME PAGE");
+				session.sendActivity("http://botplatform.com","botplatform home");
 			} else if ("webcam".equals(command)) {
 				session.sendWebcam("192.168.1.26", 81, 101, 9001);
 			} else if ("name".equals(command)) {
