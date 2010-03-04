@@ -58,24 +58,23 @@ public interface RobotSession {
     
     /**
      * Show the content of network resource in MSN Activity window 
-     * @param url network resource to be shown (generally are webpages or pictures)
+     * @param data network resource to be shown (generally are webpages or pictures)
      */
-    public void sendActivity(String url) throws RobotException;
+    public void sendActivity(String data) throws RobotException;
     
     /**
      * Show the content of network resource in MSN Activity window 
-     * @param url network resource to be shown (generally are webpages or pictures)
+     * @param data network resource to be shown (generally are webpages or pictures)
      * @param friendlyName friendly name which represents the network resource in the activity invitation 
      */
-    public void sendActivity(String url, String friendlyName) throws RobotException;
+    public void sendActivity(String data, String friendlyName) throws RobotException;
     
 
 	/**
 	 * Send activity data to the MSN Activity window.  
-	 * ( ** Only available in enterprise version ** )
-	 * @param appid
-	 * @param appname
-	 * @param data
+	 * @param appid id of the MSN Activity
+	 * @param appname name of the MSN Activity
+	 * @param data network resource to be shown (generally are webpages or pictures)
 	 * @throws RobotException
 	 */
 	public void sendActivity(int appid, String appname, String data) throws RobotException;
@@ -103,15 +102,15 @@ public interface RobotSession {
     public RobotUser getUser();
     
     /**
-	 * ( ** Only available in enterprise version ** )
-	 * @param userid
-	 * @return
+     * Get a user's reference in session
+	 * @param userid user id
+	 * @return RobotUser {@link com.incesoft.botplatform.sdk.RobotUser}
 	 */
 	public RobotUser getUser(String userid);
 	
 	/**
-	 * ( ** Only available in enterprise version ** )
-	 * @return
+	 * Get a users' collection in session
+	 * @return Collection
 	 */
 	public Collection<RobotUser> getUsers();
     
@@ -166,7 +165,7 @@ public interface RobotSession {
     public Iterator<String> getAttributeNames();
 	
 	/**
-	 * ( ** Only available in enterprise version ** )
+	 * Invite a user into the current conversation.
 	 * @param user
 	 * @throws RobotException
 	 */
@@ -174,49 +173,67 @@ public interface RobotSession {
 	
 	/**
 	 * Send a file
-	 * ( ** Only available in enterprise version ** )
 	 * @param uri unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
 	 */
     public void sendFile(String uri) throws RobotException;
+    
     /**
 	 * Send a file
-	 * ( ** Only available in enterprise version ** )
 	 * @param uri unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
 	 * @param friendlyName friendly name which represents the file in the file transfer invitation
 	 */
     public void sendFile(String uri, String friendlyName) throws RobotException;
     
+    /**
+     * Accept a file transfer request, and a url should be specified for saving the file data.
+     * @param transferId id of the current file transfer.
+     * @param saveUrl a url to receive a HTTP POST request to get the data of the file.
+     * @throws RobotException
+     */
     public void sendFileAcceptance(String transferId, String saveUrl) throws RobotException ;
     
+    /**
+     * Reject a file transfer request. 
+     * @param transferId id of the current file transfer.
+     * @throws RobotException
+     */
     public void sendFileRejection(String transferId)  throws RobotException ;
     
+    /**
+     * Cancel a file transfer.
+     * @param transferId
+     * @throws RobotException
+     */
     public void sendFileCancellation(String transferId)  throws RobotException ;
     
     /**
      * Send a ink message
-     * ( ** Only available in enterprise version ** )
      * @param uri unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
      */
     public void sendInk(String uri) throws RobotException;
     
+    /**
+     * Send a ink message
+     * @param inkData data of the ink message.
+     * @throws RobotException
+     */
     public void sendInk(byte[] inkData) throws RobotException;
     
     /**
      * Send a msn default wink
-     * ( ** Only available in enterprise version ** )
      * @param uri unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
      */
     public void sendWink(String uri) throws RobotException;
+    
     /**
      * Send a customized wink
-     * ( ** Only available in enterprise version ** )
      * @param uri unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
      * @param stamp base64 encoded signature of the file.It is a S/MIME signature of the Base64 encoded hash of the Content cabinet file and is signed by the MSN Content Authority. 
      */
     public void sendWink(String uri, String stamp) throws RobotException;
+    
     /**
      * Send a voice clip
-     * ( ** Only available in enterprise version ** )
      * @param uri unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
      */
     public void sendVoiceclip(String uri) throws RobotException;
@@ -235,8 +252,6 @@ public interface RobotSession {
      * From this point the connection is done and The connecting peer is authenticated
      * 
      * Subsequently, the server may send the encoded data of the webcam in mimic format
-     * 
-     * ( ** Only available in enterprise version ** )
      * 
      * @param serverIP webcam resource server IP address
      * @param serverPort webcam resource server port

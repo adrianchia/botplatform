@@ -66,74 +66,88 @@ public interface RobotServer {
     public void removeConnectionistener(RobotConnectionListener listener);
     
     /**
-     * Set robot display name
-     * @param displayName
+     * Set all robots's display name
+     * @param displayName a preferred name preferred
      */
     public void setDisplayName(String displayName) throws RobotException;
     
     /**
-     * Set a robot display name
-     * @param displayName
+     * Set display name of a specified robot account.
+     * @param displayName a preferred display name 
+     * @param robotAccount specify a robot account to be modified.
      */
     public void setDisplayName(String robotAccount, String displayName) throws RobotException ;
     
     /**
-     * Set robot personal message
+     * Set all robots' personal message
      * @param personalMessage
      */
     public void setPersonalMessage(String personalMessage) throws RobotException;
 
     /**
-     * Set a robot personal message
-     * @param personalMessage
+     * Set personal message of a specified robot account.
+     * @param personalMessage a preferred personal message
+     * @param robotAccount specify a robot account to be modified.
      */    
     public void setPersonalMessage(String robotAccount, String personalMessage) throws RobotException;
     
     
     /**
-     * Set robot display picture
+     * Set all robots' display picture
      * @param displayPicture unique name of the dp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
      */
     public void setDisplayPicture(String displayPicture) throws RobotException;
 
     /**
-     * Set a robot display picture
+     * Set display picture of a specified robot account.
      * @param displayPicture unique name of the dp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+     * @param robotAccount specify a robot account to be modified.
      */    
     public void setDisplayPicture(String robotAccount, String displayPicture) throws RobotException;
     
     /**
-     * Set robot display picture
+     * Set all robots' display picture
      * @param displayPicture unique name of the dp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
-     * @param largeDisplayPic
+     * @param largeDisplayPic unique name of the ddp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
      */
     public void setDisplayPictureEx(String displayPicture, String largePicture) throws RobotException;
 
     /**
-     * Set a robot display picture
-     * @param robotAccount
+     * Set display picture of a specified robot account.
+     * @param robotAccount specify a robot account to be modified.
      * @param displayPicture unique name of the dp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
-     * @param largeDisplayPic
+     * @param largeDisplayPic unique name of the ddp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
      */    
     public void setDisplayPictureEx(String robotAccount, String displayPicture, String largePicture) throws RobotException;
     
     /** 
-     * Send chat scene request to server.
+     * Send all robots' scene.
      * @param scene uri of the scene
      * @throws RobotException
      */
     public void setScene(String scene) throws RobotException ;
     
     /** 
-     * Send chat scene request to server.
-     * @param robotAccount robot id
+     * set scene of a specified robot.
+     * @param robotAccount specify a robot account to be modified
      * @param scene uri of the scene
      * @throws RobotException
      */
     public void setScene(String robotAccount, String scene) throws RobotException ;
     
+    /**
+     * set all robots' color scheme.
+     * @param colorScheme a preferred color
+     * @throws RobotException
+     */
     public void setColorScheme(int colorScheme)  throws RobotException;
     
+    /**
+     * set a specified robot's color scheme.
+     * @param robotAccount  specify a robot account to be modified
+     * @param colorScheme a preferred color 
+     * @throws RobotException
+     */
     public void setColorScheme(String robotAccount, int colorScheme)  throws RobotException;
     
     /**
@@ -151,15 +165,18 @@ public interface RobotServer {
      */
     public void pushMessage(String robot, String user, String message) throws RobotException;
     /** 
-     * Send contact list request to server.
+     * Get the contact list of the specified robot.
      * @param robot robot id
      * @throws RobotException
      */
     public void requestContactList(String robot) throws RobotException ;
     
     /** 
-     * Send resource request to server.
+     * Get the resouce, the data of the resource file will be posted to a url specified.
      * @param robot robot id
+     * @param user user id
+     * @param resource the resource to get.
+     * @param saveUrl a url receives a HTTP POST request which contains the resource data.
      * @throws RobotException
      */
     public void requestResource(String robot, String user, RobotResource resource, String saveUrl) throws RobotException ;
