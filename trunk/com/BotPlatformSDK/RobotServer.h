@@ -16,7 +16,7 @@ class CRobotSession;
 // CRobotServer
 
 class ATL_NO_VTABLE CRobotServer :
-	public CComObjectRootEx<CComSingleThreadModel>,
+	public CComObjectRootEx<CComMultiThreadModel>,
 	public CComCoClass<CRobotServer, &CLSID_RobotServer>,
 	public IConnectionPointContainerImpl<CRobotServer>,
     public IRobotServer,

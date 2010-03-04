@@ -13,8 +13,8 @@
 // CRobotResource
 
 class ATL_NO_VTABLE CRobotResource :
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CRobotResource, &CLSID_RobotResource>,
+	public CComObjectRootEx<CComMultiThreadModel>,
+	//public CComCoClass<CRobotResource, &CLSID_RobotResource>,
 	public IRobotResource
 {
 public:

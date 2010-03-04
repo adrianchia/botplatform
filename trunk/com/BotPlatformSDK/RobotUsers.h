@@ -13,8 +13,8 @@ class CRobotUser;
 // CRobotUsers
 
 class ATL_NO_VTABLE CRobotUsers :
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CRobotUsers, &CLSID_RobotUsers>,
+	public CComObjectRootEx<CComMultiThreadModel>,
+	//public CComCoClass<CRobotUsers, &CLSID_RobotUsers>,
 	public IRobotUsers
 {
 public:
