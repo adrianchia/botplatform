@@ -1,5 +1,3 @@
-// RobotServer.cpp : CRobotServer 的实现
-
 #include "stdafx.h"
 #include "RobotServer.h"
 #include "ManagerBase.h"
@@ -10,7 +8,7 @@
 
 // CRobotServer
 
-// 6字节头
+// 6 bytes pack head
 struct PackHead
 {
     BYTE startMarker;
@@ -21,10 +19,8 @@ struct PackHead
 
 void CRobotServer::FinalRelease()
 {
-    // 登出
     Logout();
 
-    // 释放所有session
     boost::lock_guard<boost::mutex> guard_(m_sessionMutex);
 
     for ( RobotSessionMap::iterator it = m_sessionMap.begin(); it != m_sessionMap.end(); ++it )
@@ -81,19 +77,19 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
 
     while ( true )
     {
-        // 链接
+        // connect
         if ( wantConnect )
         {
             wantConnect = false;
-            if ( !connect( m_parent->getIOService(), m_ip, m_port ) )
+            if ( !connect( m_serverMan->getIOService(), m_ip, m_port ) )
                 break;
         }
 
-        // 同步发送login
+        // login
         if ( !sendCmd( "", "", "", "login", &bodyLogin, F_DATA, false ) )
             break;
 
-        // 取回应
+        // receive reply
         Json::Value data;
         if ( !syncRecv(data) )
             break;
@@ -102,32 +98,32 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
         std::string connId, challenge;
         std::string newip;
 
-        // 如果回应是Resp
+        // if cmd is loginresp
         if ( checkLoginResp( data, status, connId, challenge ) )
         {
-            // 登陆成功
+            // login ok
             if ( status == 1 )
             {
-                // 第一次读
+                // receive data first
                 if ( !recvNext() )
                     break;
 
-                // 清除错误
+                // clear fail flag
                 clearFailed();
 
-                // 启动io服务
-                m_parent->startRun();
+                // start io ser
+                m_serverMan->startRun();
 
-                // 注册检查
+                // register my check routine
                 if ( !m_checkToken )
-                    m_checkToken = m_parent->registerCheck( this, boost::bind(&CRobotServer::checkNetwork, this, _1) );
+                    m_checkToken = m_serverMan->registerCheck( this, boost::bind(&CRobotServer::checkNetwork, this, _1) );
                 return true;
             }
 
-            // 失败
+            // login failed
             if ( firstFailed )
             {
-                // 首次失败拿token
+                // if first failed get token 
                 firstFailed = false;
                 std::string token;
                 makeToken( token, challenge, strspid, connId, strsppwd );
@@ -135,19 +131,18 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
             }
             else
             {
-                // 又失败
+                // failed again
                 break;
             }
         }
-        // 如果是重定向
-        else if ( checkRedirect(data, newip) )
+        else if ( checkRedirect(data, newip) ) // if need redirect
         {
-            // 要求重新连接
+            // connect again
             wantConnect = true;
             m_ip = newip;
             bodyLogin["state"] = 1;
         }
-        else
+        else // unkown
         {
             break;
         }
@@ -158,7 +153,6 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
 
 STDMETHODIMP CRobotServer::Login(BSTR spid, BSTR sppwd, LONG timeout)
 {
-    // TODO: 在此添加实现代码
     if ( !spid || !sppwd )
         return E_INVALIDARG;
 
@@ -176,24 +170,19 @@ void CRobotServer::unRegisterCheckToken()
 {
     if ( m_checkToken )
     {
-        m_parent->unRegisterCheck(this);
+        m_serverMan->unRegisterCheck(this);
     }
 }
 
 STDMETHODIMP CRobotServer::Logout(void)
 {
-    // TODO: 在此添加实现代码
     unRegisterCheckToken();
     sendLoginOut();
-
-    // 关闭socket
-    //__super::Close();
     return S_OK;
 }
 
 STDMETHODIMP CRobotServer::SetDisplayName(BSTR robotAccount, BSTR displayName)
 {
-    // TODO: 在此添加实现代码
     if ( !updaterobot( robotAccount, NULL, displayName ) )
         return E_FAIL;
 
@@ -202,7 +191,6 @@ STDMETHODIMP CRobotServer::SetDisplayName(BSTR robotAccount, BSTR displayName)
 
 STDMETHODIMP CRobotServer::SetPersonalMessage(BSTR robotAccount, BSTR personalMessage)
 {
-    // TODO: 在此添加实现代码
     if ( !updaterobot( robotAccount, NULL, NULL, personalMessage ) )
         return E_FAIL;
 
@@ -211,7 +199,6 @@ STDMETHODIMP CRobotServer::SetPersonalMessage(BSTR robotAccount, BSTR personalMe
 
 STDMETHODIMP CRobotServer::SetDisplayPicture(BSTR robotAccount, BSTR displayPicture)
 {
-    // TODO: 在此添加实现代码
     if ( !updaterobot( robotAccount, NULL, NULL, NULL, displayPicture ) )
         return E_FAIL;
 
@@ -220,7 +207,6 @@ STDMETHODIMP CRobotServer::SetDisplayPicture(BSTR robotAccount, BSTR displayPict
 
 STDMETHODIMP CRobotServer::SetDisplayPictureEx(BSTR robotAccount, BSTR displayPicture, BSTR largePicture)
 {
-    // TODO: 在此添加实现代码
     if ( !updaterobot( robotAccount, NULL, NULL, NULL, displayPicture, largePicture ) )
         return E_FAIL;
 
@@ -229,7 +215,6 @@ STDMETHODIMP CRobotServer::SetDisplayPictureEx(BSTR robotAccount, BSTR displayPi
 
 STDMETHODIMP CRobotServer::CreateSession(BSTR robot, BSTR user)
 {
-    // TODO: 在此添加实现代码
     if ( !robot || !user )
         return E_INVALIDARG;
 
@@ -241,7 +226,6 @@ STDMETHODIMP CRobotServer::CreateSession(BSTR robot, BSTR user)
 
 STDMETHODIMP CRobotServer::PushMessage(BSTR robot, BSTR user, BSTR message)
 {
-    // TODO: 在此添加实现代码
     if ( !robot || !user || ! message )
         return E_INVALIDARG;
 
@@ -295,7 +279,6 @@ STDMETHODIMP CRobotServer::RequestResource(BSTR robot, BSTR user, IRobotResource
 
 STDMETHODIMP CRobotServer::SetScene(BSTR robotAccount, BSTR scene)
 {
-    // TODO: 在此添加实现代码
     if ( !updaterobot( robotAccount, NULL, NULL, NULL, NULL, NULL, scene ) )
         return E_FAIL;
 
@@ -304,7 +287,6 @@ STDMETHODIMP CRobotServer::SetScene(BSTR robotAccount, BSTR scene)
 
 STDMETHODIMP CRobotServer::SetColorScheme(BSTR robotAccount, LONG colorScheme)
 {
-    // TODO: 在此添加实现代码
     if ( !updaterobot( robotAccount, NULL, NULL, NULL, NULL, NULL, NULL, &colorScheme ) )
         return E_FAIL;
 
@@ -334,36 +316,36 @@ void CRobotServer::processData( HandleType handle, const std::string* data )
 
 void CRobotServer::onProcessData( const std::string* data )
 {
-    ATLASSERT(m_parent);
+    ATLASSERT(m_serverMan);
 
-    // 解析data
+    // parse data
     Json::Value  root;
     Json::Reader reader;
 
     if ( !reader.parse( *data, root ) )
         return;
 
-    // 得到类型
+    // get cmd type
     std::string strType = root["type"].asString();
     
-    // 找命令
-    JSonCmdBase* cmd = m_parent->findJsonCmd( strType );
+    // find cmd
+    JSonCmdBase* cmd = m_serverMan->findJsonCmd( strType );
     if ( !cmd )
         return;
 
-    // 执行
+    // execute cmd
     cmd->execute( root, this );
 
-    // 完毕
+    // free data
     delete data;
 }
 
 void CRobotServer::onGetBody( const void* data, size_t len )
 {
-    // 放到线程队列里处理
-    ATLASSERT(m_parent && data);
+    // push data in work thread pool
+    ATLASSERT(m_serverMan && data);
     std::string* tmpData = new std::string( (const char*)data, len );
-    m_parent->addTask( boost::bind(&CRobotServer::processData, m_handleThis, tmpData) );
+    m_serverMan->addTask( boost::bind(&CRobotServer::processData, m_handleThis, tmpData) );
 }
 
 bool CRobotServer::onRecv( const boost::system::error_code& error, size_t bytes_transferred )
@@ -371,31 +353,30 @@ bool CRobotServer::onRecv( const boost::system::error_code& error, size_t bytes_
     if ( !__super::onRecv( error, bytes_transferred ) )
         return false;
 
+    // if get pack head
     if ( bytes_transferred == sizeof(PackHead) )
     {
         const PackHead* packHead = (const PackHead*)m_recvBuf.data();
         
-        // 继续读取body
+        // continue receive body data
         return recv( ntohs( packHead->payloadLength ) );
     }
-    else
+    else // a full pack received
     {
-        // 拿到一个完整的包了
         onGetBody( m_recvBuf.data(), bytes_transferred );
 
-        // 继续下一次读取头
+        // receive next
         return recvNext();
     }
 }
 
 void CRobotServer::init( ManagerBase* man, BSTR ip, int port )
 {
-    m_parent = man;
+    m_serverMan = man;
     m_ip     = CW2A(ip);
     m_port   = port;
 
     __super::init( man->getIOService() );
-    //m_parent->startRun();
 }
 
 WORD CRobotServer::getNextSequenceNum()
@@ -408,7 +389,7 @@ WORD CRobotServer::getNextSequenceNum()
 
 bool CRobotServer::sendCmdBase( int frameType, const void* data, size_t len, bool asyn )
 {
-    // head
+    // pack head
     PackHead head;
     head.startMarker    = 0x69;
     head.frameType      = frameType;
@@ -418,11 +399,11 @@ bool CRobotServer::sendCmdBase( int frameType, const void* data, size_t len, boo
     std::string str;
     str.assign( (char*)&head, sizeof(head) );
 
-    // 具体数据
+    // body data
     if ( data && len > 0 )
         str.append( (const char*)data, len );
 
-    // 异步或同步发送
+    // send by sync or asyn mode
     bool ret = false;
 
     if ( asyn )
@@ -430,6 +411,7 @@ bool CRobotServer::sendCmdBase( int frameType, const void* data, size_t len, boo
     else
         ret = __super::syncSend( str.c_str(), str.size() );
 
+    // if ok, rest check keep-alive time
     if ( ret && m_checkToken )
     {
         m_checkToken->reset();
@@ -488,13 +470,13 @@ bool CRobotServer::sendLoginOut()
 
 bool CRobotServer::syncRecv( std::string& data )
 {
-    // 同步接受到一个完整包
+    // receive head
     if ( !__super::syncRecv( sizeof(PackHead) ) )
     {
         return false;
     }
 
-    // 继续拿body数据
+    // receive body
     const PackHead* packHead = (const PackHead*)m_recvBuf.data();
     WORD bodyLen = ntohs( packHead->payloadLength );
     if ( !__super::syncRecv( bodyLen ) )
@@ -502,7 +484,7 @@ bool CRobotServer::syncRecv( std::string& data )
         return false;
     }
 
-    // 拿到一个完整包
+    // get full pack
     data.assign( m_recvBuf.data(), bodyLen );
     return true;
 }
