@@ -16,12 +16,12 @@ class JSonCmdUserUpdated : public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("userupdated")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         CComPtr<IRobotUser> user;
         CRobotUser* realUser = NULL;
 
-        HRESULT hr = CreateRealObject( &user, &realUser );
+        HRESULT hr = createInnerObject( &user, &realUser );
         if ( FAILED(hr) )
             return;
 
@@ -36,7 +36,7 @@ class JSonCmdPsmUpdated : public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("psmupdated")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         std::string psm = root["body"].asString();      
         pServer->Fire_PersonalMessageUpdated( UTF8_2_BSTR(robotId), UTF8_2_BSTR(userId), UTF8_2_BSTR(psm) );
@@ -49,12 +49,12 @@ class JSonCmdDpUpdated : public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("dpupdated")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         CComPtr<IRobotResource> res;
         CRobotResource* realRes = NULL;
 
-        HRESULT hr = CreateRealObject( &res, &realRes );
+        HRESULT hr = createInnerObject( &res, &realRes );
         if ( FAILED(hr) )
             return;
 
@@ -69,12 +69,12 @@ class JSonCmdSceneUpdated : public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("sceneupdated")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         CComPtr<IRobotResource> res;
         CRobotResource* realRes = NULL;
 
-        HRESULT hr = CreateRealObject( &res, &realRes );
+        HRESULT hr = createInnerObject( &res, &realRes );
         if ( FAILED(hr) )
             return;
 
@@ -89,7 +89,7 @@ class JSonCmdColorUpdated : public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("colorupdated")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         int colorScheme = root["body"].asInt();
 
@@ -103,7 +103,7 @@ class JSonCmdUserAdded : public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("useradded")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         pServer->Fire_UserAdd( UTF8_2_BSTR(robotId), UTF8_2_BSTR(userId) );
     }
@@ -115,7 +115,7 @@ class JSonCmdUserRemoved : public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("userremoved")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         pServer->Fire_UserRemove( UTF8_2_BSTR(robotId), UTF8_2_BSTR(userId) );
     }
@@ -127,17 +127,17 @@ class JSonCmdSessionOpened : public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("sessionopened")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         IRobotUser* user = NULL;
         CRobotUser* realUser = NULL;
-        HRESULT hr = CreateRealObject( &user, &realUser );
+        HRESULT hr = createInnerObject( &user, &realUser );
         if ( FAILED(hr) )
             return;
 
         IRobotSession* session = NULL;
         CRobotSession* realSession = NULL;
-        hr = CreateRealObject( &session, &realSession );
+        hr = createInnerObject( &session, &realSession );
         if ( FAILED(hr) )
             return;
 
@@ -149,7 +149,7 @@ public:
         realSession->init( pServer, robotId, userId, sessionId, mode );
         realSession->getUsers()->addUser( realUser );
 
-        pServer->AddSession( sessionId, realSession );
+        pServer->addSession( sessionId, realSession );
         pServer->Fire_SessionOpened( session );
     }
 };
@@ -160,11 +160,11 @@ class JSonCmdSessionClosed: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("sessionclosed")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
         pServer->Fire_SessionClosed( session );
-        pServer->RemoveSession( sessionId );
+        pServer->removeSession( sessionId );
     }
 };
 
@@ -174,16 +174,16 @@ class JSonCmdMsg: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("msg")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         IRobotMessage* msg = NULL;
         CRobotMessage* realMsg = NULL;
-        HRESULT hr = CreateRealObject( &msg, &realMsg );
+        HRESULT hr = createInnerObject( &msg, &realMsg );
         if ( FAILED(hr) )
             return;
 
         realMsg->setAll( root["body"] );
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
         pServer->Fire_MessageReceived( session, msg );
     }
 };
@@ -194,18 +194,18 @@ class JSonCmdJoin: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("join")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         IRobotUser* user = NULL;
         CRobotUser* realUser = NULL;
-        HRESULT hr = CreateRealObject( &user, &realUser );
+        HRESULT hr = createInnerObject( &user, &realUser );
         if ( FAILED(hr) )
             return;
 
         realUser->setAll( root["body"] );
         ATLASSERT( userId == realUser->getID() );
 
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
         session->getUsers()->addUser( realUser );
         pServer->Fire_UserJoined( session, user );
     }
@@ -217,9 +217,9 @@ class JSonCmdPart: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("part")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
         CRobotUser*    user    = session->getUsers()->getUser( userId );
 
         pServer->Fire_UserLeft( session, user );
@@ -233,9 +233,9 @@ class JSonCmdNudge: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("nudge")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
         pServer->Fire_NudgeReceived( session );
     }
 };
@@ -246,9 +246,9 @@ class JSonCmdTyping: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("typing")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
         pServer->Fire_TypingReceived( session );
     }
 };
@@ -259,9 +259,9 @@ class JSonCmdInkmsg: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("inkmsg")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
         std::string inkData = root["body"].asString();
         pServer->Fire_InkReceived(session, UTF8_2_BSTR(inkData) );
     }
@@ -273,17 +273,17 @@ class JSonCmdWinkevent: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("winkevent")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         CComPtr<IRobotResource> res;
         CRobotResource* realRes = NULL;
 
-        HRESULT hr = CreateRealObject( &res, &realRes );
+        HRESULT hr = createInnerObject( &res, &realRes );
         if ( FAILED(hr) )
             return;
 
         realRes->setAll( root["body"] );
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
         pServer->Fire_WinkReceived( session, res );
     }
 };
@@ -294,17 +294,17 @@ class JSonCmdVoliceclipevent: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("voliceclipevent")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         CComPtr<IRobotResource> res;
         CRobotResource* realRes = NULL;
 
-        HRESULT hr = CreateRealObject( &res, &realRes );
+        HRESULT hr = createInnerObject( &res, &realRes );
         if ( FAILED(hr) )
             return;
 
         realRes->setAll( root["body"] );
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
         pServer->Fire_VoiceclipReceived( session, res );
     }
 };
@@ -315,10 +315,10 @@ class JSonCmdAppmsg: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("appmsg")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         std::string data = root["data"].asString();
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
 
         pServer->Fire_ActivityReceived( session, UTF8_2_BSTR(data) );
     }
@@ -330,11 +330,11 @@ class JSonCmdAppevent: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("appevent")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         std::string repl = root["body"].asString();
 
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
 
         if ( repl == "accept" )
         {
@@ -363,17 +363,17 @@ class JSonCmdFileevent: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("fileevent")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         CComPtr<IRobotFileDescriptor> desc;
         CRobotFileDescriptor* realDesc = NULL;
 
-        HRESULT hr = CreateRealObject( &desc, &realDesc );
+        HRESULT hr = createInnerObject( &desc, &realDesc );
         if ( FAILED(hr) )
             return;
 
         std::string    eve      = root["body"]["event"].asString();
-        CRobotSession* session  = pServer->GetSession( sessionId );
+        CRobotSession* session  = pServer->getSession( sessionId );
 
         realDesc->setAll( root["body"] );
 
@@ -398,11 +398,11 @@ class JSonCmdWebcamevent: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("webcamevent")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         std::string repl = root["body"].asString();
 
-        CRobotSession* session = pServer->GetSession( sessionId );
+        CRobotSession* session = pServer->getSession( sessionId );
 
         if ( repl == "accept" )
             pServer->Fire_WebcamAccepted(session);
@@ -421,12 +421,12 @@ class JSonCmdUserlist: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("userlist")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         CComPtr<IRobotUsers> userList;
         CRobotUsers* realUserList = NULL;
 
-        HRESULT hr = CreateRealObject( &userList, &realUserList );
+        HRESULT hr = createInnerObject( &userList, &realUserList );
         if ( FAILED(hr) )
             return;
 
@@ -435,7 +435,7 @@ public:
             IRobotUser*  user       = NULL;
             CRobotUser*  realUser   = NULL;
 
-            HRESULT hr = CreateRealObject( &user, &realUser );
+            HRESULT hr = createInnerObject( &user, &realUser );
             if ( FAILED(hr) )
                 return;
 
@@ -443,7 +443,7 @@ public:
             realUserList->addUser( realUser );
         }
 
-        CRobotSession* session = pServer->GetSession( sessionId ); 
+        CRobotSession* session = pServer->getSession( sessionId ); 
         pServer->Fire_ContactListReceived( UTF8_2_BSTR(robotId), userList );
     }
 };
@@ -454,20 +454,20 @@ class JSonCmdError: public JSonCmdServerBase
     JSON_CMD_TYPE_NAME("error")
 
 public:
-    virtual void DoTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
     {
         int         code = root["body"]["code"].asInt();
         std::string msg  = root["body"]["message"].asString();
 
-        CRobotSession* session = pServer->GetSession( sessionId ); 
+        CRobotSession* session = pServer->getSession( sessionId ); 
         pServer->Fire_ExceptionCaught( session, code );
     }
 };
 
 //////////////////////////////////////////////////////////////////////////
-void RegisterAllJSonCmds( CManagerBase* man )
+void RegisterAllJSonCmds( ManagerBase* man )
 {
-    #define REGISTER_CMD(type)  man->RegisterJSonCmd<type>();
+    #define REGISTER_CMD(type)  man->registerJSonCmd<type>();
 
 
     REGISTER_CMD(JSonCmdUserUpdated);

@@ -14,22 +14,22 @@
 
 //////////////////////////////////////////////////////////////////////////
 #define BEGIN_(func)    std::string funcName = #func; try {
-#define END_            } catch(const _com_error& e) { PrintLn( std::string("[ERROR:") + funcName + "] " + e.ErrorMessage() ); } return S_OK;
+#define END_            } catch(const _com_error& e) { printLn( std::string("[ERROR:") + funcName + "] " + e.ErrorMessage() ); } return S_OK;
 #define E_IF(hr)        if ( FAILED(hr) ) throw _com_error(hr);
-#define PRINT_EVENT(x)  PrintLn( std::string("[EVENT:") + funcName + "] " + x );
+#define PRINT_EVENT(x)  printLn( std::string("[EVENT:") + funcName + "] " + x );
 #define PRINT_NULL(x)   BEGIN_(x) PRINT_EVENT(""); END_
 
 #define MY_SINK_ENTRY_INFO(id, name) SINK_ENTRY_INFO(1, DIID__IRobotServerEvents, id, &RobotServerEventsImpl::name, &s_info_##name)
 
 //////////////////////////////////////////////////////////////////////////
-const std::string NumToStr( int num )
+const std::string numToStr( int num )
 {
     char buf[255] = {0};
     sprintf_s( buf, "%d", num );
     return buf;
 }
 
-const std::string HexToStr( int num, int padding )
+const std::string hexToStr( int num, int padding )
 {
     char buf[255] = {0};
     char fmt[]    = "%00X";
@@ -39,17 +39,17 @@ const std::string HexToStr( int num, int padding )
     return buf;
 }
 
-const std::string RandStr()
+const std::string randStr()
 {
-    return NumToStr( GetTickCount() % 100 );
+    return numToStr( GetTickCount() % 100 );
 }
 
-void PrintLn( const std::string& info )
+void printLn( const std::string& info )
 {
     std::cout << (info + "\n");
 }
 
-const std::string BSTR2A( BSTR b )
+const std::string bstr2A( BSTR b )
 {
     return (LPCSTR)CW2A(b);
 }
@@ -70,47 +70,47 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 // ÊÂ¼þ²âÊÔ
-_ATL_FUNC_INFO  s_info_OnSessionOpened          = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnSessionClosed          = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnMessageReceived        = { CC_STDCALL, VT_EMPTY, 2, {  VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnNudgeReceived          = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onSessionOpened          = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onSessionClosed          = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onMessageReceived        = { CC_STDCALL, VT_EMPTY, 2, {  VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onNudgeReceived          = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
 
-_ATL_FUNC_INFO  s_info_OnActivityAccepted       = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnActivityRejected       = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnActivityReceived       = { CC_STDCALL, VT_EMPTY, 2, {  VT_UNKNOWN, VT_BSTR } };
-_ATL_FUNC_INFO  s_info_OnActivityLoaded         = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnActivityClosed         = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onActivityAccepted       = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onActivityRejected       = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onActivityReceived       = { CC_STDCALL, VT_EMPTY, 2, {  VT_UNKNOWN, VT_BSTR } };
+_ATL_FUNC_INFO  s_info_onActivityLoaded         = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onActivityClosed         = { CC_STDCALL, VT_EMPTY, 1, {  VT_UNKNOWN } };
 
-_ATL_FUNC_INFO  s_info_OnUserJoined             = { CC_STDCALL, VT_EMPTY, 2, {  VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnUserLeft               = { CC_STDCALL, VT_EMPTY, 2, {  VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnUserAdd                = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_BSTR } };
-_ATL_FUNC_INFO  s_info_OnUserRemove             = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_BSTR } };
+_ATL_FUNC_INFO  s_info_onUserJoined             = { CC_STDCALL, VT_EMPTY, 2, {  VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onUserLeft               = { CC_STDCALL, VT_EMPTY, 2, {  VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onUserAdd                = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_BSTR } };
+_ATL_FUNC_INFO  s_info_onUserRemove             = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_BSTR } };
 
-_ATL_FUNC_INFO  s_info_OnExceptionCaught        = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_I4 } };
+_ATL_FUNC_INFO  s_info_onExceptionCaught        = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_I4 } };
 
-_ATL_FUNC_INFO  s_info_OnFileAccepted           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnFileRejected           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnFileTransferEnded      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnFileTransferCancelled  = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnFileTransferError      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnFileInvited            = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onFileAccepted           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onFileRejected           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onFileTransferEnded      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onFileTransferCancelled  = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onFileTransferError      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onFileInvited            = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 
-_ATL_FUNC_INFO  s_info_OnWebcamAccepted         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnWebcamRejected         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnWebcamClosed           = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnWebcamError            = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onWebcamAccepted         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onWebcamRejected         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onWebcamClosed           = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onWebcamError            = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
 
-_ATL_FUNC_INFO  s_info_OnUserUpdated            = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnPersonalMessageUpdated = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_BSTR } };
+_ATL_FUNC_INFO  s_info_onUserUpdated            = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onPersonalMessageUpdated = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_BSTR } };
 
-_ATL_FUNC_INFO  s_info_OnContactListReceived    = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnInkReceived            = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_BSTR } };
-_ATL_FUNC_INFO  s_info_OnWinkReceived           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnVoiceclipReceived      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnTypingReceived         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnSceneUpdated           = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnDisplayPictureUpdated  = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_OnColorSchemeUpdated     = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_I4 } };
+_ATL_FUNC_INFO  s_info_onContactListReceived    = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onInkReceived            = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_BSTR } };
+_ATL_FUNC_INFO  s_info_onWinkReceived           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onVoiceclipReceived      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onTypingReceived         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onSceneUpdated           = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onDisplayPictureUpdated  = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onColorSchemeUpdated     = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_I4 } };
 
 
 static const char commandList[] = 
@@ -143,58 +143,58 @@ class RobotServerEventsImpl :
 {
 public:
     BEGIN_SINK_MAP(RobotServerEventsImpl)
-        MY_SINK_ENTRY_INFO(1,  OnSessionOpened)
-        MY_SINK_ENTRY_INFO(2,  OnSessionClosed)
-        MY_SINK_ENTRY_INFO(3,  OnMessageReceived)
-        MY_SINK_ENTRY_INFO(4,  OnNudgeReceived)
+        MY_SINK_ENTRY_INFO(1,  onSessionOpened)
+        MY_SINK_ENTRY_INFO(2,  onSessionClosed)
+        MY_SINK_ENTRY_INFO(3,  onMessageReceived)
+        MY_SINK_ENTRY_INFO(4,  onNudgeReceived)
 
-        MY_SINK_ENTRY_INFO(5, OnActivityAccepted)
-        MY_SINK_ENTRY_INFO(6, OnActivityRejected)
-        MY_SINK_ENTRY_INFO(7, OnActivityReceived)
-        MY_SINK_ENTRY_INFO(8, OnActivityLoaded)
-        MY_SINK_ENTRY_INFO(9, OnActivityClosed)
+        MY_SINK_ENTRY_INFO(5, onActivityAccepted)
+        MY_SINK_ENTRY_INFO(6, onActivityRejected)
+        MY_SINK_ENTRY_INFO(7, onActivityReceived)
+        MY_SINK_ENTRY_INFO(8, onActivityLoaded)
+        MY_SINK_ENTRY_INFO(9, onActivityClosed)
 
-        MY_SINK_ENTRY_INFO(10, OnUserJoined)
-        MY_SINK_ENTRY_INFO(11, OnUserLeft)
-        MY_SINK_ENTRY_INFO(12, OnUserAdd)
-        MY_SINK_ENTRY_INFO(13, OnUserRemove)
+        MY_SINK_ENTRY_INFO(10, onUserJoined)
+        MY_SINK_ENTRY_INFO(11, onUserLeft)
+        MY_SINK_ENTRY_INFO(12, onUserAdd)
+        MY_SINK_ENTRY_INFO(13, onUserRemove)
 
-        MY_SINK_ENTRY_INFO(14, OnExceptionCaught)
+        MY_SINK_ENTRY_INFO(14, onExceptionCaught)
 
-        MY_SINK_ENTRY_INFO(15, OnFileAccepted)
-        MY_SINK_ENTRY_INFO(16, OnFileRejected)
-        MY_SINK_ENTRY_INFO(17, OnFileTransferEnded)
-        MY_SINK_ENTRY_INFO(18, OnFileTransferCancelled)
-        MY_SINK_ENTRY_INFO(19, OnFileTransferError)
-        MY_SINK_ENTRY_INFO(20, OnFileInvited)
+        MY_SINK_ENTRY_INFO(15, onFileAccepted)
+        MY_SINK_ENTRY_INFO(16, onFileRejected)
+        MY_SINK_ENTRY_INFO(17, onFileTransferEnded)
+        MY_SINK_ENTRY_INFO(18, onFileTransferCancelled)
+        MY_SINK_ENTRY_INFO(19, onFileTransferError)
+        MY_SINK_ENTRY_INFO(20, onFileInvited)
         
-        MY_SINK_ENTRY_INFO(21, OnWebcamAccepted)
-        MY_SINK_ENTRY_INFO(22, OnWebcamRejected)
-        MY_SINK_ENTRY_INFO(23, OnWebcamClosed)
-        MY_SINK_ENTRY_INFO(24, OnWebcamError)
+        MY_SINK_ENTRY_INFO(21, onWebcamAccepted)
+        MY_SINK_ENTRY_INFO(22, onWebcamRejected)
+        MY_SINK_ENTRY_INFO(23, onWebcamClosed)
+        MY_SINK_ENTRY_INFO(24, onWebcamError)
 
-        MY_SINK_ENTRY_INFO(25, OnUserUpdated)
-        MY_SINK_ENTRY_INFO(26, OnPersonalMessageUpdated)
+        MY_SINK_ENTRY_INFO(25, onUserUpdated)
+        MY_SINK_ENTRY_INFO(26, onPersonalMessageUpdated)
  
-        MY_SINK_ENTRY_INFO(27, OnContactListReceived)
-        MY_SINK_ENTRY_INFO(28, OnInkReceived)
-        MY_SINK_ENTRY_INFO(29, OnWinkReceived)
-        MY_SINK_ENTRY_INFO(30, OnVoiceclipReceived)
-        MY_SINK_ENTRY_INFO(31, OnTypingReceived)
+        MY_SINK_ENTRY_INFO(27, onContactListReceived)
+        MY_SINK_ENTRY_INFO(28, onInkReceived)
+        MY_SINK_ENTRY_INFO(29, onWinkReceived)
+        MY_SINK_ENTRY_INFO(30, onVoiceclipReceived)
+        MY_SINK_ENTRY_INFO(31, onTypingReceived)
 
-        MY_SINK_ENTRY_INFO(32, OnSceneUpdated)
-        MY_SINK_ENTRY_INFO(33, OnDisplayPictureUpdated)
-        MY_SINK_ENTRY_INFO(34, OnColorSchemeUpdated)
+        MY_SINK_ENTRY_INFO(32, onSceneUpdated)
+        MY_SINK_ENTRY_INFO(33, onDisplayPictureUpdated)
+        MY_SINK_ENTRY_INFO(34, onColorSchemeUpdated)
     END_SINK_MAP()
 
 private:
-    HRESULT __stdcall OnSessionOpened(IRobotSession* session)
+    HRESULT __stdcall onSessionOpened(IRobotSession* session)
     {
-        BEGIN_(OnSessionOpened)
+        BEGIN_(onSessionOpened)
 
         PRINT_EVENT( std::string("user=") + session->GetUsers()->Item(0)->ID + 
             ",friendly=" + session->GetUsers()->Item(0)->friendlyName + 
-            ",clientId=" + NumToStr(session->GetUsers()->Item(0)->ClientID) +
+            ",clientId=" + numToStr(session->GetUsers()->Item(0)->ClientID) +
             ",status="   + session->GetUsers()->Item(0)->Status );
 
         if ( OPEN_MODE_CONV_OPEN == session->GetOpenMode() )
@@ -205,16 +205,16 @@ private:
         END_
     }
 
-    HRESULT __stdcall OnSessionClosed(IRobotSession* session)
+    HRESULT __stdcall onSessionClosed(IRobotSession* session)
     {
-        PRINT_NULL(OnSessionClosed);
+        PRINT_NULL(onSessionClosed);
     }
 
-    HRESULT __stdcall OnMessageReceived( IRobotSession* session, IRobotMessage* message )
+    HRESULT __stdcall onMessageReceived( IRobotSession* session, IRobotMessage* message )
     {
-        BEGIN_(OnMessageReceived)
+        BEGIN_(onMessageReceived)
 
-        std::string cmd(BSTR2A(message->Text));
+        std::string cmd(bstr2A(message->Text));
 
         PRINT_EVENT( std::string("message=") + cmd );
 
@@ -234,7 +234,7 @@ private:
         else if ( cmd == "preface" ) 
         {
             IRobotMessagePtr msg = session->CreateMessage();
-            msg->Signature = (std::string("preface-") + RandStr()).c_str();
+            msg->Signature = (std::string("preface-") + randStr()).c_str();
             msg->Text = "test change preface";
             session->SendIM( msg );
         }
@@ -283,14 +283,14 @@ private:
         else if ( cmd == "name" )
         {
             if ( param.empty() )
-                param = "name-" + RandStr();
+                param = "name-" + randStr();
 
             m_server->SetDisplayName( session->robot, param.c_str() );
         }
         else if ( cmd == "psm" )
         {
             if ( param.empty() )
-                param = "psm-" + RandStr();
+                param = "psm-" + randStr();
 
             m_server->SetPersonalMessage( session->robot, param.c_str() );
         }
@@ -327,8 +327,8 @@ private:
         else
         {
             std::string text = "fontname: " + message->FontName + "\r";
-            text += "fontstyle: " + NumToStr(message->FontStyle) + "\r";
-            text += "fontcolor: 0x" + HexToStr(0xFFFFFF & message->FontColor, 6) + "\r";
+            text += "fontstyle: " + numToStr(message->FontStyle) + "\r";
+            text += "fontcolor: 0x" + hexToStr(0xFFFFFF & message->FontColor, 6) + "\r";
             text += "message: " + message->Text + "\r";
             session->SendText( text.c_str() );
         }
@@ -336,151 +336,151 @@ private:
         END_
     }
 
-    HRESULT __stdcall OnNudgeReceived(IRobotSession* session)
+    HRESULT __stdcall onNudgeReceived(IRobotSession* session)
     {
-        PRINT_NULL(OnNudgeReceived);
+        PRINT_NULL(onNudgeReceived);
     }
 
-    HRESULT __stdcall OnActivityAccepted(IRobotSession* session)
+    HRESULT __stdcall onActivityAccepted(IRobotSession* session)
     {
-        PRINT_NULL(OnActivityAccepted);
+        PRINT_NULL(onActivityAccepted);
     }
 
-    HRESULT __stdcall OnActivityRejected(IRobotSession* session)
+    HRESULT __stdcall onActivityRejected(IRobotSession* session)
     {
-        PRINT_NULL(OnActivityRejected);
+        PRINT_NULL(onActivityRejected);
     }
 
-    HRESULT __stdcall OnActivityReceived(IRobotSession* session, BSTR data)
+    HRESULT __stdcall onActivityReceived(IRobotSession* session, BSTR data)
     {
-        BEGIN_(OnActivityReceived)
-        PRINT_EVENT(std::string("data=") + BSTR2A(data));
+        BEGIN_(onActivityReceived)
+        PRINT_EVENT(std::string("data=") + bstr2A(data));
         END_
     }
 
-    HRESULT __stdcall OnActivityLoaded(IRobotSession* session)
+    HRESULT __stdcall onActivityLoaded(IRobotSession* session)
     {
-        PRINT_NULL(OnActivityLoaded);
+        PRINT_NULL(onActivityLoaded);
     }
 
-    HRESULT __stdcall OnActivityClosed(IRobotSession* session)
+    HRESULT __stdcall onActivityClosed(IRobotSession* session)
     {
-        PRINT_NULL(OnActivityClosed);
+        PRINT_NULL(onActivityClosed);
     }
 
-    HRESULT __stdcall OnUserJoined(IRobotSession* session, IRobotUser* user)
+    HRESULT __stdcall onUserJoined(IRobotSession* session, IRobotUser* user)
     {
-        PRINT_NULL(OnUserJoined);
+        PRINT_NULL(onUserJoined);
     }
 
-    HRESULT __stdcall OnUserLeft(IRobotSession* session, IRobotUser* user)
+    HRESULT __stdcall onUserLeft(IRobotSession* session, IRobotUser* user)
     {
-        PRINT_NULL(OnUserLeft);
+        PRINT_NULL(onUserLeft);
     }
 
-    HRESULT __stdcall OnUserAdd(BSTR robot, BSTR user)
+    HRESULT __stdcall onUserAdd(BSTR robot, BSTR user)
     {
-        BEGIN_(OnUserAdd)
-        PRINT_EVENT(std::string("robot=") + BSTR2A(robot) + ",user=" + BSTR2A(user));
+        BEGIN_(onUserAdd)
+        PRINT_EVENT(std::string("robot=") + bstr2A(robot) + ",user=" + bstr2A(user));
         END_
     }
 
-    HRESULT __stdcall OnUserRemove(BSTR robot, BSTR user)
+    HRESULT __stdcall onUserRemove(BSTR robot, BSTR user)
     {
-        BEGIN_(OnUserRemove)
-        PRINT_EVENT(std::string("robot=") + BSTR2A(robot) + ",user=" + BSTR2A(user));
+        BEGIN_(onUserRemove)
+        PRINT_EVENT(std::string("robot=") + bstr2A(robot) + ",user=" + bstr2A(user));
         END_
     }
 
-    HRESULT __stdcall OnExceptionCaught(IRobotSession* session, LONG cause)
+    HRESULT __stdcall onExceptionCaught(IRobotSession* session, LONG cause)
     {
-        BEGIN_(OnExceptionCaught)
-        PRINT_EVENT( "cause=" + NumToStr(cause) );
+        BEGIN_(onExceptionCaught)
+        PRINT_EVENT( "cause=" + numToStr(cause) );
         END_
     }
 
-    HRESULT __stdcall OnFileAccepted(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
+    HRESULT __stdcall onFileAccepted(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        BEGIN_(OnFileAccepted)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        BEGIN_(onFileAccepted)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
         END_
     }
 
-    HRESULT __stdcall OnFileRejected(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
+    HRESULT __stdcall onFileRejected(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        BEGIN_(OnFileRejected)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        BEGIN_(onFileRejected)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
         END_
     }
 
-    HRESULT __stdcall OnFileTransferEnded(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
+    HRESULT __stdcall onFileTransferEnded(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        BEGIN_(OnFileTransferEnded)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        BEGIN_(onFileTransferEnded)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
         END_
     }
 
-    HRESULT __stdcall OnFileTransferCancelled(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
+    HRESULT __stdcall onFileTransferCancelled(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        BEGIN_(OnFileTransferCancelled)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        BEGIN_(onFileTransferCancelled)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
         END_
     }
 
-    HRESULT __stdcall OnFileTransferError(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
+    HRESULT __stdcall onFileTransferError(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        BEGIN_(OnFileTransferError)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) );
+        BEGIN_(onFileTransferError)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
         END_
     }
 
-    HRESULT __stdcall OnFileInvited(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
+    HRESULT __stdcall onFileInvited(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
-        BEGIN_(OnFileInvited)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + NumToStr(fileDescriptor->Size) + ",thumbnail=" + fileDescriptor->Thumbnail );
+        BEGIN_(onFileInvited)
+        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) + ",thumbnail=" + fileDescriptor->Thumbnail );
         END_
     }
 
-    HRESULT __stdcall OnWebcamAccepted(IRobotSession* session)
+    HRESULT __stdcall onWebcamAccepted(IRobotSession* session)
     {
-        PRINT_NULL(OnWebcamAccepted);
+        PRINT_NULL(onWebcamAccepted);
     }
 
-    HRESULT __stdcall OnWebcamRejected(IRobotSession* session)
+    HRESULT __stdcall onWebcamRejected(IRobotSession* session)
     {
-        PRINT_NULL(OnWebcamRejected);
+        PRINT_NULL(onWebcamRejected);
     }
 
-    HRESULT __stdcall OnWebcamClosed(IRobotSession* session)
+    HRESULT __stdcall onWebcamClosed(IRobotSession* session)
     {
-        PRINT_NULL(OnWebcamClosed);
+        PRINT_NULL(onWebcamClosed);
     }
 
-    HRESULT __stdcall OnWebcamError(IRobotSession* session)
+    HRESULT __stdcall onWebcamError(IRobotSession* session)
     {
-        PRINT_NULL(OnWebcamError);
+        PRINT_NULL(onWebcamError);
     }
 
-    HRESULT __stdcall OnUserUpdated(BSTR robot, IRobotUser* user)
+    HRESULT __stdcall onUserUpdated(BSTR robot, IRobotUser* user)
     {
-        BEGIN_(OnUserUpdated)
-        PRINT_EVENT("robot=" + BSTR2A(robot) + ",friendly=" + user->friendlyName + ",status=" + user->Status);
+        BEGIN_(onUserUpdated)
+        PRINT_EVENT("robot=" + bstr2A(robot) + ",friendly=" + user->friendlyName + ",status=" + user->Status);
         END_
     }
 
-    HRESULT __stdcall OnPersonalMessageUpdated(BSTR robot, BSTR user, BSTR personalMessage)
+    HRESULT __stdcall onPersonalMessageUpdated(BSTR robot, BSTR user, BSTR personalMessage)
     {
-        BEGIN_(OnPersonalMessageUpdated)
-        PRINT_EVENT("robot=" + BSTR2A(robot) + ",user=" + BSTR2A(user) + ",psm=" + BSTR2A(personalMessage));
+        BEGIN_(onPersonalMessageUpdated)
+        PRINT_EVENT("robot=" + bstr2A(robot) + ",user=" + bstr2A(user) + ",psm=" + bstr2A(personalMessage));
         END_
     }
 
-    HRESULT __stdcall OnContactListReceived(BSTR robot, IRobotUsers* contactList)
+    HRESULT __stdcall onContactListReceived(BSTR robot, IRobotUsers* contactList)
     {
-        BEGIN_(OnContactListReceived)
+        BEGIN_(onContactListReceived)
 
         size_t count = contactList->Count();
-        PRINT_EVENT( "robot=" + BSTR2A(robot) + ", size=" + NumToStr(count) );
+        PRINT_EVENT( "robot=" + bstr2A(robot) + ", size=" + numToStr(count) );
         
         for ( size_t i = 0; i < count; ++i )
         {
@@ -491,58 +491,58 @@ private:
         END_
     }
 
-    HRESULT __stdcall OnInkReceived(IRobotSession* session, BSTR ink)
+    HRESULT __stdcall onInkReceived(IRobotSession* session, BSTR ink)
     {
-        BEGIN_(OnInkReceived)
-        PRINT_EVENT( "size=" + NumToStr(SysStringLen(ink)) );
+        BEGIN_(onInkReceived)
+        PRINT_EVENT( "size=" + numToStr(SysStringLen(ink)) );
         session->SendInk( ink );
         END_
     }
 
-    HRESULT __stdcall OnWinkReceived(IRobotSession* session, IRobotResource* resource)
+    HRESULT __stdcall onWinkReceived(IRobotSession* session, IRobotResource* resource)
     {
-        BEGIN_(OnWinkReceived)
-        PRINT_EVENT( "name=" + resource->Name + ",size=" + NumToStr(resource->Size) );
+        BEGIN_(onWinkReceived)
+        PRINT_EVENT( "name=" + resource->Name + ",size=" + numToStr(resource->Size) );
         END_
     }
 
-    HRESULT __stdcall OnVoiceclipReceived(IRobotSession* session, IRobotResource* resource)
+    HRESULT __stdcall onVoiceclipReceived(IRobotSession* session, IRobotResource* resource)
     {
-        BEGIN_(OnVoiceclipReceived)
-        PRINT_EVENT( "name=" + resource->Name + ",size=" + NumToStr(resource->Size) );
+        BEGIN_(onVoiceclipReceived)
+        PRINT_EVENT( "name=" + resource->Name + ",size=" + numToStr(resource->Size) );
         END_
     }
 
-    HRESULT __stdcall OnTypingReceived(IRobotSession* session)
+    HRESULT __stdcall onTypingReceived(IRobotSession* session)
     {
-        PRINT_NULL(OnTypingReceived);
+        PRINT_NULL(onTypingReceived);
         return S_OK;
     }
 
-    HRESULT __stdcall OnSceneUpdated(BSTR robot, BSTR user, IRobotResource* resource)
+    HRESULT __stdcall onSceneUpdated(BSTR robot, BSTR user, IRobotResource* resource)
     {
-        BEGIN_(OnSceneUpdated)
-        PRINT_EVENT( "robot=" + BSTR2A(robot) + ",user=" + BSTR2A(user) + ",resname=" + resource->Name );
+        BEGIN_(onSceneUpdated)
+        PRINT_EVENT( "robot=" + bstr2A(robot) + ",user=" + bstr2A(user) + ",resname=" + resource->Name );
         END_
     }
 
-    HRESULT __stdcall OnDisplayPictureUpdated(BSTR robot, BSTR user, IRobotResource* resource)
+    HRESULT __stdcall onDisplayPictureUpdated(BSTR robot, BSTR user, IRobotResource* resource)
     {
-        BEGIN_(OnDisplayPictureUpdated)
-        PRINT_EVENT( "robot=" + BSTR2A(robot) + ",user=" + BSTR2A(user) + ",resname=" + resource->Name );
+        BEGIN_(onDisplayPictureUpdated)
+        PRINT_EVENT( "robot=" + bstr2A(robot) + ",user=" + bstr2A(user) + ",resname=" + resource->Name );
         END_
     }
 
-    HRESULT __stdcall OnColorSchemeUpdated(BSTR robot, BSTR user, LONG colorScheme)
+    HRESULT __stdcall onColorSchemeUpdated(BSTR robot, BSTR user, LONG colorScheme)
     {
-        BEGIN_(OnColorSchemeUpdated)
-        PRINT_EVENT( "robot=" + BSTR2A(robot) + ",user=" + BSTR2A(user) + ",colorScheme=" + NumToStr(colorScheme) );
+        BEGIN_(onColorSchemeUpdated)
+        PRINT_EVENT( "robot=" + bstr2A(robot) + ",user=" + bstr2A(user) + ",colorScheme=" + numToStr(colorScheme) );
         END_
     }
 
 
 public:
-    HRESULT SetServer( IRobotServerPtr server )
+    HRESULT setServer( IRobotServerPtr server )
     {
         m_server = server;
         return DispEventAdvise( server );
@@ -566,7 +566,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     IRobotServerPtr spServer = spRobotServerFactory->CreateRobotServer( /*"192.168.1.44"*//*"192.168.1.174"*/"bottest.com", 6602 );
     RobotServerEventsImpl eventImpl;
-    E_IF( eventImpl.SetServer( spServer ) );
+    E_IF( eventImpl.setServer( spServer ) );
 
     spServer->Login( "SP000125", "test111", 0 );
 

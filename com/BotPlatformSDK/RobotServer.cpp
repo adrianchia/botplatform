@@ -37,7 +37,7 @@ void CRobotServer::FinalRelease()
     m_sessionMap.clear();
 }
 
-bool CRobotServer::CheckLoginResp( Json::Value& data, int& status, std::string& connId, std::string& challenge )
+bool CRobotServer::checkLoginResp( Json::Value& data, int& status, std::string& connId, std::string& challenge )
 {
     if ( data["type"].asString() != "loginresp" )
         return false;
@@ -48,7 +48,7 @@ bool CRobotServer::CheckLoginResp( Json::Value& data, int& status, std::string& 
     return true;
 }
 
-bool CRobotServer::CheckRedirect( Json::Value& data, std::string& newip )
+bool CRobotServer::checkRedirect( Json::Value& data, std::string& newip )
 {
     if ( data["type"].asString() != "redirect" )
         return false;
@@ -60,14 +60,14 @@ bool CRobotServer::CheckRedirect( Json::Value& data, std::string& newip )
     return true;
 }
 
-void CRobotServer::MakeToken( std::string& token, const std::string& challenge, const std::string& strspid, const std::string& connId, const std::string& strsppwd )
+void CRobotServer::makeToken( std::string& token, const std::string& challenge, const std::string& strspid, const std::string& connId, const std::string& strsppwd )
 {
     std::string total = challenge + strspid + connId + strsppwd;
    
-    token = MakeMd5( total );
+    token = makeMd5( total );
 }
 
-bool CRobotServer::Login( const std::string& strspid, const std::string& strsppwd, long timeout )
+bool CRobotServer::login( const std::string& strspid, const std::string& strsppwd, long timeout )
 {
     bool wantConnect = true;
     bool firstFailed = true;
@@ -85,17 +85,17 @@ bool CRobotServer::Login( const std::string& strspid, const std::string& strsppw
         if ( wantConnect )
         {
             wantConnect = false;
-            if ( !Connect( m_parent->GetIOService(), m_ip, m_port ) )
+            if ( !connect( m_parent->getIOService(), m_ip, m_port ) )
                 break;
         }
 
         // 同步发送login
-        if ( !Send( "", "", "", "login", &bodyLogin, F_DATA, false ) )
+        if ( !sendCmd( "", "", "", "login", &bodyLogin, F_DATA, false ) )
             break;
 
         // 取回应
         Json::Value data;
-        if ( !SyncRecv(data) )
+        if ( !syncRecv(data) )
             break;
 
         int status;
@@ -103,24 +103,24 @@ bool CRobotServer::Login( const std::string& strspid, const std::string& strsppw
         std::string newip;
 
         // 如果回应是Resp
-        if ( CheckLoginResp( data, status, connId, challenge ) )
+        if ( checkLoginResp( data, status, connId, challenge ) )
         {
             // 登陆成功
             if ( status == 1 )
             {
                 // 第一次读
-                if ( !RecvNext() )
+                if ( !recvNext() )
                     break;
 
                 // 清除错误
-                ClearFailed();
+                clearFailed();
 
                 // 启动io服务
-                m_parent->StartRun();
+                m_parent->startRun();
 
                 // 注册检查
                 if ( !m_checkToken )
-                    m_checkToken = m_parent->RegisterCheck( this, boost::bind(&CRobotServer::CheckNetwork, this, _1) );
+                    m_checkToken = m_parent->registerCheck( this, boost::bind(&CRobotServer::checkNetwork, this, _1) );
                 return true;
             }
 
@@ -130,7 +130,7 @@ bool CRobotServer::Login( const std::string& strspid, const std::string& strsppw
                 // 首次失败拿token
                 firstFailed = false;
                 std::string token;
-                MakeToken( token, challenge, strspid, connId, strsppwd );
+                makeToken( token, challenge, strspid, connId, strsppwd );
                 bodyLogin["token"] = token;
             }
             else
@@ -140,7 +140,7 @@ bool CRobotServer::Login( const std::string& strspid, const std::string& strsppw
             }
         }
         // 如果是重定向
-        else if ( CheckRedirect(data, newip) )
+        else if ( checkRedirect(data, newip) )
         {
             // 要求重新连接
             wantConnect = true;
@@ -162,29 +162,29 @@ STDMETHODIMP CRobotServer::Login(BSTR spid, BSTR sppwd, LONG timeout)
     if ( !spid || !sppwd )
         return E_INVALIDARG;
 
-    m_strspid  = UnicToUtf8(spid);
-    m_strsppwd = UnicToUtf8(sppwd);
+    m_strspid  = unicToUtf8(spid);
+    m_strsppwd = unicToUtf8(sppwd);
     m_timeout  = timeout;
 
-    if ( !Login( m_strspid, m_strsppwd, m_timeout ) )
+    if ( !login( m_strspid, m_strsppwd, m_timeout ) )
         return E_FAIL;
     
     return S_OK;
 }
 
-void CRobotServer::UnRegisterCheckToken()
+void CRobotServer::unRegisterCheckToken()
 {
     if ( m_checkToken )
     {
-        m_parent->UnRegisterCheck(this);
+        m_parent->unRegisterCheck(this);
     }
 }
 
 STDMETHODIMP CRobotServer::Logout(void)
 {
     // TODO: 在此添加实现代码
-    UnRegisterCheckToken();
-    SendLoginOut();
+    unRegisterCheckToken();
+    sendLoginOut();
 
     // 关闭socket
     //__super::Close();
@@ -194,7 +194,7 @@ STDMETHODIMP CRobotServer::Logout(void)
 STDMETHODIMP CRobotServer::SetDisplayName(BSTR robotAccount, BSTR displayName)
 {
     // TODO: 在此添加实现代码
-    if ( !Updaterobot( robotAccount, NULL, displayName ) )
+    if ( !updaterobot( robotAccount, NULL, displayName ) )
         return E_FAIL;
 
     return S_OK;
@@ -203,7 +203,7 @@ STDMETHODIMP CRobotServer::SetDisplayName(BSTR robotAccount, BSTR displayName)
 STDMETHODIMP CRobotServer::SetPersonalMessage(BSTR robotAccount, BSTR personalMessage)
 {
     // TODO: 在此添加实现代码
-    if ( !Updaterobot( robotAccount, NULL, NULL, personalMessage ) )
+    if ( !updaterobot( robotAccount, NULL, NULL, personalMessage ) )
         return E_FAIL;
 
     return S_OK;
@@ -212,7 +212,7 @@ STDMETHODIMP CRobotServer::SetPersonalMessage(BSTR robotAccount, BSTR personalMe
 STDMETHODIMP CRobotServer::SetDisplayPicture(BSTR robotAccount, BSTR displayPicture)
 {
     // TODO: 在此添加实现代码
-    if ( !Updaterobot( robotAccount, NULL, NULL, NULL, displayPicture ) )
+    if ( !updaterobot( robotAccount, NULL, NULL, NULL, displayPicture ) )
         return E_FAIL;
 
     return S_OK;
@@ -221,7 +221,7 @@ STDMETHODIMP CRobotServer::SetDisplayPicture(BSTR robotAccount, BSTR displayPict
 STDMETHODIMP CRobotServer::SetDisplayPictureEx(BSTR robotAccount, BSTR displayPicture, BSTR largePicture)
 {
     // TODO: 在此添加实现代码
-    if ( !Updaterobot( robotAccount, NULL, NULL, NULL, displayPicture, largePicture ) )
+    if ( !updaterobot( robotAccount, NULL, NULL, NULL, displayPicture, largePicture ) )
         return E_FAIL;
 
     return S_OK;
@@ -233,7 +233,7 @@ STDMETHODIMP CRobotServer::CreateSession(BSTR robot, BSTR user)
     if ( !robot || !user )
         return E_INVALIDARG;
 
-    if ( !Send( UnicToUtf8(robot), UnicToUtf8(user), "", "createsession", NULL ) )
+    if ( !sendCmd( unicToUtf8(robot), unicToUtf8(user), "", "createsession", NULL ) )
         return E_FAIL;
 
     return S_OK;
@@ -247,12 +247,12 @@ STDMETHODIMP CRobotServer::PushMessage(BSTR robot, BSTR user, BSTR message)
 
     Json::Value body;
 
-    body = UnicToUtf8(message);
+    body = unicToUtf8(message);
 
-    std::string u8_robot = UnicToUtf8(robot);
-    std::string u8_user  = UnicToUtf8(user);
+    std::string u8_robot = unicToUtf8(robot);
+    std::string u8_user  = unicToUtf8(user);
 
-    if ( !Send( u8_robot, u8_user, "", "push", &body ) )
+    if ( !sendCmd( u8_robot, u8_user, "", "push", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -263,9 +263,9 @@ STDMETHODIMP CRobotServer::RequestContactList(BSTR robot)
     if ( !robot )
         return E_INVALIDARG;
 
-    std::string u8_robot = UnicToUtf8(robot);
+    std::string u8_robot = unicToUtf8(robot);
 
-    if ( !Send( u8_robot, "", "", "getuserlist", NULL ) )
+    if ( !sendCmd( u8_robot, "", "", "getuserlist", NULL ) )
         return E_FAIL;
 
     return S_OK;
@@ -276,8 +276,8 @@ STDMETHODIMP CRobotServer::RequestResource(BSTR robot, BSTR user, IRobotResource
     if ( !robot || !user || !resource || !saveUrl )
         return E_INVALIDARG;
 
-    std::string u8_robot = UnicToUtf8(robot);
-    std::string u8_user  = UnicToUtf8(user);
+    std::string u8_robot = unicToUtf8(robot);
+    std::string u8_user  = unicToUtf8(user);
 
     CRobotResource* realRes = static_cast<CRobotResource*>(resource);
 
@@ -285,9 +285,9 @@ STDMETHODIMP CRobotServer::RequestResource(BSTR robot, BSTR user, IRobotResource
 
     body["name"]    = realRes->getName();
     body["digest"]  = realRes->getDigest();
-    body["size"]    = NumToStr(realRes->getSize());
+    body["size"]    = numToStr(realRes->getSize());
     
-    if ( !Send( u8_robot, u8_user, "", "getresource", &body ) )
+    if ( !sendCmd( u8_robot, u8_user, "", "getresource", &body ) )
         return E_FAIL;
 
     return S_OK;
@@ -296,7 +296,7 @@ STDMETHODIMP CRobotServer::RequestResource(BSTR robot, BSTR user, IRobotResource
 STDMETHODIMP CRobotServer::SetScene(BSTR robotAccount, BSTR scene)
 {
     // TODO: 在此添加实现代码
-    if ( !Updaterobot( robotAccount, NULL, NULL, NULL, NULL, NULL, scene ) )
+    if ( !updaterobot( robotAccount, NULL, NULL, NULL, NULL, NULL, scene ) )
         return E_FAIL;
 
     return S_OK;
@@ -305,34 +305,34 @@ STDMETHODIMP CRobotServer::SetScene(BSTR robotAccount, BSTR scene)
 STDMETHODIMP CRobotServer::SetColorScheme(BSTR robotAccount, LONG colorScheme)
 {
     // TODO: 在此添加实现代码
-    if ( !Updaterobot( robotAccount, NULL, NULL, NULL, NULL, NULL, NULL, &colorScheme ) )
+    if ( !updaterobot( robotAccount, NULL, NULL, NULL, NULL, NULL, NULL, &colorScheme ) )
         return E_FAIL;
 
     return S_OK;
 }
 
-bool CRobotServer::RecvNext()
+bool CRobotServer::recvNext()
 {
     BOOST_STATIC_ASSERT( sizeof(PackHead) == 6 );
-    return Recv( sizeof(PackHead) );
+    return recv( sizeof(PackHead) );
 }
 
-void CRobotServer::SafeProcessData( CRobotServer* p, const std::string* data )
+void CRobotServer::safeProcessData( CRobotServer* p, const std::string* data )
 {
     BEGIN_SAFE
 
     if ( p )
-        p->OnProcessData(data);
+        p->onProcessData(data);
 
     END_SAFE
 }
 
-void CRobotServer::ProcessData( HandleType handle, const std::string* data )
+void CRobotServer::processData( HandleType handle, const std::string* data )
 {
-    SafeProcessData( handle->GetPtr(), data );
+    safeProcessData( handle->GetPtr(), data );
 }
 
-void CRobotServer::OnProcessData( const std::string* data )
+void CRobotServer::onProcessData( const std::string* data )
 {
     ATLASSERT(m_parent);
 
@@ -347,28 +347,28 @@ void CRobotServer::OnProcessData( const std::string* data )
     std::string strType = root["type"].asString();
     
     // 找命令
-    JSonCmdBase* cmd = m_parent->FindJsonCmd( strType );
+    JSonCmdBase* cmd = m_parent->findJsonCmd( strType );
     if ( !cmd )
         return;
 
     // 执行
-    cmd->Execute( root, this );
+    cmd->execute( root, this );
 
     // 完毕
     delete data;
 }
 
-void CRobotServer::OnGetBody( const void* data, size_t len )
+void CRobotServer::onGetBody( const void* data, size_t len )
 {
     // 放到线程队列里处理
     ATLASSERT(m_parent && data);
     std::string* tmpData = new std::string( (const char*)data, len );
-    m_parent->AddTask( boost::bind(&CRobotServer::ProcessData, m_handleThis, tmpData) );
+    m_parent->addTask( boost::bind(&CRobotServer::processData, m_handleThis, tmpData) );
 }
 
-bool CRobotServer::OnRecv( const boost::system::error_code& error, size_t bytes_transferred )
+bool CRobotServer::onRecv( const boost::system::error_code& error, size_t bytes_transferred )
 {
-    if ( !__super::OnRecv( error, bytes_transferred ) )
+    if ( !__super::onRecv( error, bytes_transferred ) )
         return false;
 
     if ( bytes_transferred == sizeof(PackHead) )
@@ -376,29 +376,29 @@ bool CRobotServer::OnRecv( const boost::system::error_code& error, size_t bytes_
         const PackHead* packHead = (const PackHead*)m_recvBuf.data();
         
         // 继续读取body
-        return Recv( ntohs( packHead->payloadLength ) );
+        return recv( ntohs( packHead->payloadLength ) );
     }
     else
     {
         // 拿到一个完整的包了
-        OnGetBody( m_recvBuf.data(), bytes_transferred );
+        onGetBody( m_recvBuf.data(), bytes_transferred );
 
         // 继续下一次读取头
-        return RecvNext();
+        return recvNext();
     }
 }
 
-void CRobotServer::Init( CManagerBase* man, BSTR ip, int port )
+void CRobotServer::init( ManagerBase* man, BSTR ip, int port )
 {
     m_parent = man;
     m_ip     = CW2A(ip);
     m_port   = port;
 
-    __super::Init( man->GetIOService() );
-    //m_parent->StartRun();
+    __super::init( man->getIOService() );
+    //m_parent->startRun();
 }
 
-WORD CRobotServer::GetNextSequenceNum()
+WORD CRobotServer::getNextSequenceNum()
 {
     boost::lock_guard<boost::mutex> guard_(m_seqNumMutex);
 
@@ -406,13 +406,13 @@ WORD CRobotServer::GetNextSequenceNum()
     return m_sequenceNumber;
 }
 
-bool CRobotServer::SendBase( int frameType, const void* data, size_t len, bool asyn )
+bool CRobotServer::sendCmdBase( int frameType, const void* data, size_t len, bool asyn )
 {
     // head
     PackHead head;
     head.startMarker    = 0x69;
     head.frameType      = frameType;
-    head.sequenceNumber = htons( GetNextSequenceNum() );
+    head.sequenceNumber = htons( getNextSequenceNum() );
     head.payloadLength  = htons(len);
 
     std::string str;
@@ -426,19 +426,19 @@ bool CRobotServer::SendBase( int frameType, const void* data, size_t len, bool a
     bool ret = false;
 
     if ( asyn )
-        ret = __super::Send( str.c_str(), str.size() );
+        ret = __super::send( str.c_str(), str.size() );
     else
-        ret = __super::SyncSend( str.c_str(), str.size() );
+        ret = __super::syncSend( str.c_str(), str.size() );
 
     if ( ret && m_checkToken )
     {
-        m_checkToken->Reset();
+        m_checkToken->reset();
     }
 
     return ret;
 }
 
-bool CRobotServer::Send( const std::string& robotId, const std::string& userId, const std::string& sessionId, const std::string& type, 
+bool CRobotServer::sendCmd( const std::string& robotId, const std::string& userId, const std::string& sessionId, const std::string& type, 
                         Json::Value* body, int frameType /*= F_DATA*/, bool asyn /*= true*/ )
 {
     Json::Value val;
@@ -461,35 +461,35 @@ bool CRobotServer::Send( const std::string& robotId, const std::string& userId, 
     Json::FastWriter writer;
     std::string strmain = writer.write( val );
 
-    return SendBase( frameType, strmain.c_str(), strmain.size(), asyn );
+    return sendCmdBase( frameType, strmain.c_str(), strmain.size(), asyn );
 }
 
-bool CRobotServer::SendKeepAlive()
+bool CRobotServer::sendKeepAlive()
 {
-    return SendBase( F_KEEP_ALIVE, NULL, 0, true );
+    return sendCmdBase( F_KEEP_ALIVE, NULL, 0, true );
 }
 
-void CRobotServer::CheckNetwork( bool timeout )
+void CRobotServer::checkNetwork( bool timeout )
 {
-    if ( IsFailed() )
+    if ( isFailed() )
     {
-        if ( !Login( m_strspid, m_strsppwd, m_timeout ) )
+        if ( !login( m_strspid, m_strsppwd, m_timeout ) )
             return;
     }
 
     if ( timeout )
-        SendKeepAlive();
+        sendKeepAlive();
 }
 
-bool CRobotServer::SendLoginOut()
+bool CRobotServer::sendLoginOut()
 {
-    return SendBase( F_SIGNOFF, NULL, 0, false );
+    return sendCmdBase( F_SIGNOFF, NULL, 0, false );
 }
 
-bool CRobotServer::SyncRecv( std::string& data )
+bool CRobotServer::syncRecv( std::string& data )
 {
     // 同步接受到一个完整包
-    if ( !__super::SyncRecv( sizeof(PackHead) ) )
+    if ( !__super::syncRecv( sizeof(PackHead) ) )
     {
         return false;
     }
@@ -497,7 +497,7 @@ bool CRobotServer::SyncRecv( std::string& data )
     // 继续拿body数据
     const PackHead* packHead = (const PackHead*)m_recvBuf.data();
     WORD bodyLen = ntohs( packHead->payloadLength );
-    if ( !__super::SyncRecv( bodyLen ) )
+    if ( !__super::syncRecv( bodyLen ) )
     {
         return false;
     }
@@ -507,10 +507,10 @@ bool CRobotServer::SyncRecv( std::string& data )
     return true;
 }
 
-bool CRobotServer::SyncRecv( Json::Value& root )
+bool CRobotServer::syncRecv( Json::Value& root )
 {
     std::string data;
-    if ( !SyncRecv( data ) )
+    if ( !syncRecv( data ) )
         return false;
 
     Json::Reader reader;
@@ -520,13 +520,13 @@ bool CRobotServer::SyncRecv( Json::Value& root )
     return true;
 }
 
-bool CRobotServer::Updaterobot( BSTR robotAccount, LONG* status, BSTR displayName, BSTR personalMessage,
+bool CRobotServer::updaterobot( BSTR robotAccount, LONG* status, BSTR displayName, BSTR personalMessage,
                                BSTR displayPicture, BSTR largePicture, BSTR scene, LONG* colorScheme )
 {
     if ( !robotAccount )
         return false;
 
-    std::string strRobotAcc = UnicToUtf8(robotAccount);
+    std::string strRobotAcc = unicToUtf8(robotAccount);
 
     Json::Value body;
 
@@ -537,27 +537,27 @@ bool CRobotServer::Updaterobot( BSTR robotAccount, LONG* status, BSTR displayNam
 
     if ( displayName )
     {
-        body["displayName"] = UnicToUtf8(displayName);
+        body["displayName"] = unicToUtf8(displayName);
     }
     
     if ( personalMessage )
     {
-        body["personalMessage"] = UnicToUtf8(personalMessage);
+        body["personalMessage"] = unicToUtf8(personalMessage);
     }
 
     if ( displayPicture )
     {
-        body["displayPicture"] = UnicToUtf8(displayPicture);
+        body["displayPicture"] = unicToUtf8(displayPicture);
     }
 
     if ( largePicture )
     {
-        body["largePicture"] = UnicToUtf8(largePicture);
+        body["largePicture"] = unicToUtf8(largePicture);
     }
 
     if ( scene )
     {
-        body["scene"] = UnicToUtf8(scene);
+        body["scene"] = unicToUtf8(scene);
     }
 
     if ( colorScheme )
@@ -568,10 +568,10 @@ bool CRobotServer::Updaterobot( BSTR robotAccount, LONG* status, BSTR displayNam
     if ( body.empty() )
         return false;
 
-    return Send( strRobotAcc, "", "", "updaterobot", &body );
+    return sendCmd( strRobotAcc, "", "", "updaterobot", &body );
 }
 
-void CRobotServer::AddSession( const std::string& sessionId, CRobotSession* session )
+void CRobotServer::addSession( const std::string& sessionId, CRobotSession* session )
 {
     if ( !session )
         return;
@@ -581,7 +581,7 @@ void CRobotServer::AddSession( const std::string& sessionId, CRobotSession* sess
     m_sessionMap.insert( RobotSessionMap::value_type(sessionId, session) );
 }
 
-void CRobotServer::RemoveSession( const std::string& sessionId )
+void CRobotServer::removeSession( const std::string& sessionId )
 {
     boost::lock_guard<boost::mutex> guard_(m_sessionMutex);
 
@@ -596,7 +596,7 @@ void CRobotServer::RemoveSession( const std::string& sessionId )
     }
 }
 
-CRobotSession* CRobotServer::GetSession( const std::string& sessionId )
+CRobotSession* CRobotServer::getSession( const std::string& sessionId )
 {
     boost::lock_guard<boost::mutex> guard_(m_sessionMutex);
 

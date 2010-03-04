@@ -4,18 +4,18 @@
 #include "Misc.h"
 
 
-void RegisterAllJSonCmds( CManagerBase* man );
+void RegisterAllJSonCmds( ManagerBase* man );
 
 
 // CRobotServerFactory
 STDMETHODIMP CRobotServerFactory::CreateRobotServer(BSTR ip, LONG port, IRobotServer** ppRobotServer)
 {
     CRobotServer* realServer = NULL;
-    HRESULT hr = CreateRealObject<CRobotServer>( ppRobotServer, &realServer );
+    HRESULT hr = createInnerObject<CRobotServer>( ppRobotServer, &realServer );
     if ( FAILED(hr) )
         return hr;
 
-    realServer->Init( this, ip, port );
+    realServer->init( this, ip, port );
     return S_OK;
 }
 
@@ -31,14 +31,14 @@ STDMETHODIMP CRobotServerFactory::Init(LONG threadCount)
         return E_INVALIDARG;
 
     srand( (unsigned)time( NULL ) );
-    CManagerBase::Init( threadCount );
+    ManagerBase::init( threadCount );
     return S_OK;
 }
 
 STDMETHODIMP CRobotServerFactory::Destroy()
 {
-    CManagerBase::Close();
-    CManagerBase::ClearCmds();
+    ManagerBase::close();
+    ManagerBase::clearCmds();
     return S_OK;
 }
 

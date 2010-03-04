@@ -1,48 +1,48 @@
 #pragma once
 #include "Misc.h"
 
-class CClientBase
+class ClientBase
 {
 private:
-    typedef CSafeHandlePtr<CClientBase> HandleType;
+    typedef SafeHandlePtr<ClientBase> HandleType;
 
 protected:
-    CClientBase();
+    ClientBase();
 
-    virtual ~CClientBase();
-
-protected:
-    bool Init( boost::asio::io_service& io_service );
-
-    bool Connect( boost::asio::io_service& io_service, const std::string& host, int port );
-
-    bool Send( const void* data, size_t dataLen );
-
-    bool SyncSend( const void* data, size_t dataLen );
-
-    bool Recv( size_t dataLen );
-
-    bool SyncRecv( size_t dataLen );
-
-    bool Close();
-
-    void SetFailed()   { m_failed = true; }
-
-    void ClearFailed() { m_failed = false; }
-
-    bool IsFailed() const { return m_failed; }
+    virtual ~ClientBase();
 
 protected:
-    virtual bool OnSend( const boost::system::error_code& error, size_t bytes_transferred );
+    bool init( boost::asio::io_service& io_service );
 
-    virtual bool OnRecv( const boost::system::error_code& error, size_t bytes_transferred );
+    bool connect( boost::asio::io_service& io_service, const std::string& host, int port );
+
+    bool send( const void* data, size_t dataLen );
+
+    bool syncSend( const void* data, size_t dataLen );
+
+    bool recv( size_t dataLen );
+
+    bool syncRecv( size_t dataLen );
+
+    bool close();
+
+    void setFailed()   { m_failed = true; }
+
+    void clearFailed() { m_failed = false; }
+
+    bool isFailed() const { return m_failed; }
+
+protected:
+    virtual bool onSend( const boost::system::error_code& error, size_t bytes_transferred );
+
+    virtual bool onRecv( const boost::system::error_code& error, size_t bytes_transferred );
 
 private:
-    static void SendCallback( CClientBase* p, const boost::system::error_code& error, size_t bytes_transferred );
+    static void sendCallback( ClientBase* p, const boost::system::error_code& error, size_t bytes_transferred );
 
-    static void RecvCallback( HandleType handle, const boost::system::error_code& error, size_t bytes_transferred );
+    static void recvCallback( HandleType handle, const boost::system::error_code& error, size_t bytes_transferred );
 
-    static void SafeCallRecv( CClientBase* p, const boost::system::error_code& error, size_t bytes_transferred );
+    static void safeCallRecv( ClientBase* p, const boost::system::error_code& error, size_t bytes_transferred );
 
 protected:
     boost::asio::ip::tcp::socket*  m_socket;
@@ -53,3 +53,4 @@ protected:
 
     bool                           m_failed;
 };
+
