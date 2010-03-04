@@ -11,7 +11,7 @@ public class DemoServer {
 
 	public static void main(String[] args) throws Exception {
 		
-		String host = "192.168.1.174";
+		String host = "server.botplatform.com";
 		int port = 6602;
 		String spid = "SP000125";
 		String sppwd = "test111";
