@@ -38,7 +38,7 @@ public:
     typedef boost::unordered_map<std::string, CRobotSession*> RobotSessionMap;
 
 public:
-    CRobotServer() : m_parent(NULL), m_sequenceNumber(rand()), m_port(0), m_timeout(0)
+    CRobotServer() : m_serverMan(NULL), m_sequenceNumber(rand()), m_port(0), m_timeout(0)
 	{
         m_handleThis.reset( new HandleType::SafeHandleType(this) );
 	}
@@ -123,7 +123,7 @@ private:
     static void safeProcessData( CRobotServer* p, const std::string* data );
 
 private:
-    ManagerBase*   m_parent;
+    ManagerBase*    m_serverMan;
     WORD            m_sequenceNumber;
     std::string     m_ip;
     int             m_port;

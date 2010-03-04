@@ -148,11 +148,11 @@ public:
         MY_SINK_ENTRY_INFO(3,  onMessageReceived)
         MY_SINK_ENTRY_INFO(4,  onNudgeReceived)
 
-        MY_SINK_ENTRY_INFO(5, onActivityAccepted)
-        MY_SINK_ENTRY_INFO(6, onActivityRejected)
-        MY_SINK_ENTRY_INFO(7, onActivityReceived)
-        MY_SINK_ENTRY_INFO(8, onActivityLoaded)
-        MY_SINK_ENTRY_INFO(9, onActivityClosed)
+        MY_SINK_ENTRY_INFO(5,  onActivityAccepted)
+        MY_SINK_ENTRY_INFO(6,  onActivityRejected)
+        MY_SINK_ENTRY_INFO(7,  onActivityReceived)
+        MY_SINK_ENTRY_INFO(8,  onActivityLoaded)
+        MY_SINK_ENTRY_INFO(9,  onActivityClosed)
 
         MY_SINK_ENTRY_INFO(10, onUserJoined)
         MY_SINK_ENTRY_INFO(11, onUserLeft)
