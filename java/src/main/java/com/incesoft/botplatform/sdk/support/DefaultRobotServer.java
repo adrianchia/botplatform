@@ -1,6 +1,7 @@
 package com.incesoft.botplatform.sdk.support;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import com.incesoft.botplatform.sdk.RobotSession;
 import com.incesoft.botplatform.sdk.RobotUser;
 import com.incesoft.botplatform.sdk.protocol.msg.AppMessage;
 import com.incesoft.botplatform.sdk.protocol.msg.ErrorMessage;
+import com.incesoft.botplatform.sdk.protocol.msg.FileTransEvent;
 import com.incesoft.botplatform.sdk.protocol.msg.LoginRequest;
 import com.incesoft.botplatform.sdk.protocol.msg.LoginResponse;
 import com.incesoft.botplatform.sdk.protocol.msg.Message;
@@ -32,7 +34,6 @@ import com.incesoft.botplatform.sdk.protocol.msg.P2PEvent;
 import com.incesoft.botplatform.sdk.protocol.msg.ResourceInfo;
 import com.incesoft.botplatform.sdk.protocol.msg.SessionOpenedEvent;
 import com.incesoft.botplatform.sdk.protocol.msg.TextMessage;
-import com.incesoft.botplatform.sdk.protocol.msg.FileTransEvent;
 import com.incesoft.botplatform.sdk.protocol.msg.UpdateRobotRequest;
 import com.incesoft.botplatform.sdk.protocol.msg.User;
 
@@ -256,7 +257,7 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 	}
 
 	public void process_fileinvite(String robotId, String userId,
-			String sessionId, FileTransEvent invitation) {
+			String sessionId, FileTransEvent invitation) throws RobotException {
 		DefaultRobotSession session = sessions.get(sessionId);
 		if (session != null && handler != null) {
 			handler.fileInvited(session, invitation);
@@ -292,28 +293,28 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 	}
 
 	public void process_typing(String robotId, String userId, String sessionId,
-			Object msgBoby) {
+			Object msgBoby) throws RobotException {
 		DefaultRobotSession session = sessions.get(sessionId);
 		if (handler != null && session != null)
 			handler.typingReceived(session);
 	}
 
 	public void process_voiceclipevent(String robotId, String userId,
-			String sessionId, ResourceInfo resource) {
+			String sessionId, ResourceInfo resource) throws RobotException {
 		DefaultRobotSession session = sessions.get(sessionId);
 		if (handler != null && session != null)
 			handler.voiceclipReceived(session, resource);
 	}
 
 	public void process_winkevent(String robotId, String userId,
-			String sessionId, ResourceInfo resource) {
+			String sessionId, ResourceInfo resource) throws RobotException {
 		DefaultRobotSession session = sessions.get(sessionId);
 		if (handler != null && session != null)
 			handler.winkReceived(session, resource);
 	}
 
 	public void process_inkmsg(String robotId, String userId, String sessionId,
-			String ink) {
+			String ink) throws RobotException {
 		DefaultRobotSession session = sessions.get(sessionId);
 		if (handler != null && session != null){
 			byte[] inkData = null;
@@ -325,25 +326,25 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 	}
 
 	public void process_dpupdated(String robotId, String userId,
-			String sessionId, ResourceInfo resource) {
+			String sessionId, ResourceInfo resource) throws RobotException {
 		if (handler != null)
 			handler.displayPictureUpdated(robotId, userId, resource);
 	}
 
 	public void process_sceneupdated(String robotId, String userId,
-			String sessionId, ResourceInfo resource) {
+			String sessionId, ResourceInfo resource) throws RobotException {
 		if (handler != null)
 			handler.sceneUpdated(robotId, userId, resource);
 	}
 
 	public void process_colorupdated(String robotId, String userId,
-			String sessionId, int colorScheme) {
+			String sessionId, int colorScheme) throws RobotException {
 		if (handler != null)
 			handler.colorSchemeUpdated(robotId, userId, colorScheme);
 	}
 
 	public void process_psmupdated(String robotId, String userId,
-			String sessionId, String psm) {
+			String sessionId, String psm) throws RobotException {
 		if (handler != null)
 			handler.personalMessageUpdated(robotId, userId, psm);
 	}
@@ -535,7 +536,7 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 	}
 
 	@Override
-	protected void processError(Throwable e) {
+	protected void processError(Throwable e) throws RobotException {
 		if(log.isErrorEnabled())
 			log.error("",e);
 		if (handler != null) {
@@ -548,8 +549,13 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 		assertAlive();
 		Method method = processors.get(msg.getType());
 		if (method != null) {
-			method.invoke(this, new Object[] { msg.getRobotId(),
-					msg.getUserId(), msg.getSessionId(), msg.getBody() });
+			try {
+				method.invoke(this, new Object[] { msg.getRobotId(),
+						msg.getUserId(), msg.getSessionId(), msg.getBody() });
+			} catch (InvocationTargetException e) {
+				if (handler != null) 
+					handler.exceptionCaught(null, e.getTargetException());
+			}
 		}
 	}
 

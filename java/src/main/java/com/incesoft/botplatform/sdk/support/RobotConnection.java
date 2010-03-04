@@ -11,6 +11,7 @@ import org.apache.mina.common.IoConnector;
 import org.apache.mina.common.IoHandler;
 import org.apache.mina.common.IoSession;
 
+import com.incesoft.botplatform.sdk.RobotException;
 import com.incesoft.botplatform.sdk.protocol.FLAPPacket;
 import com.incesoft.botplatform.sdk.protocol.json.JsonUtil;
 import com.incesoft.botplatform.sdk.protocol.msg.Message;
@@ -68,7 +69,7 @@ public abstract class RobotConnection implements IoHandler {
     
     protected abstract void processOpened() throws Exception ;
     protected abstract void processClosed() throws Exception ;
-    protected abstract void processError(Throwable e);
+    protected abstract void processError(Throwable e) throws RobotException;
     protected abstract void processMessage(Message msg) throws Exception ;
     protected abstract void processSent() throws Exception;
     
@@ -99,7 +100,11 @@ public abstract class RobotConnection implements IoHandler {
 						}
 					}
 				} catch (Throwable t) {
-					processError(t);
+					try {
+						processError(t);
+					} catch (RobotException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});
