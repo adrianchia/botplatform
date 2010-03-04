@@ -9,7 +9,7 @@
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 
-#import "../Bin/BotPlatformSDK.dll" named_guids no_namespace /*raw_interfaces_only*/
+#import "../../com/Bin/BotPlatformSDK.dll" named_guids no_namespace /*raw_interfaces_only*/
 
 
 //////////////////////////////////////////////////////////////////////////
