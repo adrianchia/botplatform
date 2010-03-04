@@ -13,7 +13,7 @@
 // CRobotServerFactory
 
 class ATL_NO_VTABLE CRobotServerFactory :
-	public CComObjectRootEx<CComSingleThreadModel>,
+	public CComObjectRootEx<CComMultiThreadModel>,
 	public CComCoClass<CRobotServerFactory, &CLSID_RobotServerFactory>,
 	public IRobotServerFactory,
     public ManagerBase

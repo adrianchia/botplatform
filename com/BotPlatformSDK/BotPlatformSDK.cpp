@@ -23,7 +23,7 @@ STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
 // DllRegisterServer - 将项添加到系统注册表
 STDAPI DllRegisterServer(void)
 {
-    // 注册对象、类型库和类型库中的所有接口
+    // 注册对象、类型库和类型库中的所有Interface
     HRESULT hr = _AtlModule.DllRegisterServer();
 	return hr;
 }

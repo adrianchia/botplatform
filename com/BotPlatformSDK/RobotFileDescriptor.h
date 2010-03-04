@@ -13,8 +13,8 @@
 // CRobotFileDescriptor
 
 class ATL_NO_VTABLE CRobotFileDescriptor :
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CRobotFileDescriptor, &CLSID_RobotFileDescriptor>,
+	public CComObjectRootEx<CComMultiThreadModel>,
+	//public CComCoClass<CRobotFileDescriptor, &CLSID_RobotFileDescriptor>,
 	public IRobotFileDescriptor
 {
 public:

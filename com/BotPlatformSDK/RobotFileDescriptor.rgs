@@ -17,7 +17,7 @@ HKCR
 			VersionIndependentProgID = s 'BotPlatformSDK.RobotFileDescriptor'
 			InprocServer32 = s '%MODULE%'
 			{
-				val ThreadingModel = s 'Apartment'
+				val ThreadingModel = s 'Both'
 			}
 			'TypeLib' = s '{3B6053CA-50DC-4BBC-BB6E-EE2680B8A882}'
 		}

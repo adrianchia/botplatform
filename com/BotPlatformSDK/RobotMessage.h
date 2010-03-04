@@ -13,8 +13,8 @@
 // CRobotMessage
 
 class ATL_NO_VTABLE CRobotMessage :
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CRobotMessage, &CLSID_RobotMessage>,
+	public CComObjectRootEx<CComMultiThreadModel>,
+	//public CComCoClass<CRobotMessage, &CLSID_RobotMessage>,
 	public IRobotMessage
 {
 public:
