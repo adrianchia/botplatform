@@ -201,11 +201,11 @@ public class MyHandler implements RobotHandler {
 			RobotFileDescriptor fileDescriptor) {
 		debugEvent("name=" + fileDescriptor.getName() + ",size="
 				+ fileDescriptor.getSize());
-//		try {
-//			session.sendFileRejection(fileDescriptor.getTransferId());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		try {
+			session.sendFileRejection(fileDescriptor.getTransferId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void fileAccepted(RobotSession session,
