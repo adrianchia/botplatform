@@ -22,7 +22,7 @@ bool CheckToken::isTimeOut() const
 
 
 //////////////////////////////////////////////////////////////////////////
-ManagerBase::ManagerBase() : m_tp(0), m_run(true)
+ManagerBase::ManagerBase() : m_tp(NULL), m_run(true), m_checkth(NULL)
 {
 }
 
