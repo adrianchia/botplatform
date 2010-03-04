@@ -15,7 +15,7 @@ CRobotSession::CRobotSession() : m_server(NULL), m_robotUsers(NULL), m_mode(0), 
 HRESULT CRobotSession::FinalConstruct()
 {
     IRobotUsers* users = 0;
-    return CreateRealObject( &users, &m_robotUsers );
+    return createInnerObject( &users, &m_robotUsers );
 }
 
 void CRobotSession::FinalRelease()
@@ -26,7 +26,7 @@ void CRobotSession::FinalRelease()
 
 STDMETHODIMP CRobotSession::CreateMessage(IRobotMessage** message)
 {
-    return CreateRealObject<CRobotMessage>( message );
+    return createInnerObject<CRobotMessage>( message );
 }
 
 STDMETHODIMP CRobotSession::SendText(BSTR message)
@@ -36,7 +36,7 @@ STDMETHODIMP CRobotSession::SendText(BSTR message)
 
     Json::Value body;
 
-    body["text"] = UnicToUtf8(message);
+    body["text"] = unicToUtf8(message);
 
     if ( !sendCmd( "msg", &body ) )
         return E_FAIL;
@@ -84,7 +84,7 @@ bool CRobotSession::sendCmd( const std::string& userId, const std::string& type,
     if ( !m_server )
         return false;
 
-    return m_server->Send( m_robotId, userId, m_sessionId, type, body );
+    return m_server->sendCmd( m_robotId, userId, m_sessionId, type, body );
 }
 
 bool CRobotSession::sendCmd( const std::string& type, Json::Value* body )
@@ -107,8 +107,8 @@ STDMETHODIMP CRobotSession::SendActivity(BSTR url, BSTR friendlyName)
 
     Json::Value body;
 
-    body["name"] = UnicToUtf8(friendlyName);
-    body["data"] = UnicToUtf8(url);
+    body["name"] = unicToUtf8(friendlyName);
+    body["data"] = unicToUtf8(url);
 
     if ( !sendCmd( "appmsg", &body ) )
         return E_FAIL;
@@ -123,9 +123,9 @@ STDMETHODIMP CRobotSession::SendActivityEx(BSTR appid, BSTR appname, BSTR data)
 
     Json::Value body;
 
-    body["id"]   = UnicToUtf8(appid);
-    body["name"] = UnicToUtf8(appname);
-    body["data"] = UnicToUtf8(data);
+    body["id"]   = unicToUtf8(appid);
+    body["name"] = unicToUtf8(appname);
+    body["data"] = unicToUtf8(data);
 
     if ( !sendCmd( "appmsg", &body ) )
         return E_FAIL;
@@ -153,7 +153,7 @@ STDMETHODIMP CRobotSession::GetUser(BSTR userid, IRobotUser** ppUser)
 
     *ppUser = NULL;
 
-    CRobotUser* user = m_robotUsers->getUser( UnicToUtf8(userid) );
+    CRobotUser* user = m_robotUsers->getUser( unicToUtf8(userid) );
     if ( !user )
         return E_INVALIDARG;
 
@@ -205,7 +205,7 @@ STDMETHODIMP CRobotSession::InviteUser(BSTR user)
     if ( !user )
         return E_INVALIDARG;
 
-    if ( !sendCmd( UnicToUtf8(user), "invite", NULL ) )
+    if ( !sendCmd( unicToUtf8(user), "invite", NULL ) )
         return E_FAIL;
 
     return S_OK;
@@ -218,10 +218,10 @@ STDMETHODIMP CRobotSession::SendFile(BSTR uri, BSTR friendlyName)
 
     Json::Value body;
 
-    body["location"] = UnicToUtf8(uri);
+    body["location"] = unicToUtf8(uri);
 
     if ( friendlyName && *friendlyName != 0 )
-        body["name"] = UnicToUtf8(friendlyName);
+        body["name"] = unicToUtf8(friendlyName);
 
     if ( !sendCmd( "file", &body ) )
         return E_FAIL;
@@ -237,8 +237,8 @@ STDMETHODIMP CRobotSession::SendFileAcceptance(BSTR transferId, BSTR saveUrl)
     Json::Value body;
 
     body["cmd"]         = "accept";
-    body["transferId"]  = UnicToUtf8(transferId);
-    body["saveUrl"]     = UnicToUtf8(saveUrl);
+    body["transferId"]  = unicToUtf8(transferId);
+    body["saveUrl"]     = unicToUtf8(saveUrl);
 
     if ( !sendCmd( "filecmd", &body ) )
         return E_FAIL;
@@ -254,7 +254,7 @@ STDMETHODIMP CRobotSession::SendFileRejection(BSTR transferId)
     Json::Value body;
 
     body["cmd"]         = "reject";
-    body["transferId"]  = UnicToUtf8(transferId);
+    body["transferId"]  = unicToUtf8(transferId);
 
     if ( !sendCmd( "filecmd", &body ) )
         return E_FAIL;
@@ -270,7 +270,7 @@ STDMETHODIMP CRobotSession::SendFileCancellation(BSTR transferId)
     Json::Value body;
 
     body["cmd"]         = "cancel";
-    body["transferId"]  = UnicToUtf8(transferId);
+    body["transferId"]  = unicToUtf8(transferId);
 
     if ( !sendCmd( "filecmd", &body ) )
         return E_FAIL;
@@ -285,7 +285,7 @@ STDMETHODIMP CRobotSession::SendInk(BSTR inkData)
 
     Json::Value body;
 
-    body = UnicToUtf8(inkData);
+    body = unicToUtf8(inkData);
 
     if ( !sendCmd( "inkmsg", &body ) )
         return E_FAIL;
@@ -300,8 +300,8 @@ STDMETHODIMP CRobotSession::SendWink(BSTR uri, BSTR stamp)
 
     Json::Value body;
 
-    body["location"] = UnicToUtf8(uri);
-    body["stamp"]    = UnicToUtf8(stamp);
+    body["location"] = unicToUtf8(uri);
+    body["stamp"]    = unicToUtf8(stamp);
 
     if ( !sendCmd( "wink", &body ) )
         return E_FAIL;
@@ -316,7 +316,7 @@ STDMETHODIMP CRobotSession::SendVoiceclip(BSTR uri)
 
     Json::Value body;
 
-    body["location"] = UnicToUtf8(uri);
+    body["location"] = unicToUtf8(uri);
 
     if ( !sendCmd( "voiceclip", &body ) )
         return E_FAIL;
@@ -331,7 +331,7 @@ STDMETHODIMP CRobotSession::SendWebcam(BSTR serverIP, LONG serverPort, LONG reci
 
     Json::Value body;
 
-    body["host"] = UnicToUtf8(serverIP);
+    body["host"] = unicToUtf8(serverIP);
     body["port"] = serverPort;
     body["rid"]  = recipientid;
     body["wid"]  = sessionid;

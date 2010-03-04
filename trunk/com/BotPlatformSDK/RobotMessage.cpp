@@ -60,8 +60,8 @@ STDMETHODIMP CRobotMessage::RegisterEmoticon(BSTR shortcut, BSTR filename)
     if ( !shortcut || !filename )
         return E_INVALIDARG;
 
-    std::string u8_shortcut = UnicToUtf8(shortcut);
-    std::string u8_filename = UnicToUtf8(filename);
+    std::string u8_shortcut = unicToUtf8(shortcut);
+    std::string u8_filename = unicToUtf8(filename);
 
     bool b = m_emoticons.insert( StringMap::value_type(u8_shortcut, u8_filename) ).second;
     if ( !b )
@@ -75,7 +75,7 @@ STDMETHODIMP CRobotMessage::DeregisterEmoticon(BSTR shortcut)
     if ( !shortcut )
         return E_INVALIDARG;
 
-    std::string u8_shortcut = UnicToUtf8(shortcut);
+    std::string u8_shortcut = unicToUtf8(shortcut);
 
     StringMap::iterator it = m_emoticons.find( u8_shortcut );
 

@@ -26,14 +26,14 @@ void MultiToWide( const std::string& multi, std::wstring& wide, UINT code_page )
     wide.resize( new_size );
 }
 
-const std::string UnicToUtf8( const std::wstring& unic )
+const std::string unicToUtf8( const std::wstring& unic )
 {
     std::string utf8;
     WideToMulti( unic, utf8, CP_UTF8 );
     return utf8;
 }
 
-const std::wstring Utf8ToUnic( const std::string& utf8 )
+const std::wstring utf8ToUnic( const std::string& utf8 )
 {
     std::wstring unic;
     MultiToWide( utf8, unic, CP_UTF8 );
@@ -93,7 +93,7 @@ DWORD GetHash(CONST BYTE *pbData, DWORD dwDataLen, ALG_ID algId, LPTSTR pszHash)
     return dwReturn;
 }
 
-const std::string MakeMd5( const std::string& data )
+const std::string makeMd5( const std::string& data )
 {
     TCHAR buf[255] = {0};
     if ( GetHash( (const BYTE*)data.data(), data.size(), CALG_MD5, buf ) != 0 )
@@ -105,7 +105,7 @@ const std::string MakeMd5( const std::string& data )
     return std::string( (LPCSTR)CW2A(buf) );
 }
 
-const std::string NumToStr( int num )
+const std::string numToStr( int num )
 {
     char buf[255] = {0};
     sprintf_s( buf, "%d", num );

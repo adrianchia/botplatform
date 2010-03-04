@@ -5,34 +5,34 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-void CheckToken::Reset()
+void CheckToken::reset()
 {
     InterlockedExchange( &m_time, 0 );
 }
 
-void CheckToken::Step()
+void CheckToken::step()
 {
     InterlockedIncrement( &m_time );
 }
 
-bool CheckToken::IsTimeOut() const
+bool CheckToken::isTimeOut() const
 {
     return m_time >= TIME_OUT;
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-CManagerBase::CManagerBase() : m_tp(0), m_run(true)
+ManagerBase::ManagerBase() : m_tp(0), m_run(true)
 {
 }
 
-CManagerBase::~CManagerBase()
+ManagerBase::~ManagerBase()
 {
-    Close();
-    ClearCmds();
+    close();
+    clearCmds();
 }
 
-void CManagerBase::Init( int threadCount )
+void ManagerBase::init( int threadCount )
 {
     m_tp = new boost::threadpool::pool(threadCount);
 
@@ -45,13 +45,13 @@ void CManagerBase::Init( int threadCount )
     for ( size_t i = 0; i < cpus; ++i )
     {
         m_ioevent.push_back( CreateEvent( NULL, FALSE, FALSE, NULL ) );
-        m_runth.push_back( new boost::thread( boost::bind(&CManagerBase::RunIoService, this, i) ) );
+        m_runth.push_back( new boost::thread( boost::bind(&ManagerBase::runIoService, this, i) ) );
     }
 
-    m_checkth = new boost::thread( boost::bind(&CManagerBase::RunCheckTime, this) );
+    m_checkth = new boost::thread( boost::bind(&ManagerBase::runCheckTime, this) );
 }
 
-void CManagerBase::Close()
+void ManagerBase::close()
 {
     // thread loop break
     m_run = false;
@@ -68,7 +68,7 @@ void CManagerBase::Close()
     m_ioService.stop();
 
     // ensure io event no block
-    StartRun();
+    startRun();
 
     // close io-service threads
     for ( size_t i = 0; i < m_runth.size(); ++i )
@@ -93,7 +93,7 @@ void CManagerBase::Close()
     m_ioevent.clear();
 }
 
-JSonCmdBase* CManagerBase::FindJsonCmd( const std::string& name )
+JSonCmdBase* ManagerBase::findJsonCmd( const std::string& name )
 {
     JSonCmdMap::iterator it = m_cmdMap.find( name );
     if ( it != m_cmdMap.end() )
@@ -102,7 +102,7 @@ JSonCmdBase* CManagerBase::FindJsonCmd( const std::string& name )
     return NULL;
 }
 
-void CManagerBase::ClearCmds()
+void ManagerBase::clearCmds()
 {
     for ( JSonCmdMap::iterator it = m_cmdMap.begin(); it != m_cmdMap.end(); ++it )
     {
@@ -113,7 +113,7 @@ void CManagerBase::ClearCmds()
     m_cmdMap.clear();
 }
 
-void CManagerBase::RunIoService( int idx )
+void ManagerBase::runIoService( int idx )
 {
     while ( m_run )
     {
@@ -133,13 +133,13 @@ void CManagerBase::RunIoService( int idx )
     }
 }
 
-void CManagerBase::StartRun()
+void ManagerBase::startRun()
 {
     for ( size_t i = 0; i < m_ioevent.size(); ++i )
         SetEvent( m_ioevent[i] );
 }
 
-void CManagerBase::RunCheckTime()
+void ManagerBase::runCheckTime()
 {
     while ( m_run )
     {
@@ -155,8 +155,8 @@ void CManagerBase::RunCheckTime()
             {
                 CheckItem& item = it->second;
                 
-                item.token->Step();
-                item.callback( item.token->IsTimeOut() );
+                item.token->step();
+                item.callback( item.token->isTimeOut() );
             }
         }
     }

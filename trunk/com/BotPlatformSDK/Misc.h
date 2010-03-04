@@ -2,7 +2,7 @@
 
 // create inner class object
 template<class C_Type, class I_Type>
-HRESULT CreateRealObject( I_Type** ppVal )
+HRESULT createInnerObject( I_Type** ppVal )
 {
     if ( !ppVal )
         return E_INVALIDARG;
@@ -24,9 +24,9 @@ HRESULT CreateRealObject( I_Type** ppVal )
 };
 
 template<class C_Type, class I_Type>
-HRESULT CreateRealObject( I_Type** ppVal, C_Type** ppReal )
+HRESULT createInnerObject( I_Type** ppVal, C_Type** ppReal )
 {
-    HRESULT hr = CreateRealObject<C_Type>(ppVal);
+    HRESULT hr = createInnerObject<C_Type>(ppVal);
     if ( FAILED( hr ) )
         return hr;
 
@@ -37,23 +37,23 @@ HRESULT CreateRealObject( I_Type** ppVal, C_Type** ppReal )
 
 
 // string convertion routine
-const std::string  UnicToUtf8( const std::wstring& unic );
-const std::wstring Utf8ToUnic( const std::string& utf8 );
-const std::string  MakeMd5( const std::string& data );
-const std::string  NumToStr( int num );
+const std::string  unicToUtf8( const std::wstring& unic );
+const std::wstring utf8ToUnic( const std::string& utf8 );
+const std::string  makeMd5( const std::string& data );
+const std::string  numToStr( int num );
 
 
 // safe handle for pointer
 template<class T>
-class CSafeHandle
+class SafeHandle
 {
 public:
     typedef T* PtrType;
 
 public:
-    CSafeHandle( PtrType p ) : m_ptr(p) {}
+    SafeHandle( PtrType p ) : m_ptr(p) {}
 
-    ~CSafeHandle()
+    ~SafeHandle()
     {
         m_ptr = NULL;
     }
@@ -68,10 +68,10 @@ public:
 };
 
 template<class T>
-class CSafeHandlePtr : public boost::shared_ptr<CSafeHandle<T> >
+class SafeHandlePtr : public boost::shared_ptr<SafeHandle<T> >
 {
 public:
-    typedef CSafeHandle<T> SafeHandleType; 
+    typedef SafeHandle<T> SafeHandleType; 
 };
 
 
@@ -81,19 +81,19 @@ public:
 
 
 // com routine
-#define UTF8_2_BSTR(u) CComBSTR( Utf8ToUnic(u).c_str() )
+#define UTF8_2_BSTR(u) CComBSTR( utf8ToUnic(u).c_str() )
 
 #define IMPL_GET_BSTR(pb, u8) \
     if ( !pb ) \
         return E_INVALIDARG; \
-    CComBSTR str( Utf8ToUnic(u8).c_str() ); \
+    CComBSTR str( utf8ToUnic(u8).c_str() ); \
     *pb = str.Detach(); \
     return S_OK;
 
 #define IMPL_SET_BSTR(u8, b) \
     if ( !b ) \
         return E_INVALIDARG; \
-    u8 = UnicToUtf8(b); \
+    u8 = unicToUtf8(b); \
     return S_OK;
 
 #define IMPL_GET_LONG(pl, l) \

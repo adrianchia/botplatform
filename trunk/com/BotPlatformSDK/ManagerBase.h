@@ -5,13 +5,13 @@ class JSonCmdBase
 public:
     virtual ~JSonCmdBase() {}
 
-    virtual void Execute( Json::Value& val, void* para ) = 0;
+    virtual void execute( Json::Value& val, void* para ) = 0;
 };
 
 
 class CheckToken
 {
-    //friend class CManagerBase;
+    //friend class ManagerBase;
 
 public:
     enum 
@@ -27,11 +27,11 @@ public:
     ~CheckToken() { m_time = 0; }
 
 public:
-    void Reset();
+    void reset();
 
-    void Step();
+    void step();
 
-    bool IsTimeOut() const;
+    bool isTimeOut() const;
 
 private:
     long m_time;
@@ -40,7 +40,7 @@ private:
 typedef boost::shared_ptr<CheckToken> CheckTokenPtr;
 
 
-class CManagerBase
+class ManagerBase
 {
 protected:
     typedef std::vector<boost::thread*> ThreadList;
@@ -57,17 +57,17 @@ protected:
     typedef boost::unordered_map<const void*, CheckItem> CheckItemMap;
 
 public:
-    CManagerBase();
+    ManagerBase();
 
-    virtual ~CManagerBase();
+    virtual ~ManagerBase();
 
 public:
-    void Init( int threadCount );
+    void init( int threadCount );
     
-    void Close();
+    void close();
 
     template<class T>
-    void AddTask( const T& task )
+    void addTask( const T& task )
     {
         if ( m_tp )
         {
@@ -76,22 +76,22 @@ public:
     }
 
     template<class CmdType>
-    void RegisterJSonCmd()
+    void registerJSonCmd()
     {
-        bool b = m_cmdMap.insert( JSonCmdMap::value_type( CmdType::GetTypeName(), new CmdType() ) ).second;
+        bool b = m_cmdMap.insert( JSonCmdMap::value_type( CmdType::getTypeName(), new CmdType() ) ).second;
         ATLASSERT(b);
     }
 
-    JSonCmdBase* FindJsonCmd( const std::string& name );
+    JSonCmdBase* findJsonCmd( const std::string& name );
 
-    void ClearCmds();
+    void clearCmds();
 
-    boost::asio::io_service& GetIOService() { return m_ioService; }
+    boost::asio::io_service& getIOService() { return m_ioService; }
 
-    void StartRun();
+    void startRun();
 
     template<class T>
-    CheckTokenPtr RegisterCheck( const void* id, const T& func )
+    CheckTokenPtr registerCheck( const void* id, const T& func )
     {
         CheckItem      item;
 
@@ -106,7 +106,7 @@ public:
         return item.token;
     }
 
-    void UnRegisterCheck( const void* id )
+    void unRegisterCheck( const void* id )
     {
         boost::lock_guard<boost::mutex> guard_(m_checkItemMutex);
 
@@ -116,9 +116,9 @@ public:
     }
 
 private:
-    void RunIoService( int idx );
+    void runIoService( int idx );
 
-    void RunCheckTime();
+    void runCheckTime();
 
 protected:
     boost::threadpool::pool* m_tp;
