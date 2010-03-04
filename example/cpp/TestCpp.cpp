@@ -108,6 +108,7 @@ _ATL_FUNC_INFO  s_info_onInkReceived            = { CC_STDCALL, VT_EMPTY, 2, { V
 _ATL_FUNC_INFO  s_info_onWinkReceived           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onVoiceclipReceived      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onTypingReceived         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
+
 _ATL_FUNC_INFO  s_info_onSceneUpdated           = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onDisplayPictureUpdated  = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onColorSchemeUpdated     = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_I4 } };
