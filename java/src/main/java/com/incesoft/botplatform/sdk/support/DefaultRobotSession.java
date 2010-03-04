@@ -140,16 +140,13 @@ public class DefaultRobotSession implements RobotSession {
 	}
 
 	public void send(RobotMessage message) throws RobotException {
-
 		DefaultRobotMessage msg = (DefaultRobotMessage) message;
 		sendMessage(Message.MSG, msg.getProtocolMessage());
 
 	}
 
 	public void sendNudge() throws RobotException {
-
 		sendMessage(Message.NUDGE, null);
-
 	}
 
 	public void sendActivity(String data) throws RobotException {
@@ -163,7 +160,6 @@ public class DefaultRobotSession implements RobotSession {
 		if (friendlyName != null)
 			msg.setName(friendlyName);
 		sendMessage(Message.APPMSG, msg);
-
 	}
 
 	public void sendTyping() throws RobotException {
@@ -229,7 +225,6 @@ public class DefaultRobotSession implements RobotSession {
 		if (stamp != null)
 			msg.setStamp(stamp);
 		sendMessage(Message.WINK, msg);
-
 	}
 
 	public void sendVoiceclip(String uri) throws RobotException {
@@ -261,7 +256,6 @@ public class DefaultRobotSession implements RobotSession {
 		msg.setRid(recipientid);
 		msg.setWid(sessionid);
 		sendMessage(Message.WEBCAM, msg);
-
 	}
 
 	public void inviteUser(String user) throws RobotException {
@@ -270,7 +264,6 @@ public class DefaultRobotSession implements RobotSession {
 
 	public void sendActivity(int appid, String appname, String data)
 			throws RobotException {
-
 		AppMessage msg = new AppMessage();
 		msg.setId(String.valueOf(appid));
 		msg.setName(appname);
