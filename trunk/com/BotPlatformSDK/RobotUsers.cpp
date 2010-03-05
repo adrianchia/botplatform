@@ -37,22 +37,22 @@ STDMETHODIMP CRobotUsers::Count(LONG* pVal)
     IMPL_GET_LONG(pVal, getUserCount())
 }
 
-void CRobotUsers::addUser( CRobotUser* user )
+bool CRobotUsers::addUser( CRobotUser* user )
 {
     if ( !user || user->getID().empty() )
-        return;
+        return false;
 
     boost::lock_guard<boost::mutex> guard_(m_userMutex);
 
     // check if already exist
     if ( m_userMap.find(user->getID()) != m_userMap.end() )
-        return;
+        return false;
 
     // insert to vector
     m_userVector.push_back( user );
 
     // insert to map
-    m_userMap.insert( RobotUserMap::value_type(user->getID(), user) );
+    return m_userMap.insert( RobotUserMap::value_type(user->getID(), user) ).second;
 }
 
 void CRobotUsers::removeUser( const std::string& userId )

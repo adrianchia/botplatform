@@ -1,8 +1,6 @@
-// BotPlatformSDK.idl : BotPlatformSDK 的 IDL 源
+// BotPlatformSDK.idl
 //
 
-// 此文件将由 MIDL 工具处理以
-// 产生类型库(BotPlatformSDK.tlb)和封送处理代码。
 
 import "oaidl.idl";
 import "ocidl.idl";
@@ -38,10 +36,10 @@ interface IRobotServer : IUnknown{
     [helpstring("Method SetDisplayPictureEx")] HRESULT SetDisplayPictureEx([in] BSTR robotAccount, [in] BSTR displayPicture, [in] BSTR largePicture);
     [helpstring("Method SetScene")] HRESULT SetScene([in] BSTR robotAccount, [in] BSTR scene);
     [helpstring("Method SetColorScheme")] HRESULT SetColorScheme([in] BSTR robotAccount, [in] LONG colorScheme);
-    [helpstring("Method CreateSession")] HRESULT CreateSession([in] BSTR robot, [in] BSTR user);
-    [helpstring("Method PushMessage")] HRESULT PushMessage([in] BSTR robot, [in] BSTR user, [in] BSTR message);
-    [helpstring("Method RequestContactList")] HRESULT RequestContactList([in] BSTR robot);
-    [helpstring("Method RequestResource")] HRESULT RequestResource([in] BSTR robot, [in] BSTR user, [in] IRobotResource* resource, [in] BSTR saveUrl);
+    [helpstring("Method CreateSession")] HRESULT CreateSession([in] BSTR strRobot, [in] BSTR user);
+    [helpstring("Method PushMessage")] HRESULT PushMessage([in] BSTR strRobot, [in] BSTR user, [in] BSTR message);
+    [helpstring("Method RequestContactList")] HRESULT RequestContactList([in] BSTR strRobot);
+    [helpstring("Method RequestResource")] HRESULT RequestResource([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource, [in] BSTR saveUrl);
 };
 [
 	object,
@@ -77,7 +75,7 @@ interface IRobotSession : IUnknown{
     [helpstring("Method SendText")] HRESULT SendText([in] BSTR message);
     [helpstring("Method SendMsg")] HRESULT SendIM([in]IRobotMessage* message);
     [helpstring("Method SendNudge")] HRESULT SendNudge(void);
-    [helpstring("Method SendActivity")] HRESULT SendActivity([in] BSTR url, [in] BSTR friendlyName);
+    [helpstring("Method SendActivity")] HRESULT SendActivity([in] BSTR url, [in] BSTR strFriendlyName);
     [helpstring("Method SendActivityEx")] HRESULT SendActivityEx([in] BSTR appid, [in] BSTR appname, [in] BSTR data);
     [propget, helpstring("property ActivityOpened")] HRESULT ActivityOpened([out,retval] VARIANT_BOOL* pVal);
     [helpstring("Method SendTyping")] HRESULT SendTyping(void);
@@ -88,7 +86,7 @@ interface IRobotSession : IUnknown{
     [propget, helpstring("property Closed")] HRESULT Closed([out,retval] VARIANT_BOOL* pVal);
     [helpstring("Method Close")] HRESULT Close(void);
     [helpstring("Method InviteUser")] HRESULT InviteUser([in] BSTR user);
-    [helpstring("Method SendFile")] HRESULT SendFile([in] BSTR uri, [in] BSTR friendlyName);
+    [helpstring("Method SendFile")] HRESULT SendFile([in] BSTR uri, [in] BSTR strFriendlyName);
     [helpstring("Method SendFileAcceptance")] HRESULT SendFileAcceptance([in] BSTR transferId, [in] BSTR saveUrl);
     [helpstring("Method SendFileRejection")] HRESULT SendFileRejection([in] BSTR transferId);
     [helpstring("Method SendFileCancellation")] HRESULT SendFileCancellation([in] BSTR transferId);
@@ -96,7 +94,6 @@ interface IRobotSession : IUnknown{
     [helpstring("Method SendWink")] HRESULT SendWink([in] BSTR uri, [in] BSTR stamp);
     [helpstring("Method SendVoiceclip")] HRESULT SendVoiceclip([in] BSTR uri);
     [helpstring("Method SendWebcam")] HRESULT SendWebcam([in] BSTR serverIP, [in] LONG serverPort, [in] LONG recipientid, [in] LONG sessionid);
-    
 };
 [
 	object,
@@ -175,8 +172,8 @@ library BotPlatformSDKLib
             [id(9), helpstring("Method ActivityClosed")] HRESULT ActivityClosed([in] IRobotSession* session);
             [id(10), helpstring("Method UserJoined")] HRESULT UserJoined([in] IRobotSession* session, [in] IRobotUser* user);
             [id(11), helpstring("Method UserLeft")] HRESULT UserLeft([in] IRobotSession* session, [in] IRobotUser* user);
-            [id(12), helpstring("Method UserAdd")] HRESULT UserAdd([in] BSTR robot, [in] BSTR user);
-            [id(13), helpstring("Method UserRemove")] HRESULT UserRemove([in] BSTR robot, [in] BSTR user);
+            [id(12), helpstring("Method UserAdd")] HRESULT UserAdd([in] BSTR strRobot, [in] BSTR user);
+            [id(13), helpstring("Method UserRemove")] HRESULT UserRemove([in] BSTR strRobot, [in] BSTR user);
             [id(14), helpstring("Method ExceptionCaught")] HRESULT ExceptionCaught([in] IRobotSession* session, [in] LONG cause);
             [id(15), helpstring("Method FileAccepted")] HRESULT FileAccepted([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
             [id(16), helpstring("Method FileRejected")] HRESULT FileRejected([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
@@ -188,16 +185,16 @@ library BotPlatformSDKLib
             [id(22), helpstring("Method WebcamRejected")] HRESULT WebcamRejected([in] IRobotSession* session);
             [id(23), helpstring("Method WebcamClosed")] HRESULT WebcamClosed([in] IRobotSession* session);
             [id(24), helpstring("Method WebcamError")] HRESULT WebcamError([in] IRobotSession* session);
-            [id(25), helpstring("Method UserUpdated")] HRESULT UserUpdated([in] BSTR robot, [in] IRobotUser* user);
-            [id(26), helpstring("Method PersonalMessageUpdated")] HRESULT PersonalMessageUpdated([in] BSTR robot, [in] BSTR user, [in] BSTR personalMessage);
-            [id(27), helpstring("Method ContactListReceived")] HRESULT ContactListReceived([in] BSTR robot, [in] IRobotUsers* contactList);
+            [id(25), helpstring("Method UserUpdated")] HRESULT UserUpdated([in] BSTR strRobot, [in] IRobotUser* user);
+            [id(26), helpstring("Method PersonalMessageUpdated")] HRESULT PersonalMessageUpdated([in] BSTR strRobot, [in] BSTR user, [in] BSTR personalMessage);
+            [id(27), helpstring("Method ContactListReceived")] HRESULT ContactListReceived([in] BSTR strRobot, [in] IRobotUsers* contactList);
             [id(28), helpstring("Method InkReceived")] HRESULT InkReceived([in] IRobotSession* session, [in] BSTR ink);
             [id(29), helpstring("Method WinkReceived")] HRESULT WinkReceived([in] IRobotSession* session, [in] IRobotResource* resource);
             [id(30), helpstring("Method VoiceclipReceived")] HRESULT VoiceclipReceived([in] IRobotSession* session, [in] IRobotResource* resource);
             [id(31), helpstring("Method TypingReceived")] HRESULT TypingReceived([in] IRobotSession* session);
-            [id(32), helpstring("Method SceneUpdated")] HRESULT SceneUpdated([in] BSTR robot, [in] BSTR user, [in] IRobotResource* resource);
-            [id(33), helpstring("Method DisplayPictureUpdated")] HRESULT DisplayPictureUpdated([in] BSTR robot, [in] BSTR user, [in] IRobotResource* resource);
-            [id(34), helpstring("Method ColorSchemeUpdated")] HRESULT ColorSchemeUpdated([in] BSTR robot, [in] BSTR user, [in] LONG colorScheme);
+            [id(32), helpstring("Method SceneUpdated")] HRESULT SceneUpdated([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource);
+            [id(33), helpstring("Method DisplayPictureUpdated")] HRESULT DisplayPictureUpdated([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource);
+            [id(34), helpstring("Method ColorSchemeUpdated")] HRESULT ColorSchemeUpdated([in] BSTR strRobot, [in] BSTR user, [in] LONG colorScheme);
     };
 	[
 		uuid(E3008899-DB59-4ECF-B013-7996A3732ACC),
