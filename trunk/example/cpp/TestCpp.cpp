@@ -196,7 +196,7 @@ private:
         BEGIN_(onSessionOpened)
 
         PRINT_EVENT( std::string("user=") + session->GetUsers()->Item(0)->ID + 
-            ",friendly=" + session->GetUsers()->Item(0)->friendlyName + 
+            ",friendly=" + session->GetUsers()->Item(0)->FriendlyName + 
             ",clientId=" + numToStr(session->GetUsers()->Item(0)->ClientID) +
             ",status="   + session->GetUsers()->Item(0)->Status );
 
@@ -288,14 +288,14 @@ private:
             if ( param.empty() )
                 param = "name-" + randStr();
 
-            m_server->SetDisplayName( session->robot, param.c_str() );
+            m_server->SetDisplayName( session->Robot, param.c_str() );
         }
         else if ( cmd == "psm" )
         {
             if ( param.empty() )
                 param = "psm-" + randStr();
 
-            m_server->SetPersonalMessage( session->robot, param.c_str() );
+            m_server->SetPersonalMessage( session->Robot, param.c_str() );
         }
         else if ( cmd == "dp" )
         {
@@ -320,17 +320,17 @@ private:
         }
         else if ( cmd == "fl" )
         {
-            m_server->RequestContactList( session->robot );
+            m_server->RequestContactList( session->Robot );
         }
         else if ( cmd == "push" )
         {
             if ( !param.empty() )
-                m_server->PushMessage( session->robot, param.c_str(), "hello" );
+                m_server->PushMessage( session->Robot, param.c_str(), "hello" );
         }
         else if ( cmd == "create" )
         {
             if ( !param.empty() )
-                m_server->CreateSession( session->robot, param.c_str() );
+                m_server->CreateSession( session->Robot, param.c_str() );
         }
         else if ( cmd =="close" )
         {
@@ -476,7 +476,7 @@ private:
     HRESULT __stdcall onUserUpdated(BSTR robot, IRobotUser* user)
     {
         BEGIN_(onUserUpdated)
-        PRINT_EVENT("robot=" + bstr2A(robot) + ",friendly=" + user->friendlyName + ",status=" + user->Status);
+        PRINT_EVENT("robot=" + bstr2A(robot) + ",friendly=" + user->FriendlyName + ",status=" + user->Status);
         END_
     }
 
@@ -497,7 +497,7 @@ private:
         for ( size_t i = 0; i < count; ++i )
         {
             IRobotUserPtr user = contactList->Item(i);
-            std::cout << user->friendlyName << std::endl;
+            std::cout << user->FriendlyName << std::endl;
         }
 
         END_
