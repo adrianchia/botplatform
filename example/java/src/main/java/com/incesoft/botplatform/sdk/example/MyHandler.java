@@ -3,16 +3,16 @@ package com.incesoft.botplatform.sdk.example;
 import java.util.List;
 import java.util.Random;
 
+import com.incesoft.botplatform.sdk.RobotAdapter;
 import com.incesoft.botplatform.sdk.RobotException;
-import com.incesoft.botplatform.sdk.RobotHandler;
+import com.incesoft.botplatform.sdk.RobotFileDescriptor;
 import com.incesoft.botplatform.sdk.RobotMessage;
 import com.incesoft.botplatform.sdk.RobotResource;
 import com.incesoft.botplatform.sdk.RobotServer;
 import com.incesoft.botplatform.sdk.RobotSession;
-import com.incesoft.botplatform.sdk.RobotFileDescriptor;
 import com.incesoft.botplatform.sdk.RobotUser;
 
-public class MyHandler implements RobotHandler {
+public class MyHandler extends RobotAdapter{
 
 	public final String commandList = "*****************************************\r"
 			+ "**  BOTPLATFORM SDK DEMO COMMAND LIST  **\r"
@@ -26,7 +26,6 @@ public class MyHandler implements RobotHandler {
 			+ " voice ----- test voiceclip.\r"
 			+ " file ------ test file transfer.\r"
 			+ " p4 -------- test msn activity.\r"
-			+ " webcam ---- test webcam.\r"
 			+ " name ------ set friendly name.\r"
 			+ " psm ------- set personal message.\r"
 			+ " dp -------- set display picture.\r"
@@ -101,8 +100,6 @@ public class MyHandler implements RobotHandler {
 			session.sendFile("file.txt");
 		} else if ("p4".equals(command)) {
 			session.sendActivity("http://botplatform.com","botplatform home");
-		} else if ("webcam".equals(command)) {
-			session.sendWebcam("192.168.1.26", 81, 101, 9001);
 		} else if ("name".equals(command)) {
 			if(param == null) param = "name-"+ new Random().nextInt(1000);
 			server.setDisplayName(session.getRobot(), param);
@@ -214,14 +211,6 @@ public class MyHandler implements RobotHandler {
 	}
 
 	public void userLeft(RobotSession session, RobotUser user) throws RobotException {
-		debugEvent();
-	}
-
-	public void webcamAccepted(RobotSession session) throws RobotException {
-		debugEvent();
-	}
-
-	public void webcamRejected(RobotSession session) throws RobotException {
 		debugEvent();
 	}
 
