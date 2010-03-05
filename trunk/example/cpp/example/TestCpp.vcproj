@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="TestCpp"
+	Name="example"
 	ProjectGUID="{B7B6B272-3E09-47A9-B03E-47748EBD1D58}"
 	RootNamespace="TestCpp"
 	Keyword="Win32Proj"
