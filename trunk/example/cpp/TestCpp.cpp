@@ -63,7 +63,7 @@ const std::string operator+( const std::string& lhs, const _bstr_t& rhs )
 class CoInit
 {
 public:
-    CoInit() { CoInitialize(NULL); }
+    CoInit() { CoInitializeEx(NULL, COINIT_MULTITHREADED); }
     ~CoInit() { CoUninitialize(); }
 };
 
@@ -127,7 +127,6 @@ static const char commandList[] =
     " voice ----- test voiceclip.\r"
     " file ------ test file transfer.\r"
     " p4 -------- test msn activity.\r"
-    " webcam ---- test webcam.\r"
     " name ------ set friendly name.\r"
     " psm ------- set personal message.\r"
     " dp -------- set display picture.\r"
@@ -278,10 +277,6 @@ private:
         else if ( cmd == "p4" )
         {
             session->SendActivity( "http://botplatform.com","botplatform home" );
-        }
-        else if ( cmd == "webcam" )
-        {
-            session->SendWebcam( "192.168.1.26", 81, 101, 9001 );
         }
         else if ( cmd == "name" )
         {
@@ -528,7 +523,6 @@ private:
     HRESULT __stdcall onTypingReceived(IRobotSession* session)
     {
         PRINT_NULL(onTypingReceived);
-        return S_OK;
     }
 
     HRESULT __stdcall onSceneUpdated(BSTR robot, BSTR user, IRobotResource* resource)
