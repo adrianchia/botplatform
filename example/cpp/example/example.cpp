@@ -565,12 +565,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
     CComPtr<IRobotServerFactory> spRobotServerFactory;
     E_IF( spRobotServerFactory.CoCreateInstance( CLSID_RobotServerFactory, NULL, CLSCTX_INPROC ) );
-    spRobotServerFactory->Init( 10 );
+    spRobotServerFactory->Init( 2 );
 
-    IRobotServerPtr spServer = spRobotServerFactory->CreateRobotServer( "bottest.com", 6602 );
+    IRobotServerPtr spRobotServer = spRobotServerFactory->CreateRobotServer( "bottest.com", 6602 );
     RobotServerEventsImpl eventImpl;
-    E_IF( eventImpl.setServer( spServer ) );
-    spServer->Login( "SP000125", "test111", 60000 );
+    E_IF( eventImpl.setServer( spRobotServer ) );
+    spRobotServer->Login( "SP000125", "test111", 60000 );
 
     std::string cmd;
     while ( true )
@@ -580,7 +580,7 @@ int _tmain(int argc, _TCHAR* argv[])
             break;
     }
     
-    spServer->Logout();
+    spRobotServer->Logout();
     spRobotServerFactory->Destroy();
 
     END_
