@@ -505,12 +505,13 @@ bool CRobotServer::syncRecv( Json::Value& root )
 bool CRobotServer::updaterobot( BSTR robotAccount, LONG* status, BSTR displayName, BSTR personalMessage,
                                BSTR displayPicture, BSTR largePicture, BSTR scene, LONG* colorScheme )
 {
-    if ( !robotAccount )
-        return false;
-
-    std::string strRobotAcc = unicToUtf8(robotAccount);
-
+    std::string strRobotAcc;
     Json::Value body;
+
+    if ( robotAccount )
+    {
+        strRobotAcc = unicToUtf8(robotAccount);
+    }
 
     if ( status )
     {
@@ -553,14 +554,14 @@ bool CRobotServer::updaterobot( BSTR robotAccount, LONG* status, BSTR displayNam
     return sendCmd( strRobotAcc, "", "", "updaterobot", &body );
 }
 
-void CRobotServer::addSession( const std::string& sessionId, CRobotSession* session )
+bool CRobotServer::addSession( const std::string& sessionId, CRobotSession* session )
 {
     if ( !session )
-        return;
+        return false;
 
     boost::lock_guard<boost::mutex> guard_(m_sessionMutex);
 
-    m_sessionMap.insert( RobotSessionMap::value_type(sessionId, session) );
+    return m_sessionMap.insert( RobotSessionMap::value_type(sessionId, session) ).second;
 }
 
 void CRobotServer::removeSession( const std::string& sessionId )

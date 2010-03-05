@@ -19,7 +19,8 @@ public:
         std::string sessionId = root["sessionId"].asString();
 
         CRobotServer* pServer = (CRobotServer*)para;
-        doTask( pServer, robotId, userId, sessionId, root );
+        if ( pServer )
+            doTask( pServer, robotId, userId, sessionId, root );
     }
 
 protected:

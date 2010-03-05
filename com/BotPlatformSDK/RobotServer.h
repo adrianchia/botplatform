@@ -88,7 +88,7 @@ public:
 public:
     void init( ManagerBase* man, BSTR ip, int port );
 
-    void addSession( const std::string& sessionId, CRobotSession* session );
+    bool addSession( const std::string& sessionId, CRobotSession* session );
     void removeSession( const std::string& sessionId );
     CRobotSession* getSession( const std::string& sessionId );
 

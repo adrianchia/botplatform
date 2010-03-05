@@ -49,7 +49,7 @@ public:
     STDMETHOD(Count)(LONG* pVal);
 
 public:
-    void addUser( CRobotUser* user );
+    bool addUser( CRobotUser* user );
     void removeUser( const std::string& userId );
     
     CRobotUser* getUser( const std::string& userId );
