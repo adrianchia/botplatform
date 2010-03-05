@@ -208,12 +208,6 @@ public interface RobotSession {
     
     /**
      * Send a ink message
-     * @param uri unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
-     */
-    public void sendInk(String uri) throws RobotException;
-    
-    /**
-     * Send a ink message
      * @param inkData data of the ink message.
      * @throws RobotException
      */
