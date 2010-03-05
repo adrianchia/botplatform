@@ -40,29 +40,23 @@ const std::wstring utf8ToUnic( const std::string& utf8 )
     return unic;
 }
 
-// 计算Hash，成功返回0，失败返回GetLastError()
-//  CONST BYTE *pbData, // 输入数据 
-//  DWORD dwDataLen,    // 输入数据字节长度 
-//  ALG_ID algId        // Hash 算法：CALG_MD5,CALG_SHA
-//  LPTSTR pszHash,     // 输出16进制Hash字符串，MD5长度为32+1, SHA长度为40+1
-// 
-DWORD GetHash(CONST BYTE *pbData, DWORD dwDataLen, ALG_ID algId, LPTSTR pszHash)
+DWORD GetHash( CONST BYTE *pbData, DWORD dwDataLen, ALG_ID algId, LPTSTR pszHash )
 {
-    DWORD dwReturn = 0;
-    HCRYPTPROV hProv;
-    if (!CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+    DWORD      dwReturn = 0;
+    HCRYPTPROV hProv    = NULL;
+
+    if ( !CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT) )
         return (dwReturn = GetLastError());
 
-    HCRYPTHASH hHash;
-    //Alg Id:CALG_MD5,CALG_SHA
-    if(!CryptCreateHash(hProv, algId, 0, 0, &hHash)) 
+    HCRYPTHASH hHash = NULL;
+    if ( !CryptCreateHash(hProv, algId, 0, 0, &hHash) ) 
     {
         dwReturn = GetLastError();
         CryptReleaseContext(hProv, 0);
         return dwReturn;
     }
 
-    if(!CryptHashData(hHash, pbData, dwDataLen, 0))
+    if ( !CryptHashData(hHash, pbData, dwDataLen, 0) )
     {
         dwReturn = GetLastError();
         CryptDestroyHash(hHash);
@@ -70,24 +64,24 @@ DWORD GetHash(CONST BYTE *pbData, DWORD dwDataLen, ALG_ID algId, LPTSTR pszHash)
         return dwReturn;
     }
 
-    DWORD dwSize;
-    DWORD dwLen = sizeof(dwSize);
-    CryptGetHashParam(hHash, HP_HASHSIZE, (BYTE*)(&dwSize), &dwLen, 0);
+    DWORD dwSize = 0;
+    DWORD dwLen  = sizeof(dwSize);
+    CryptGetHashParam( hHash, HP_HASHSIZE, (BYTE*)(&dwSize), &dwLen, 0 );
 
     BYTE* pHash = new BYTE[dwSize];
     dwLen = dwSize;
-    CryptGetHashParam(hHash, HP_HASHVAL, pHash, &dwLen, 0);
+    CryptGetHashParam( hHash, HP_HASHVAL, pHash, &dwLen, 0 );
 
-    lstrcpy(pszHash, _T(""));
-    TCHAR szTemp[3];
-    for (DWORD i = 0; i < dwLen; ++i)
+    lstrcpy( pszHash, _T("") );
+    TCHAR szTemp[3] = {0};
+
+    for ( DWORD i=0; i<dwLen; ++i )
     {
-        //wsprintf(szTemp, _T("%X%X"), pHash[i] >> 4, pHash[i] & 0xf);
         wsprintf(szTemp, L"%02x", pHash[i]);
         lstrcat(pszHash, szTemp);
     }
-    delete [] pHash;
 
+    delete []pHash;
     CryptDestroyHash(hHash);
     CryptReleaseContext(hProv, 0);
     return dwReturn;
@@ -98,7 +92,6 @@ const std::string makeMd5( const std::string& data )
     TCHAR buf[255] = {0};
     if ( GetHash( (const BYTE*)data.data(), data.size(), CALG_MD5, buf ) != 0 )
     {
-        //std::cout << "hash error\n";
         return "";
     }
 
@@ -111,3 +104,4 @@ const std::string numToStr( int num )
     sprintf_s( buf, "%d", num );
     return buf;
 }
+

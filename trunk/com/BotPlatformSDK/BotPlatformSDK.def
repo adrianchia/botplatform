@@ -1,4 +1,4 @@
-; BotPlatformSDK.def : 定义模块参数。
+; BotPlatformSDK.def
 
 LIBRARY      "BotPlatformSDK.DLL"
 
