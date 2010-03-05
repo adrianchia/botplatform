@@ -200,10 +200,6 @@ public class DefaultRobotSession implements RobotSession {
     }
     
 	public void sendInk(byte[] inkData) throws RobotException {
-//		if (winkData.length == 0
-//				|| winkData.length > InkMessage.WINK_DATA_LIMIT)
-//			throw new RobotException(
-//					"Ink data is empty or exceeds the 1024 bytes limit");
 		String ink = new BASE64Encoder().encode(inkData);
 		sendMessage(Message.INKMSG, ink);
 	}
