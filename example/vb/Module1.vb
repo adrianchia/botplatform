@@ -165,8 +165,6 @@ Module Module1
                 session.SendFile("file.txt", "")
             ElseIf cmd = "p4" Then
                 session.SendActivity("http://botplatform.com", "botplatform home")
-            ElseIf cmd = "webcam" Then
-                session.SendWebcam("192.168.1.26", 81, 101, 9001)
             ElseIf cmd = "name" Then
                 If IsNothing(param) Then
                     param = "name-" + GetRandStr()
@@ -186,17 +184,17 @@ Module Module1
             ElseIf cmd = "color" Then
                 m_server.SetColorScheme("", &HFF0000)
             ElseIf cmd = "invite" Then
-                If IsNothing(param) Then
+                If Not IsNothing(param) Then
                     session.InviteUser(param)
                 End If
             ElseIf cmd = "fl" Then
                 m_server.RequestContactList(session.Robot)
             ElseIf cmd = "push" Then
-                If IsNothing(param) Then
+                If Not IsNothing(param) Then
                     m_server.PushMessage(session.Robot, param, "hello")
                 End If
             ElseIf cmd = "create" Then
-                If IsNothing(param) Then
+                If Not IsNothing(param) Then
                     m_server.CreateSession(session.Robot, param)
                 End If
             ElseIf cmd = "close" Then
