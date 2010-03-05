@@ -1,0 +1,12 @@
+C:\Documents and Settings\Boyce Lee\桌面\ttt\botplatform_example\helloworld\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Boyce Lee\桌面\ttt\botplatform_example\helloworld\obj\Debug\Interop.BotPlatformSDKLib.dll
+C:\Documents and Settings\Boyce Lee\桌面\ttt\botplatform_example\helloworld\obj\Debug\helloworld.csproj.ResolveComReference.cache
+C:\Documents and Settings\Boyce Lee\桌面\ttt\botplatform_example\helloworld\bin\Debug\helloworld.exe
+C:\Documents and Settings\Boyce Lee\桌面\ttt\botplatform_example\helloworld\bin\Debug\helloworld.pdb
+C:\Documents and Settings\Boyce Lee\桌面\ttt\botplatform_example\helloworld\bin\Debug\Interop.BotPlatformSDKLib.dll
+C:\Documents and Settings\Boyce Lee\桌面\ttt\botplatform_example\helloworld\obj\Debug\helloworld.exe
+C:\Documents and Settings\Boyce Lee\桌面\ttt\botplatform_example\helloworld\obj\Debug\helloworld.pdb
+E:\CPPProject\botplatform-example\helloworld\obj\Debug\Interop.BotPlatformSDKLib.dll
+E:\CPPProject\botplatform-example\helloworld\obj\Debug\helloworld.csproj.ResolveComReference.cache
+E:\CPPProject\botplatform-example\helloworld\obj\Debug\helloworld.exe
+E:\CPPProject\botplatform-example\helloworld\obj\Debug\helloworld.pdb

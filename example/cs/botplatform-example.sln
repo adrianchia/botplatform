@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "example", "example\example.csproj", "{DC6BDA1D-C272-4A0F-9BBA-AE2F0D7D5DE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "helloworld", "helloworld\helloworld.csproj", "{2B6DB070-E6C1-4878-BEC2-9B03F9AC4502}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC6BDA1D-C272-4A0F-9BBA-AE2F0D7D5DE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6BDA1D-C272-4A0F-9BBA-AE2F0D7D5DE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6BDA1D-C272-4A0F-9BBA-AE2F0D7D5DE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6BDA1D-C272-4A0F-9BBA-AE2F0D7D5DE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B6DB070-E6C1-4878-BEC2-9B03F9AC4502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B6DB070-E6C1-4878-BEC2-9B03F9AC4502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B6DB070-E6C1-4878-BEC2-9B03F9AC4502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B6DB070-E6C1-4878-BEC2-9B03F9AC4502}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
