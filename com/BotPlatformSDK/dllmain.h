@@ -1,4 +1,4 @@
-// dllmain.h : 模块类的声明。
+// dllmain.h 
 
 class CBotPlatformSDKModule : public CAtlDllModuleT< CBotPlatformSDKModule >
 {
