@@ -253,7 +253,7 @@ public class MyHandler extends RobotAdapter{
 	public void contactListReceived(String robot, List<RobotUser> friendList) throws RobotException {
 		debugEvent("robot=" + robot + ", size=" + friendList.size() + ")");
 		for (RobotUser u : friendList) {
-			System.out.println(u);
+			System.out.println(u.getID());
 		}
 	}
 
