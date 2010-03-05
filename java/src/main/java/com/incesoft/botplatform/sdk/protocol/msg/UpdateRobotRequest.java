@@ -1,6 +1,9 @@
 package com.incesoft.botplatform.sdk.protocol.msg;
 
-public class UpdateRobotRequest {
+import java.io.Serializable;
+
+public class UpdateRobotRequest implements Serializable{
+	private static final long serialVersionUID = -4694646733136953245L;
 	private int status = -1;
 	private String displayName;
 	private String personalMessage;
