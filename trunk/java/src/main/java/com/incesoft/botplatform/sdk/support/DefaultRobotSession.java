@@ -199,13 +199,6 @@ public class DefaultRobotSession implements RobotSession {
 		sendMessage(Message.FILECMD, cmd);
     }
     
-
-	public void sendInk(String uri) throws RobotException {
-		ResourceMessage msg = new ResourceMessage();
-		msg.setLocation(uri);
-		sendMessage(Message.INK, msg);
-	}
-
 	public void sendInk(byte[] inkData) throws RobotException {
 //		if (winkData.length == 0
 //				|| winkData.length > InkMessage.WINK_DATA_LIMIT)
