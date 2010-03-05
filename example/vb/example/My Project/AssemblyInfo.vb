@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("example")> 
 <Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("微软中国")> 
+<Assembly: AssemblyCompany("InceSoft")> 
 <Assembly: AssemblyProduct("example")> 
-<Assembly: AssemblyCopyright("Copyright © 微软中国 2010")> 
+<Assembly: AssemblyCopyright("Copyright © InceSoft 2010")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
