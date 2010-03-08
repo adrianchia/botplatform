@@ -4,9 +4,6 @@
 #include "Misc.h"
 
 
-void RegisterAllJSonCmds( ManagerBase* man );
-
-
 // CRobotServerFactory
 STDMETHODIMP CRobotServerFactory::CreateRobotServer(BSTR ip, LONG port, IRobotServer** ppRobotServer)
 {
@@ -18,12 +15,6 @@ STDMETHODIMP CRobotServerFactory::CreateRobotServer(BSTR ip, LONG port, IRobotSe
     realServer->init( this, ip, port );
     return S_OK;
 }
-
-CRobotServerFactory::CRobotServerFactory()
-{
-    RegisterAllJSonCmds(this);
-}
-
 
 STDMETHODIMP CRobotServerFactory::Init(LONG threadCount)
 {
