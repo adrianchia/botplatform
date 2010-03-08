@@ -115,8 +115,7 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
                 m_serverMan->startRun();
 
                 // register my check routine
-                if ( !m_checkToken )
-                    m_checkToken = m_serverMan->registerCheck( this, boost::bind(&CRobotServer::checkNetwork, this, _1) );
+                registerCheckToken();
                 return true;
             }
 
@@ -164,14 +163,6 @@ STDMETHODIMP CRobotServer::Login(BSTR spid, BSTR sppwd, LONG timeout)
         return E_FAIL;
     
     return S_OK;
-}
-
-void CRobotServer::unRegisterCheckToken()
-{
-    if ( m_checkToken )
-    {
-        m_serverMan->unRegisterCheck(this);
-    }
 }
 
 STDMETHODIMP CRobotServer::Logout(void)
@@ -372,11 +363,10 @@ bool CRobotServer::onRecv( const boost::system::error_code& error, size_t bytes_
 
 void CRobotServer::init( ManagerBase* man, BSTR ip, int port )
 {
-    m_serverMan = man;
     m_ip     = CW2A(ip);
     m_port   = port;
 
-    __super::init( man->getIOService() );
+    __super::init( man );
 }
 
 WORD CRobotServer::getNextSequenceNum()
@@ -404,20 +394,10 @@ bool CRobotServer::sendCmdBase( int frameType, const void* data, size_t len, boo
         str.append( (const char*)data, len );
 
     // send by sync or asyn mode
-    bool ret = false;
-
     if ( asyn )
-        ret = __super::send( str.c_str(), str.size() );
+        return __super::send( str.c_str(), str.size() );
     else
-        ret = __super::syncSend( str.c_str(), str.size() );
-
-    // if ok, rest check keep-alive time
-    if ( ret && m_checkToken )
-    {
-        m_checkToken->reset();
-    }
-
-    return ret;
+        return __super::syncSend( str.c_str(), str.size() );
 }
 
 bool CRobotServer::sendCmd( const std::string& robotId, const std::string& userId, const std::string& sessionId, const std::string& type, 
@@ -451,7 +431,7 @@ bool CRobotServer::sendKeepAlive()
     return sendCmdBase( F_KEEP_ALIVE, NULL, 0, true );
 }
 
-void CRobotServer::checkNetwork( bool timeout )
+void CRobotServer::onCheckNetwork( bool needKeepAlive )
 {
     if ( isFailed() )
     {
@@ -459,7 +439,7 @@ void CRobotServer::checkNetwork( bool timeout )
             return;
     }
 
-    if ( timeout )
+    if ( needKeepAlive )
         sendKeepAlive();
 }
 

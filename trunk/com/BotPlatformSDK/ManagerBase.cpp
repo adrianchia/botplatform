@@ -2,28 +2,14 @@
 #include "ManagerBase.h"
 
 
-
 //////////////////////////////////////////////////////////////////////////
-
-void CheckToken::reset()
-{
-    InterlockedExchange( &m_time, 0 );
-}
-
-void CheckToken::step()
-{
-    InterlockedIncrement( &m_time );
-}
-
-bool CheckToken::isTimeOut() const
-{
-    return m_time >= TIME_OUT;
-}
+void RegisterAllJSonCmds( ManagerBase* man );
 
 
 //////////////////////////////////////////////////////////////////////////
 ManagerBase::ManagerBase() : m_tp(NULL), m_run(true), m_checkth(NULL)
 {
+    RegisterAllJSonCmds(this);
 }
 
 ManagerBase::~ManagerBase()
@@ -156,7 +142,13 @@ void ManagerBase::runCheckTime()
                 CheckItem& item = it->second;
                 
                 item.token->step();
-                item.callback( item.token->isTimeOut() );
+                
+                bool timeout = item.token->isTimeOut();
+                
+                item.callback( timeout );
+
+                if ( timeout )
+                    item.token->reset();
             }
         }
     }

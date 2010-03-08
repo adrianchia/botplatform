@@ -19,7 +19,6 @@ class ATL_NO_VTABLE CRobotServerFactory :
     public ManagerBase
 {
 public:
-	CRobotServerFactory();
 
 DECLARE_REGISTRY_RESOURCEID(IDR_ROBOTSERVERFACTORY)
 

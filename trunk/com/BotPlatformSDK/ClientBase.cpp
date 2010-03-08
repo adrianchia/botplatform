@@ -1,8 +1,9 @@
 #include "StdAfx.h"
 #include "ClientBase.h"
+#include "ManagerBase.h"
 
 
-ClientBase::ClientBase() : m_socket(NULL), m_failed(true)
+ClientBase::ClientBase() : m_serverMan(NULL), m_socket(NULL), m_failed(true)
 {
     m_handleThis.reset( new HandleType::SafeHandleType(this) );
 }
@@ -11,21 +12,26 @@ ClientBase::~ClientBase()
 {
     m_handleThis->Clear();
     close();
+    unRegisterCheckToken();
     delete m_socket;
 }
 
-bool ClientBase::init( boost::asio::io_service& io_service )
+bool ClientBase::init( ManagerBase* manBase )
 {
     // initialize socket by io-service
-    ATLASSERT( !m_socket );
-    m_socket = new boost::asio::ip::tcp::socket( io_service );
+    ATLASSERT( !m_socket && manBase );
+    m_serverMan = manBase;
+    m_socket = new boost::asio::ip::tcp::socket( manBase->getIOService() );
     return true;
 }
 
 bool ClientBase::connect( boost::asio::io_service& io_service, const std::string& host, int port )
 {
     if ( !m_socket )
+    {
+        //m_socket = new boost::asio::ip::tcp::socket( manBase->getIOService() );
         return false;
+    }
 
     using namespace boost::asio::ip;
 
@@ -76,7 +82,11 @@ bool ClientBase::send( const void* data, size_t dataLen )
     try
     {
         boost::asio::async_write( *m_socket, boost::asio::buffer(data, dataLen),
-            boost::bind(&ClientBase::sendCallback, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred) );
+            boost::bind(&ClientBase::sendCallback, m_handleThis, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred) );
+
+        // if ok, rest check keep-alive time
+        if ( m_checkToken )
+            m_checkToken->reset();
 
         return true;
     }
@@ -95,6 +105,11 @@ bool ClientBase::syncSend( const void* data, size_t dataLen )
     try
     {
         boost::asio::write( *m_socket, boost::asio::buffer(data, dataLen) );
+
+        // if ok, rest check keep-alive time
+        if ( m_checkToken )
+            m_checkToken->reset();
+
         return true;
     }
     catch (...)
@@ -172,8 +187,35 @@ bool ClientBase::close()
     }
 }
 
+void ClientBase::registerCheckToken()
+{
+    if ( !m_serverMan )
+        return;
+
+    if ( !m_checkToken )
+        m_checkToken = m_serverMan->registerCheck( this, boost::bind(&ClientBase::checkNetworkCallBack, m_handleThis, _1) );
+}
+
+void ClientBase::unRegisterCheckToken()
+{
+    if ( !m_serverMan )
+        return;
+
+    if ( m_checkToken )
+    {
+        m_serverMan->unRegisterCheck(this);
+    }
+}
+
 bool ClientBase::onSend( const boost::system::error_code& error, size_t bytes_transferred )
 {
+    // if error happened, close
+    if ( error )
+    {
+        setFailed();
+        return false;
+    }
+
     return true;
 }
 
@@ -182,15 +224,31 @@ bool ClientBase::onRecv( const boost::system::error_code& error, size_t bytes_tr
     // if error happened, close
     if ( error )
     {
-        close();
+        setFailed();
         return false;
     }
 
     return true;
 }
 
-void ClientBase::sendCallback( ClientBase* p, const boost::system::error_code& error, size_t bytes_transferred )
+void ClientBase::onCheckNetwork( bool needKeepAlive )
 {
+}
+
+void ClientBase::sendCallback( HandleType handle, const boost::system::error_code& error, size_t bytes_transferred )
+{
+    safeCallSend( handle->GetPtr(), error, bytes_transferred );
+}
+
+void ClientBase::safeCallSend( ClientBase* p, const boost::system::error_code& error, size_t bytes_transferred )
+{
+    // check self valid and no exception will be throw
+    BEGIN_SAFE
+
+        if ( p )
+            p->onSend( error, bytes_transferred );
+
+    END_SAFE
 }
 
 void ClientBase::recvCallback( HandleType handle, const boost::system::error_code& error, size_t bytes_transferred )
@@ -205,6 +263,22 @@ void ClientBase::safeCallRecv( ClientBase* p, const boost::system::error_code& e
 
     if ( p )
         p->onRecv( error, bytes_transferred );
+
+    END_SAFE
+}
+
+void ClientBase::checkNetworkCallBack( HandleType handle, bool needKeepAlive )
+{
+    safeCallCheckNetwork( handle->GetPtr(), needKeepAlive );
+}
+
+void ClientBase::safeCallCheckNetwork( ClientBase* p, bool needKeepAlive )
+{
+    // check self valid and no exception will be throw
+    BEGIN_SAFE
+
+        if ( p )
+            p->onCheckNetwork( needKeepAlive );
 
     END_SAFE
 }

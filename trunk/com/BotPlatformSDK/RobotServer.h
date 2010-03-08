@@ -38,7 +38,7 @@ public:
     typedef boost::unordered_map<std::string, CRobotSession*> RobotSessionMap;
 
 public:
-    CRobotServer() : m_serverMan(NULL), m_sequenceNumber(rand()), m_port(0), m_timeout(0)
+    CRobotServer() : m_sequenceNumber(rand()), m_port(0), m_timeout(0)
 	{
         m_handleThis.reset( new HandleType::SafeHandleType(this) );
 	}
@@ -97,6 +97,7 @@ public:
 
 private:
     virtual bool onRecv( const boost::system::error_code& error, size_t bytes_transferred );
+    virtual void onCheckNetwork( bool needKeepAlive );
 
     bool recvNext();
     void onProcessData( const std::string* data );
@@ -114,23 +115,20 @@ private:
     bool updaterobot( BSTR robotAccount, LONG* status = NULL, BSTR displayName = NULL, BSTR personalMessage = NULL,
         BSTR displayPicture = NULL, BSTR largePicture = NULL, BSTR scene = NULL, LONG* colorScheme = NULL );
 
-    void unRegisterCheckToken();
     WORD getNextSequenceNum();
-    void checkNetwork( bool timeout );
-
+    
 private:
     static void processData( HandleType handle, const std::string* data );
     static void safeProcessData( CRobotServer* p, const std::string* data );
 
 private:
-    ManagerBase*    m_serverMan;
     WORD            m_sequenceNumber;
     std::string     m_ip;
     int             m_port;
     HandleType      m_handleThis;
     RobotSessionMap m_sessionMap;
     boost::mutex    m_sessionMutex;
-    CheckTokenPtr   m_checkToken;
+    
     boost::mutex    m_seqNumMutex;
     std::string     m_strspid;
     std::string     m_strsppwd;

@@ -238,6 +238,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MiscObjBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MiscObjBase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\RobotFileDescriptor.cpp"
 				>
 			</File>

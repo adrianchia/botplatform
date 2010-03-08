@@ -205,7 +205,10 @@ STDMETHODIMP CRobotSession::InviteUser(BSTR user)
     if ( !user )
         return E_INVALIDARG;
 
-    if ( !sendCmd( unicToUtf8(user), "invite", NULL ) )
+    Json::Value body;
+    body = unicToUtf8(user);
+
+    if ( !sendCmd( "invite", &body ) )
         return E_FAIL;
 
     return S_OK;
