@@ -10,7 +10,7 @@ ClientBase::ClientBase() : m_serverMan(NULL), m_socket(NULL), m_failed(true)
 
 ClientBase::~ClientBase()
 {
-    m_handleThis->Clear();
+    m_handleThis->clearPtr();
     close();
     unRegisterCheckToken();
     delete m_socket;
@@ -237,7 +237,7 @@ void ClientBase::onCheckNetwork( bool needKeepAlive )
 
 void ClientBase::sendCallback( HandleType handle, const boost::system::error_code& error, size_t bytes_transferred )
 {
-    safeCallSend( handle->GetPtr(), error, bytes_transferred );
+    safeCallSend( handle->getPtr(), error, bytes_transferred );
 }
 
 void ClientBase::safeCallSend( ClientBase* p, const boost::system::error_code& error, size_t bytes_transferred )
@@ -253,7 +253,7 @@ void ClientBase::safeCallSend( ClientBase* p, const boost::system::error_code& e
 
 void ClientBase::recvCallback( HandleType handle, const boost::system::error_code& error, size_t bytes_transferred )
 {
-    safeCallRecv( handle->GetPtr(), error, bytes_transferred );
+    safeCallRecv( handle->getPtr(), error, bytes_transferred );
 }
 
 void ClientBase::safeCallRecv( ClientBase* p, const boost::system::error_code& error, size_t bytes_transferred )
@@ -269,7 +269,7 @@ void ClientBase::safeCallRecv( ClientBase* p, const boost::system::error_code& e
 
 void ClientBase::checkNetworkCallBack( HandleType handle, bool needKeepAlive )
 {
-    safeCallCheckNetwork( handle->GetPtr(), needKeepAlive );
+    safeCallCheckNetwork( handle->getPtr(), needKeepAlive );
 }
 
 void ClientBase::safeCallCheckNetwork( ClientBase* p, bool needKeepAlive )

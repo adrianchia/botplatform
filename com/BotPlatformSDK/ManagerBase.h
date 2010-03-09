@@ -92,12 +92,18 @@ protected:
 
     volatile bool            m_run;
 
+    volatile bool            m_reset;
+
     HandleList               m_ioevent;
+
+    HandleList               m_resetEvent;
 
     boost::thread*           m_checkth;
 
     CheckItemMap             m_checkItemMap;
 
     boost::mutex             m_checkItemMutex;
+
+    boost::mutex             m_startRunMutex;
 };
 

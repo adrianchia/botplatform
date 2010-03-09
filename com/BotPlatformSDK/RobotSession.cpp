@@ -21,7 +21,7 @@ HRESULT CRobotSession::FinalConstruct()
 void CRobotSession::FinalRelease()
 {
     Close();
-    SafeRelease(m_robotUsers);
+    safeRelease(m_robotUsers);
 }
 
 STDMETHODIMP CRobotSession::CreateMessage(IRobotMessage** message)
@@ -33,6 +33,9 @@ STDMETHODIMP CRobotSession::SendText(BSTR message)
 {
     if ( !message )
         return E_INVALIDARG;
+
+    if ( *message == 0 )
+        return S_OK;
 
     Json::Value body;
 
@@ -55,6 +58,8 @@ STDMETHODIMP CRobotSession::SendIM(IRobotMessage* message)
 
     if ( !msg->getText().empty() )
         body["text"] = msg->getText();
+    else
+        return S_OK;
 
     if ( !msg->getFontName().empty() )
         body["fontName"] = msg->getFontName();
@@ -102,13 +107,16 @@ STDMETHODIMP CRobotSession::SendNudge(void)
 
 STDMETHODIMP CRobotSession::SendActivity(BSTR url, BSTR friendlyName)
 {
-    if ( !url || !friendlyName )
-        return E_INVALIDARG;
-
     Json::Value body;
 
-    body["name"] = unicToUtf8(friendlyName);
-    body["data"] = unicToUtf8(url);
+    if ( isValidStr(friendlyName) )
+        body["name"] = unicToUtf8(friendlyName);
+    
+    if ( isValidStr(url) )
+        body["data"] = unicToUtf8(url);
+
+    if ( body.empty() )
+        return E_INVALIDARG;
 
     if ( !sendCmd( "appmsg", &body ) )
         return E_FAIL;
@@ -118,14 +126,19 @@ STDMETHODIMP CRobotSession::SendActivity(BSTR url, BSTR friendlyName)
 
 STDMETHODIMP CRobotSession::SendActivityEx(BSTR appid, BSTR appname, BSTR data)
 {
-    if ( !appid || !appname || !data )
-        return E_INVALIDARG;
-
     Json::Value body;
 
-    body["id"]   = unicToUtf8(appid);
-    body["name"] = unicToUtf8(appname);
-    body["data"] = unicToUtf8(data);
+    if ( isValidStr(appid) )
+        body["id"] = unicToUtf8(appid);
+    
+    if ( isValidStr(appname) )
+        body["name"] = unicToUtf8(appname);
+    
+    if ( isValidStr(data) )
+        body["data"] = unicToUtf8(data);
+
+    if ( body.empty() )
+        return E_INVALIDARG;
 
     if ( !sendCmd( "appmsg", &body ) )
         return E_FAIL;
@@ -148,7 +161,7 @@ STDMETHODIMP CRobotSession::SendTyping(void)
 
 STDMETHODIMP CRobotSession::GetUser(BSTR userid, IRobotUser** ppUser)
 {
-    if ( !userid || !ppUser )
+    if ( !isValidStr(userid) || !ppUser )
         return E_INVALIDARG;
 
     *ppUser = NULL;
@@ -202,7 +215,7 @@ STDMETHODIMP CRobotSession::Close(void)
 
 STDMETHODIMP CRobotSession::InviteUser(BSTR user)
 {
-    if ( !user )
+    if ( !isValidStr(user) )
         return E_INVALIDARG;
 
     Json::Value body;
@@ -216,14 +229,14 @@ STDMETHODIMP CRobotSession::InviteUser(BSTR user)
 
 STDMETHODIMP CRobotSession::SendFile(BSTR uri, BSTR friendlyName)
 {
-    if ( !uri || !friendlyName )
+    if ( !isValidStr(uri) )
         return E_INVALIDARG;
 
     Json::Value body;
 
     body["location"] = unicToUtf8(uri);
 
-    if ( friendlyName && *friendlyName != 0 )
+    if ( isValidStr(friendlyName) )
         body["name"] = unicToUtf8(friendlyName);
 
     if ( !sendCmd( "file", &body ) )
@@ -234,7 +247,7 @@ STDMETHODIMP CRobotSession::SendFile(BSTR uri, BSTR friendlyName)
 
 STDMETHODIMP CRobotSession::SendFileAcceptance(BSTR transferId, BSTR saveUrl)
 {
-    if ( !transferId || !saveUrl )
+    if ( !isValidStr(transferId) || !isValidStr(saveUrl) )
         return E_INVALIDARG;
 
     Json::Value body;
@@ -251,7 +264,7 @@ STDMETHODIMP CRobotSession::SendFileAcceptance(BSTR transferId, BSTR saveUrl)
 
 STDMETHODIMP CRobotSession::SendFileRejection(BSTR transferId)
 {
-    if ( !transferId )
+    if ( !isValidStr(transferId) )
         return E_INVALIDARG;
 
     Json::Value body;
@@ -267,7 +280,7 @@ STDMETHODIMP CRobotSession::SendFileRejection(BSTR transferId)
 
 STDMETHODIMP CRobotSession::SendFileCancellation(BSTR transferId)
 {
-    if ( !transferId )
+    if ( !isValidStr(transferId) )
         return E_INVALIDARG;
 
     Json::Value body;
@@ -283,7 +296,7 @@ STDMETHODIMP CRobotSession::SendFileCancellation(BSTR transferId)
 
 STDMETHODIMP CRobotSession::SendInk(BSTR inkData)
 {
-    if ( !inkData )
+    if ( !isValidStr(inkData) )
         return E_INVALIDARG;
 
     Json::Value body;
@@ -298,13 +311,15 @@ STDMETHODIMP CRobotSession::SendInk(BSTR inkData)
 
 STDMETHODIMP CRobotSession::SendWink(BSTR uri, BSTR stamp)
 {
-    if ( !uri || !stamp )
+    if ( !isValidStr(uri) )
         return E_INVALIDARG;
 
     Json::Value body;
 
     body["location"] = unicToUtf8(uri);
-    body["stamp"]    = unicToUtf8(stamp);
+
+    if ( isValidStr(stamp) )
+        body["stamp"] = unicToUtf8(stamp);
 
     if ( !sendCmd( "wink", &body ) )
         return E_FAIL;
@@ -314,7 +329,7 @@ STDMETHODIMP CRobotSession::SendWink(BSTR uri, BSTR stamp)
 
 STDMETHODIMP CRobotSession::SendVoiceclip(BSTR uri)
 {
-    if ( !uri )
+    if ( !isValidStr(uri) )
         return E_INVALIDARG;
 
     Json::Value body;
@@ -329,7 +344,7 @@ STDMETHODIMP CRobotSession::SendVoiceclip(BSTR uri)
 
 STDMETHODIMP CRobotSession::SendWebcam(BSTR serverIP, LONG serverPort, LONG recipientid, LONG sessionid)
 {
-    if ( !serverIP )
+    if ( !isValidStr(serverIP) )
         return E_INVALIDARG;
 
     Json::Value body;

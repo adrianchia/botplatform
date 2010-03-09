@@ -7,7 +7,7 @@ void RegisterAllJSonCmds( ManagerBase* man );
 
 
 //////////////////////////////////////////////////////////////////////////
-ManagerBase::ManagerBase() : m_tp(NULL), m_run(true), m_checkth(NULL)
+ManagerBase::ManagerBase() : m_tp(NULL), m_run(true), m_reset(true), m_checkth(NULL)
 {
     RegisterAllJSonCmds(this);
 }
@@ -31,6 +31,7 @@ void ManagerBase::init( int threadCount )
     for ( size_t i = 0; i < cpus; ++i )
     {
         m_ioevent.push_back( CreateEvent( NULL, FALSE, FALSE, NULL ) );
+        m_resetEvent.push_back( CreateEvent( NULL, FALSE, TRUE, NULL ) );
         m_runth.push_back( new boost::thread( boost::bind(&ManagerBase::runIoService, this, i) ) );
     }
 
@@ -72,11 +73,15 @@ void ManagerBase::close()
         m_checkth = NULL;
     }
 
-    // close io event handles
+    // close event handles
     for ( size_t i = 0; i < m_ioevent.size(); ++i )
+    {
         CloseHandle( m_ioevent[i] );
+        CloseHandle( m_resetEvent[i] );
+    }
 
     m_ioevent.clear();
+    m_resetEvent.clear();
 }
 
 JSonCmdBase* ManagerBase::findJsonCmd( const std::string& name )
@@ -114,15 +119,34 @@ void ManagerBase::runIoService( int idx )
         }
         catch ( ... )
         {
-
         }
+
+        m_reset = true;
+        SetEvent( m_resetEvent[idx] );
     }
 }
 
 void ManagerBase::startRun()
 {
-    for ( size_t i = 0; i < m_ioevent.size(); ++i )
-        SetEvent( m_ioevent[i] );
+    boost::lock_guard<boost::mutex> guard_(m_startRunMutex);
+
+    // if any run thread need reset
+    if ( m_reset )
+    {
+        // must wait all run complete
+        if ( !m_resetEvent.empty() )
+            WaitForMultipleObjects( m_resetEvent.size(), &m_resetEvent[0], TRUE, INFINITE );
+        
+        // then reset
+        m_ioService.reset();
+
+        // clear flag
+        m_reset = false;
+
+        // set all io-event signaled state, will run again
+        for ( size_t i = 0; i < m_ioevent.size(); ++i )
+            SetEvent( m_ioevent[i] );
+    }
 }
 
 void ManagerBase::runCheckTime()

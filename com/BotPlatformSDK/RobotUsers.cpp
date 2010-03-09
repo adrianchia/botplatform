@@ -11,7 +11,7 @@ void CRobotUsers::FinalRelease()
     for ( RobotUserMap::iterator it = m_userMap.begin(); it != m_userMap.end(); ++it )
     {
         CRobotUser* p = it->second;
-        SafeRelease(p);
+        safeRelease(p);
     }
 
     m_userMap.clear();
@@ -73,7 +73,7 @@ void CRobotUsers::removeUser( const std::string& userId )
         m_userVector.erase( vit );
 
         // release user
-        SafeRelease(user);
+        safeRelease(user);
     }
 }
 
