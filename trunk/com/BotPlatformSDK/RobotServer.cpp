@@ -65,6 +65,9 @@ void CRobotServer::makeToken( std::string& token, const std::string& challenge, 
 
 bool CRobotServer::login( const std::string& strspid, const std::string& strsppwd, long timeout )
 {
+    if ( !strspid.empty() )
+        return false;
+
     bool wantConnect = true;
     bool firstFailed = true;
 
@@ -152,12 +155,17 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
 
 STDMETHODIMP CRobotServer::Login(BSTR spid, BSTR sppwd, LONG timeout)
 {
-    if ( !spid || !sppwd )
+    if ( !isValidStr(spid) || !sppwd )
         return E_INVALIDARG;
 
-    m_strspid  = unicToUtf8(spid);
-    m_strsppwd = unicToUtf8(sppwd);
-    m_timeout  = timeout;
+    m_strspid = unicToUtf8(spid);
+
+    if ( sppwd )
+        m_strsppwd = unicToUtf8(sppwd);
+    else
+        m_strsppwd.clear();
+
+    m_timeout = timeout;
 
     if ( !login( m_strspid, m_strsppwd, m_timeout ) )
         return E_FAIL;
@@ -206,7 +214,7 @@ STDMETHODIMP CRobotServer::SetDisplayPictureEx(BSTR robotAccount, BSTR displayPi
 
 STDMETHODIMP CRobotServer::CreateSession(BSTR robot, BSTR user)
 {
-    if ( !robot || !user )
+    if ( !isValidStr(robot) || !isValidStr(user) )
         return E_INVALIDARG;
 
     if ( !sendCmd( unicToUtf8(robot), unicToUtf8(user), "", "createsession", NULL ) )
@@ -217,7 +225,7 @@ STDMETHODIMP CRobotServer::CreateSession(BSTR robot, BSTR user)
 
 STDMETHODIMP CRobotServer::PushMessage(BSTR robot, BSTR user, BSTR message)
 {
-    if ( !robot || !user || ! message )
+    if ( !isValidStr(robot) || !isValidStr(user) || !isValidStr(message) )
         return E_INVALIDARG;
 
     Json::Value body;
@@ -235,7 +243,7 @@ STDMETHODIMP CRobotServer::PushMessage(BSTR robot, BSTR user, BSTR message)
 
 STDMETHODIMP CRobotServer::RequestContactList(BSTR robot)
 {
-    if ( !robot )
+    if ( !isValidStr(robot) )
         return E_INVALIDARG;
 
     std::string u8_robot = unicToUtf8(robot);
@@ -248,11 +256,12 @@ STDMETHODIMP CRobotServer::RequestContactList(BSTR robot)
 
 STDMETHODIMP CRobotServer::RequestResource(BSTR robot, BSTR user, IRobotResource* resource, BSTR saveUrl)
 {
-    if ( !robot || !user || !resource || !saveUrl )
+    if ( !isValidStr(robot) || !isValidStr(user) || !resource || !isValidStr(saveUrl) )
         return E_INVALIDARG;
 
-    std::string u8_robot = unicToUtf8(robot);
-    std::string u8_user  = unicToUtf8(user);
+    std::string u8_robot   = unicToUtf8(robot);
+    std::string u8_user    = unicToUtf8(user);
+    std::string u8_saveUrl = unicToUtf8(saveUrl);
 
     CRobotResource* realRes = static_cast<CRobotResource*>(resource);
 
@@ -261,7 +270,8 @@ STDMETHODIMP CRobotServer::RequestResource(BSTR robot, BSTR user, IRobotResource
     body["name"]    = realRes->getName();
     body["digest"]  = realRes->getDigest();
     body["size"]    = numToStr(realRes->getSize());
-    
+    body["saveUrl"] = u8_saveUrl;
+
     if ( !sendCmd( u8_robot, u8_user, "", "getresource", &body ) )
         return E_FAIL;
 
@@ -302,7 +312,7 @@ void CRobotServer::safeProcessData( CRobotServer* p, const std::string* data )
 
 void CRobotServer::processData( HandleType handle, const std::string* data )
 {
-    safeProcessData( handle->GetPtr(), data );
+    safeProcessData( handle->getPtr(), data );
 }
 
 void CRobotServer::onProcessData( const std::string* data )
@@ -363,6 +373,8 @@ bool CRobotServer::onRecv( const boost::system::error_code& error, size_t bytes_
 
 void CRobotServer::init( ManagerBase* man, BSTR ip, int port )
 {
+    ATLASSERT(ip);
+
     m_ip     = CW2A(ip);
     m_port   = port;
 
@@ -485,12 +497,12 @@ bool CRobotServer::syncRecv( Json::Value& root )
 bool CRobotServer::updaterobot( BSTR robotAccount, LONG* status, BSTR displayName, BSTR personalMessage,
                                BSTR displayPicture, BSTR largePicture, BSTR scene, LONG* colorScheme )
 {
-    std::string strRobotAcc;
+    std::string u8_robotAcc;
     Json::Value body;
 
     if ( robotAccount )
     {
-        strRobotAcc = unicToUtf8(robotAccount);
+        u8_robotAcc = unicToUtf8(robotAccount);
     }
 
     if ( status )
@@ -531,7 +543,7 @@ bool CRobotServer::updaterobot( BSTR robotAccount, LONG* status, BSTR displayNam
     if ( body.empty() )
         return false;
 
-    return sendCmd( strRobotAcc, "", "", "updaterobot", &body );
+    return sendCmd( u8_robotAcc, "", "", "updaterobot", &body );
 }
 
 bool CRobotServer::addSession( const std::string& sessionId, CRobotSession* session )

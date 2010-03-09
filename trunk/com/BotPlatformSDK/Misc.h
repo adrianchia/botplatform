@@ -59,9 +59,9 @@ public:
     }
 
 public:
-    PtrType GetPtr() const { return m_ptr; }
+    PtrType getPtr() const { return m_ptr; }
 
-    void Clear() { m_ptr = NULL; }
+    void clearPtr() { m_ptr = NULL; }
 
 public:
     PtrType m_ptr;
@@ -107,13 +107,18 @@ public:
     return S_OK;
 
 template<class T>
-void SafeRelease(T*& p)
+void safeRelease(T*& p)
 {
     if ( p )
     {
         p->Release();
         p = NULL;
     }
+}
+
+inline bool isValidStr( BSTR str )
+{
+    return str && (*str != 0);
 }
 
 // json routine

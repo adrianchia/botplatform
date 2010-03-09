@@ -45,7 +45,7 @@ public:
 
     ~CRobotServer()
     {
-        m_handleThis->Clear();
+        m_handleThis->clearPtr();
     }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_ROBOTSERVER)
