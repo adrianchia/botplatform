@@ -129,18 +129,15 @@ interface IRobotServer : IUnknown{
 ]
 interface IRobotResource : IUnknown{
     /// Get the name of the resource
-    /// @param[out]  pVal       Name
-    /// @return                 Returns S_OK if successful, or an error value otherwise
+    /// @param      Name    the name of the resource
     [propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR* pVal);
 
     /// Get the digest of the resource
-    /// @param[out]  pVal       Digest
-    /// @return                 Returns S_OK if successful, or an error value otherwise
+    /// @param      Digest  the digest of the resource
     [propget, helpstring("property Digest")] HRESULT Digest([out, retval] BSTR* pVal);
 
     /// Get the size of the resource
-    /// @param[out]  pVal       Size
-    /// @return                 Returns S_OK if successful, or an error value otherwise
+    /// @param      Size    the size of the resource
     [propget, helpstring("property Size")] HRESULT Size([out, retval] LONG* pVal);
 };
 
@@ -153,23 +150,19 @@ interface IRobotResource : IUnknown{
 ]
 interface IRobotUser : IUnknown{
     /// Get user's identifier (MSN account) 
-    /// @param[out]  pVal       User's identifier
-    /// @return                 Returns S_OK if successful, or an error value otherwise
+    /// @param  ID              User's identifier
     [propget, helpstring("property ID")] HRESULT ID([out, retval] BSTR* pVal);
 
     /// Get user's friendly name
-    /// @param[out]  pVal       User's friendly name
-    /// @return                 Returns S_OK if successful, or an error value otherwise
+    /// @param  FriendlyName    User's friendly name
     [propget, helpstring("property FriendlyName")] HRESULT FriendlyName([out, retval] BSTR* pVal);
 
     /// Get user's status
-    /// @param[out]  pVal       User's status \n NLN - online \n FLN - offline \n HDN - hidden \n BSY - busy \n IDL - idle \n BRB - be right back \n AWY - away \n PHN - on the phone \n LUN - out to lunch
-    /// @return                 Returns S_OK if successful, or an error value otherwise
+    /// @param  Status          User's status \n NLN - online \n FLN - offline \n HDN - hidden \n BSY - busy \n IDL - idle \n BRB - be right back \n AWY - away \n PHN - on the phone \n LUN - out to lunch
     [propget, helpstring("property Status")] HRESULT Status([out, retval] BSTR* pVal);
 
     /// Get user's client capabilities
-    /// @param[out]  pVal       User's client capabilities \n 0x00000001 - User is online via Mobile \n 0x00000002 - User online with the MSN client \n 0x00000004 - User online GIF/ink awareness \n 0x00000008 - User online ISF/ink awareness \n 0x00000010 - There is a web camera on user's machine \n 0x00000020 - Support of message chunking (to allow larger messages over SB) \n 0x00000040 - Mobile IMs permitted flag \n 0x00000080 - Direct Watch enabled flag \n 0x00000200 - The user is online via the web client \n 0x00000400 - The user is a mobile buddy.The flag can be thought of as the Mobile buddy bit which indicates that the buddy is on a mobile device and the mobile properties \n 0x00000800 - The user is a federated client.The flag can be thought of as the Federated client bit which indicates that the buddy is connected on a client that does not connect directly to the MSN Messenger service \n 0x00001000 - The user has its HasSpace bit set \n 0x00004000 - The user supports Peer-to-Peer IM \n 0x00008000 - The user supports Winks \n 0x10000000 - Client version 6.0 \n 0x20000000 - Client version 6.1 \n 0x30000000 - Client version 6.2 \n 0x40000000 - Client version 7.0 
-    /// @return                 Returns S_OK if successful, or an error value otherwise
+    /// @param  ClientID        User's client capabilities \n 0x00000001 - User is online via Mobile \n 0x00000002 - User online with the MSN client \n 0x00000004 - User online GIF/ink awareness \n 0x00000008 - User online ISF/ink awareness \n 0x00000010 - There is a web camera on user's machine \n 0x00000020 - Support of message chunking (to allow larger messages over SB) \n 0x00000040 - Mobile IMs permitted flag \n 0x00000080 - Direct Watch enabled flag \n 0x00000200 - The user is online via the web client \n 0x00000400 - The user is a mobile buddy.The flag can be thought of as the Mobile buddy bit which indicates that the buddy is on a mobile device and the mobile properties \n 0x00000800 - The user is a federated client.The flag can be thought of as the Federated client bit which indicates that the buddy is connected on a client that does not connect directly to the MSN Messenger service \n 0x00001000 - The user has its HasSpace bit set \n 0x00004000 - The user supports Peer-to-Peer IM \n 0x00008000 - The user supports Winks \n 0x10000000 - Client version 6.0 \n 0x20000000 - Client version 6.1 \n 0x30000000 - Client version 6.2 \n 0x40000000 - Client version 7.0
     [propget, helpstring("property ClientID")] HRESULT ClientID([out, retval] LONG* pVal);
 };
 
@@ -214,8 +207,7 @@ interface IRobotSession : IUnknown{
     [helpstring("Method SendActivityEx")] HRESULT SendActivityEx([in] BSTR appid, [in] BSTR appname, [in] BSTR data);
 
     /// Check whether the activity window opened
-    /// @param[out]     pVal    ActivityOpened
-    /// @return                 Returns S_OK if successful, or an error value otherwise
+    /// @param  ActivityOpened      activity opened
     [propget, helpstring("property ActivityOpened")] HRESULT ActivityOpened([out,retval] VARIANT_BOOL* pVal);
 
     /// Send a typing infomation which will be presented on the bottom of the conversation panel
@@ -229,24 +221,20 @@ interface IRobotSession : IUnknown{
     [helpstring("Method GetUser")] HRESULT GetUser([in] BSTR userid, [out,retval] IRobotUser** ppUser);
 
     /// Get a users' collection in session 
-    /// @param[out]     ppUsers     users
-    /// @return                     Returns S_OK if successful, or an error value otherwise
+    /// @param          Users       users
     [propget, helpstring("property Users")] HRESULT Users([out,retval] IRobotUsers** ppUsers);
 
     /// Get the robot account(MSN Passport) associated with this session
-    /// @param[out]     pStr        robot account
-    /// @return                     Returns S_OK if successful, or an error value otherwise
+    /// @param          Robot       robot account
     [propget, helpstring("property Robot")] HRESULT Robot([out,retval] BSTR* pStr);
 
     /// Get the open mode of session
-    /// @param[out]     pVal        0 - Unknown \n 1 - Indicates that user opens a conversation window \n 2 - Indicates that session timeout and then reconnects
-    /// @return                     Returns S_OK if successful, or an error value otherwise
-    /// @see OPEN_MODE
+    /// @param          OpenMode    0 - Unknown \n 1 - Indicates that user opens a conversation window \n 2 - Indicates that session timeout and then reconnects
+    /// @see BotPlatformSDKLib::_OPEN_MODE
     [propget, helpstring("property OpenMode")] HRESULT OpenMode([out,retval] LONG* pVal);
 
     /// Check whether the session is closed. If session is closed, you cannot send any messages.
-    /// @param[out]     pVal        closed
-    /// @return                     Returns S_OK if successful, or an error value otherwise
+    /// @param          Closed      closed
     [propget, helpstring("property Closed")] HRESULT Closed([out,retval] VARIANT_BOOL* pVal);
 
     /// Close this session.
@@ -333,24 +321,29 @@ interface IRobotUsers : IUnknown{
 	pointer_default(unique)
 ]
 interface IRobotMessage : IUnknown{
-    /// robot message preface. eg: xxx says.
+    /// Get or Set robot message preface. eg: xxx says.
+    /// @param  Signature   signature
     [propget, helpstring("property Signature")] HRESULT Signature([out, retval] BSTR* pVal);
     [propput, helpstring("property Signature")] HRESULT Signature([in] BSTR newVal);
 
-    /// font style of the message, as bold, italic, strikeout, underline
+    /// Get or Set font style of the message, as bold, italic, strikeout, underline
+    /// @param  FontStyle   font style
     /// @see BotPlatformSDKLib::_FONT_STYLE
     [propget, helpstring("property FontStyle")] HRESULT FontStyle([out, retval] LONG* pVal);
     [propput, helpstring("property FontStyle")] HRESULT FontStyle([in] LONG newVal);
 
-    /// font name of the message
+    /// Get or Set font name of the message
+    /// @param  FontName   font name
     [propget, helpstring("property FontName")] HRESULT FontName([out, retval] BSTR* pVal);
     [propput, helpstring("property FontName")] HRESULT FontName([in] BSTR newVal);
 
-    /// font color of the message
+    /// Get or Set font color of the message
+    /// @param  FontColor   font color
     [propget, helpstring("property FontColor")] HRESULT FontColor([out, retval] LONG* pVal);
     [propput, helpstring("property FontColor")] HRESULT FontColor([in] LONG newVal);
 
-    /// the plain text of the message
+    /// Get or Set the plain text of the message
+    /// @param  Text        text
     [propget, helpstring("property Text")] HRESULT Text([out, retval] BSTR* pVal);
     [propput, helpstring("property Text")] HRESULT Text([in] BSTR newVal);
 
@@ -375,23 +368,19 @@ interface IRobotMessage : IUnknown{
 ]
 interface IRobotFileDescriptor : IUnknown{
     /// Get id of the current transfer.
-    /// @param[out]    pVal             TransferId
-    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// @param  TransferId      id of the current transfer
     [propget, helpstring("property TransferId")] HRESULT TransferId([out, retval] BSTR* pVal);
 
     /// Get name of the current transfer.
-    /// @param[out]    pVal             Name
-    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// @param  Name            name of the current transfer
     [propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR* pVal);
 
     /// Get size of the current transfer.
-    /// @param[out]    pVal             Size
-    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// @param  Size            size of the current transfer
     [propget, helpstring("property Size")] HRESULT Size([out, retval] LONG* pVal);
 
     /// Get thumbnail of the current transfer (if available)
-    /// @param[out]    pVal             Thumbnail
-    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// @param  Thumbnail       thumbnail of the current transfer
     [propget, helpstring("property Thumbnail")] HRESULT Thumbnail([out, retval] BSTR* pVal);
 };
 
