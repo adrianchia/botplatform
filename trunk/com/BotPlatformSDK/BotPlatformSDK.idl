@@ -333,56 +333,25 @@ interface IRobotUsers : IUnknown{
 	pointer_default(unique)
 ]
 interface IRobotMessage : IUnknown{
-    /// Get robot message preface. eg: xxx says.
-    /// @param[out]    pVal             Signature
-    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// robot message preface. eg: xxx says.
     [propget, helpstring("property Signature")] HRESULT Signature([out, retval] BSTR* pVal);
-
-    /// Set robot message preface
-    /// @param[in]    newVal            Signature
-    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propput, helpstring("property Signature")] HRESULT Signature([in] BSTR newVal);
 
-    /// Get font style of the message, as bold, italic, strikeout, underline
-    /// @param[out]    pVal             FontStyle
-    /// @return                         Returns S_OK if successful, or an error value otherwise
-    /// @see FONT_STYLE
+    /// font style of the message, as bold, italic, strikeout, underline
+    /// @see BotPlatformSDKLib::_FONT_STYLE
     [propget, helpstring("property FontStyle")] HRESULT FontStyle([out, retval] LONG* pVal);
-
-    /// Set font style of the message, as bold, italic,strikeout, underline
-    /// @param[in]    newVal            FontStyle
-    /// @return                         Returns S_OK if successful, or an error value otherwise
-    /// @see FONT_STYLE
     [propput, helpstring("property FontStyle")] HRESULT FontStyle([in] LONG newVal);
 
-    /// Get font name of the message
-    /// @param[out]    pVal             FontName
-    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// font name of the message
     [propget, helpstring("property FontName")] HRESULT FontName([out, retval] BSTR* pVal);
-
-    /// Set font name of the message
-    /// @param[in]    newVal            FontName
-    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propput, helpstring("property FontName")] HRESULT FontName([in] BSTR newVal);
 
-    /// Get font color of the message
-    /// @param[out]    pVal             FontColor
-    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// font color of the message
     [propget, helpstring("property FontColor")] HRESULT FontColor([out, retval] LONG* pVal);
-
-    /// Set font color of the message
-    /// @param[in]    newVal            FontColor
-    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propput, helpstring("property FontColor")] HRESULT FontColor([in] LONG newVal);
 
-    /// Get the plain text of the message
-    /// @param[out]    pVal             Text
-    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// the plain text of the message
     [propget, helpstring("property Text")] HRESULT Text([out, retval] BSTR* pVal);
-
-    /// Set the plain text of the message
-    /// @param[in]    newVal            Text
-    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propput, helpstring("property Text")] HRESULT Text([in] BSTR newVal);
 
     /// Register custom emoticon
@@ -426,7 +395,7 @@ interface IRobotFileDescriptor : IUnknown{
     [propget, helpstring("property Thumbnail")] HRESULT Thumbnail([out, retval] BSTR* pVal);
 };
 
-
+/// BotPlatformSDKLib Library
 [
 	uuid(3B6053CA-50DC-4BBC-BB6E-EE2680B8A882),
 	version(1.0),
@@ -435,6 +404,8 @@ interface IRobotFileDescriptor : IUnknown{
 library BotPlatformSDKLib
 {
 	importlib("stdole2.tlb");
+
+    /// RobotServerFactory Class
 	[
 		uuid(966D1E16-2044-4734-B8BC-6D56B513FCC8),
 		helpstring("RobotServerFactory Class")
@@ -443,6 +414,8 @@ library BotPlatformSDKLib
 	{
 		[default] interface IRobotServerFactory;
 	};
+
+    /// _IRobotServerEvents Dispatch Interface
 	[
 		uuid(9CAFA9E9-4204-493A-9791-1F435FC845DF),
 		helpstring("_IRobotServerEvents Interface")
@@ -451,41 +424,170 @@ library BotPlatformSDKLib
 	{
 		properties:
 		methods:
+            /// Occurs when robot receives a user's chat request (session setup), which is caused by a user opens a conversation window or session timeout and then reconnects.
+            /// @param[in] session  session
             [id(1), helpstring("Method SessionOpened")] HRESULT SessionOpened([in] IRobotSession* session);
+
+            /// Occurs when user leaves a session (session closes), which is caused by a user closes a conversation window or session timeout.
+            /// @param[in] session  session
             [id(2), helpstring("Method SessionClosed")] HRESULT SessionClosed([in] IRobotSession* session);
+
+            /// Occurs when robot receives a user's message
+            /// @param[in] session  session
+            /// @param[in] message  Received message
             [id(3), helpstring("Method MessageReceived")] HRESULT MessageReceived([in] IRobotSession* session, [in] IRobotMessage* message);
+
+            /// Occurs when robot receives a user's nudge
+            /// @param[in] session  session
             [id(4), helpstring("Method NudgeReceived")] HRESULT NudgeReceived([in] IRobotSession* session);
+
+            /// Occurs when user accepts an activity (P4) invitation
+            /// @param[in] session  session
             [id(5), helpstring("Method ActivityAccepted")] HRESULT ActivityAccepted([in] IRobotSession* session);
+
+            /// Occurs when user rejects an activity (P4) invitation
+            /// @param[in] session  session
             [id(6), helpstring("Method ActivityRejected")] HRESULT ActivityRejected([in] IRobotSession* session);
+
+            /// Occurs when robot receives a user's activity-data( ms activity sdk -> Channel.SendData(...) )
+            /// @param[in] session  session
+            /// @param[in] data     data
             [id(7), helpstring("Method ActivityReceived")] HRESULT ActivityReceived([in] IRobotSession* session, [in] BSTR data);
+
+            /// Occurs when the activity associated with this session loaded.
+            /// @param[in] session  session
             [id(8), helpstring("Method ActivityLoaded")] HRESULT ActivityLoaded([in] IRobotSession* session);
+
+            /// Occurs when the activity associated with this session is closed.
+            /// @param[in] session  session
             [id(9), helpstring("Method ActivityClosed")] HRESULT ActivityClosed([in] IRobotSession* session);
+
+            /// Occurs when the a user joins the current conversation.
+            /// @param[in] session  session
+            /// @param[in] user     user
             [id(10), helpstring("Method UserJoined")] HRESULT UserJoined([in] IRobotSession* session, [in] IRobotUser* user);
+
+            /// Occurs when the a user leaves the current conversation.
+            /// @param[in] session  session
+            /// @param[in] user     user
             [id(11), helpstring("Method UserLeft")] HRESULT UserLeft([in] IRobotSession* session, [in] IRobotUser* user);
+
+            /// Occurs when user adds the robot to his friend list.
+            /// @param[in] strRobot robot
+            /// @param[in] user     user
             [id(12), helpstring("Method UserAdd")] HRESULT UserAdd([in] BSTR strRobot, [in] BSTR user);
+
+            /// Occurs when user removes the robot from his friend list
+            /// @param[in] strRobot robot
+            /// @param[in] user     user
             [id(13), helpstring("Method UserRemove")] HRESULT UserRemove([in] BSTR strRobot, [in] BSTR user);
+
+            /// Occurs when BOTPLATFORM server throws an exception associated with this session
+            /// @param[in] session  session
+            /// @param[in] cause    cause
             [id(14), helpstring("Method ExceptionCaught")] HRESULT ExceptionCaught([in] IRobotSession* session, [in] LONG cause);
+
+            /// Occurs when user accepts a file transfer invitation.
+            /// @param[in] session           session
+            /// @param[in] fileDescriptor    file descriptor
             [id(15), helpstring("Method FileAccepted")] HRESULT FileAccepted([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            
+            /// Occurs when user rejects a file transfer invitation.
+            /// @param[in] session           session
+            /// @param[in] fileDescriptor    file descriptor
             [id(16), helpstring("Method FileRejected")] HRESULT FileRejected([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            
+            /// Occurs when a file transfer ended.
+            /// @param[in] session           session
+            /// @param[in] fileDescriptor    file descriptor
             [id(17), helpstring("Method FileTransferEnded")] HRESULT FileTransferEnded([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            
+            /// Occurs when a file transfer cancelled.
+            /// @param[in] session           session
+            /// @param[in] fileDescriptor    file descriptor
             [id(18), helpstring("Method FileTransferCancelled")] HRESULT FileTransferCancelled([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            
+            /// Occurs when a file transfer encounters an error.
+            /// @param[in] session           session
+            /// @param[in] fileDescriptor    file descriptor
             [id(19), helpstring("Method FileTransferError")] HRESULT FileTransferError([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            
+            /// Occurs when a file invite request is received
+            /// @param[in] session           session
+            /// @param[in] fileDescriptor    file descriptor
             [id(20), helpstring("Method FileInvited")] HRESULT FileInvited([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            
+            /// Occurs when user accepts a webcam invitation.
+            /// @param[in] session           session
             [id(21), helpstring("Method WebcamAccepted")] HRESULT WebcamAccepted([in] IRobotSession* session);
+
+            /// Occurs when user rejects a webcam invitation.
+            /// @param[in] session           session
             [id(22), helpstring("Method WebcamRejected")] HRESULT WebcamRejected([in] IRobotSession* session);
+
+            /// Occurs when a webcam closed.
+            /// @param[in] session           session
             [id(23), helpstring("Method WebcamClosed")] HRESULT WebcamClosed([in] IRobotSession* session);
+
+            /// Occurs when a webcam error occurred.
+            /// @param[in] session           session
             [id(24), helpstring("Method WebcamError")] HRESULT WebcamError([in] IRobotSession* session);
+
+            /// Occurs when user changes nickname or status.
+            /// @param[in] strRobot          robot
+            /// @param[in] user              user
             [id(25), helpstring("Method UserUpdated")] HRESULT UserUpdated([in] BSTR strRobot, [in] IRobotUser* user);
+
+            /// Occurs when user changes personal message.
+            /// @param[in] strRobot          robot
+            /// @param[in] user              user
+            /// @param[in] personalMessage   personal message
             [id(26), helpstring("Method PersonalMessageUpdated")] HRESULT PersonalMessageUpdated([in] BSTR strRobot, [in] BSTR user, [in] BSTR personalMessage);
+            
+            /// Occurs when robot receives contact list.
+            /// @param[in] strRobot          robot
+            /// @param[in] contactList       contact list
             [id(27), helpstring("Method ContactListReceived")] HRESULT ContactListReceived([in] BSTR strRobot, [in] IRobotUsers* contactList);
+
+            /// Occurs when robot receives ink message.
+            /// @param[in] session          session
+            /// @param[in] ink              the data of the received ink message
             [id(28), helpstring("Method InkReceived")] HRESULT InkReceived([in] IRobotSession* session, [in] BSTR ink);
+
+            /// Occurs when robot receives wink message.
+            /// @param[in] session          session
+            /// @param[in] resource         a descriptor of the received wink message (see RobotResource).
             [id(29), helpstring("Method WinkReceived")] HRESULT WinkReceived([in] IRobotSession* session, [in] IRobotResource* resource);
+
+            /// Occurs when robot receives voice clip.
+            /// @param[in] session          session
+            /// @param[in] resource         a descriptor of the received wink message (see RobotResource).
             [id(30), helpstring("Method VoiceclipReceived")] HRESULT VoiceclipReceived([in] IRobotSession* session, [in] IRobotResource* resource);
+
+            /// Occurs user is inputting messages.
+            /// @param[in] session          session
             [id(31), helpstring("Method TypingReceived")] HRESULT TypingReceived([in] IRobotSession* session);
+
+            /// Occurs when user changes scene.
+            /// @param[in] strRobot         robot
+            /// @param[in] user             user
+            /// @param[in] resource         a descriptor of the received wink message (see RobotResource).
             [id(32), helpstring("Method SceneUpdated")] HRESULT SceneUpdated([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource);
+
+            /// Occurs when a user changes display picture.
+            /// @param[in] strRobot         robot account
+            /// @param[in] user             user who changes display picture
+            /// @param[in] resource         a descriptor of the received wink message (see RobotResource).
             [id(33), helpstring("Method DisplayPictureUpdated")] HRESULT DisplayPictureUpdated([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource);
+            
+            /// Occurs when a user changes color scheme.
+            /// @param[in] strRobot         robot account
+            /// @param[in] user             user who changes color scheme
+            /// @param[in] colorScheme      color
             [id(34), helpstring("Method ColorSchemeUpdated")] HRESULT ColorSchemeUpdated([in] BSTR strRobot, [in] BSTR user, [in] LONG colorScheme);
     };
+
+    /// RobotServer Class
 	[
 		uuid(E3008899-DB59-4ECF-B013-7996A3732ACC),
 		helpstring("RobotServer Class"),
@@ -496,6 +598,7 @@ library BotPlatformSDKLib
 		[default] interface IRobotServer;
 		[default, source] dispinterface _IRobotServerEvents;
 	};
+
 	//[
 	//	uuid(5A2F30DF-61AA-4442-AE39-62D86AF6EC8F),
 	//	helpstring("RobotResource Class"),
@@ -551,19 +654,20 @@ library BotPlatformSDKLib
 	//	[default] interface IRobotMessage;
 	//};
 
-    
-    typedef [public]
-    enum 
+    /// _OPEN_MODE enum
+    enum _OPEN_MODE 
     {
         OPEN_MODE_UNKONW    = 0, ///<- A flag indicates that a new conversation started by unkonw reason.
         OPEN_MODE_CONV_OPEN = 1, ///<- A flag indicates that a new conversation started by user.
         OPEN_MODE_TIMEOUT   = 2, ///<- A flag indicates that a new conversation started by reconnecting after session timeout.
         OPEN_MODE_ROBOT     = 3  ///<- A flag indicates that a new conversation started by robot.
-    } OPEN_MODE; /// OPEN_MODE enum
+    } ;
 
-    
-    typedef [public]
-    enum
+    /// OPEN_MODE enum
+    typedef [public] enum _OPEN_MODE OPEN_MODE;
+
+    /// _FONT_STYLE enum
+    enum _FONT_STYLE
     {
         STYLE_BOLD          = 1, ///<- Font style - bold
         STYLE_ITALIC        = 2, ///<- Font style - italic
@@ -571,6 +675,9 @@ library BotPlatformSDKLib
         STYLE_STRIKE        = 8, ///<- Font style - strikeout
         STYLE_BOLD_ITALIC   = 3, ///<- Font style - bold + underline
         STYLE_ALL           = 15 ///<- Font style - bold + italic + strikeout + underline
-    } FONT_STYLE; /// FONT_STYLE enum
+    } ;
+
+    /// FONT_STYLE enum
+    typedef [public] enum _FONT_STYLE FONT_STYLE;
 };
 
