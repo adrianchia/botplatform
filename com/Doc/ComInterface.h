@@ -149,7 +149,7 @@ struct IRobotUser : public IUnknown
 };
 
 
-/// IRobotSession
+/// IRobotSession Interface
 struct IRobotSession : public IUnknown
 {
     /// Create a message
@@ -199,142 +199,215 @@ struct IRobotSession : public IUnknown
     /// @return                     Returns S_OK if successful, or an error value otherwise
     virtual HRESULT __stdcall GetUser( BSTR userid, IRobotUser **ppUser ) = 0;
     
-    virtual  HRESULT __stdcall get_Users( 
-         IRobotUsers **ppUsers) = 0;
+    /// Get a users' collection in session 
+    /// @param[out]     ppUsers     users
+    /// @return                     Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_Users( IRobotUsers **ppUsers ) = 0;
     
-    virtual  HRESULT __stdcall get_Robot( 
-         BSTR *pStr) = 0;
+    /// Get the robot account(MSN Passport) associated with this session
+    /// @param[out]     pStr        robot account
+    /// @return                     Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_Robot( BSTR *pStr ) = 0;
     
-    virtual  HRESULT __stdcall get_OpenMode( 
-         LONG *pVal) = 0;
+    /// Get the open mode of session
+    /// @param[out]     pVal        0 - Unknown \n 1 - Indicates that user opens a conversation window \n 2 - Indicates that session timeout and then reconnects
+    /// @return                     Returns S_OK if successful, or an error value otherwise
+    /// @see OPEN_MODE
+    virtual HRESULT __stdcall get_OpenMode( LONG *pVal ) = 0;
     
-    virtual  HRESULT __stdcall get_Closed( 
-         VARIANT_BOOL *pVal) = 0;
+    /// Check whether the session is closed. If session is closed, you cannot send any messages.
+    /// @param[out]     pVal        closed
+    /// @return                     Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_Closed( VARIANT_BOOL *pVal ) = 0;
     
-    virtual  HRESULT __stdcall Close( void) = 0;
+    /// Close this session.
+    /// @return                     Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall Close( void ) = 0;
     
-    virtual  HRESULT __stdcall InviteUser( 
-         BSTR user) = 0;
+    /// Invite a user into the current conversation.
+    /// @param[in]     user         user
+    /// @return                     Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall InviteUser( BSTR user ) = 0;
     
-    virtual  HRESULT __stdcall SendFile( 
-         BSTR uri,
-         BSTR strFriendlyName) = 0;
+    /// Send a file
+    /// @param[in]     uri              unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+    /// @param[in]     strFriendlyName  friendly name which represents the file in the file transfer invitation, can be NULL
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall SendFile( BSTR uri, BSTR strFriendlyName ) = 0;
     
-    virtual  HRESULT __stdcall SendFileAcceptance( 
-         BSTR transferId,
-         BSTR saveUrl) = 0;
+    /// Accept a file transfer request, and a url should be specified for saving the file data.
+    /// @param[in]     transferId       id of the current file transfer.
+    /// @param[in]     saveUrl          a url to receive a HTTP POST request to get the data of the file.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall SendFileAcceptance( BSTR transferId, BSTR saveUrl ) = 0;
     
-    virtual  HRESULT __stdcall SendFileRejection( 
-         BSTR transferId) = 0;
+    /// Reject a file transfer request.
+    /// @param[in]     transferId       id of the current file transfer.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall SendFileRejection( BSTR transferId ) = 0;
     
-    virtual  HRESULT __stdcall SendFileCancellation( 
-         BSTR transferId) = 0;
+    /// Cancel a file transfer.
+    /// @param[in]     transferId       id of the current file transfer.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall SendFileCancellation( BSTR transferId ) = 0;
     
-    virtual  HRESULT __stdcall SendInk( 
-         BSTR inkData) = 0;
+    /// Send a ink message
+    /// @param[in]     inkData          data of the ink message. 
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall SendInk( BSTR inkData ) = 0;
     
-    virtual  HRESULT __stdcall SendWink( 
-         BSTR uri,
-         BSTR stamp) = 0;
+    /// Send a msn wink
+    /// @param[in]     uri              unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+    /// @param[in]     stamp            base64 encoded signature of the file.It is a S/MIME signature of the Base64 encoded hash of the Content. If this parameter is NULL, wink is default.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall SendWink( BSTR uri, BSTR stamp ) = 0;
     
-    virtual  HRESULT __stdcall SendVoiceclip( 
-         BSTR uri) = 0;
+    /// Send a voice clip
+    /// @param[in]     uri              unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall SendVoiceclip( BSTR uri ) = 0;
     
-    virtual  HRESULT __stdcall SendWebcam( 
-         BSTR serverIP,
-         LONG serverPort,
-         LONG recipientid,
-         LONG sessionid) = 0;
-    
+    /// Send webcam Once the connection is established, the client that connected to the other peer should authenticate himself with sending the message (no header, no nothing) : "recipientid=X&sessionid=Y\r\n\r\n" The other peer should then send (if correctly authenticated) the message "connected\r\n\r\n" The connecting peer should also send "connected\r\n\r\n" From this point the connection is done and The connecting peer is authenticated Subsequently, the server may send the encoded data of the webcam in mimic format 
+    /// @param[in]     serverIP         webcam resource server IP address
+    /// @param[in]     serverPort       webcam resource server port
+    /// @param[in]     recipientid      the authentication info, should be between 100 and 199
+    /// @param[in]     sessionid        the authentication info, should be between 9000 and 9999
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall SendWebcam( BSTR serverIP, LONG serverPort, LONG recipientid, LONG sessionid ) = 0;
 };
 
+
+/// IRobotUsers Interface
 struct IRobotUsers : public IUnknown
 {
-    virtual  HRESULT __stdcall Item( 
-         LONG idx,
-         IRobotUser **ppUser) = 0;
+    /// Get user by index
+    /// @param[in]     idx              idx
+    /// @param[out]    ppUser           user
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall Item( LONG idx, IRobotUser **ppUser ) = 0;
     
-    virtual  HRESULT __stdcall Count( 
-         LONG *pVal) = 0;
-    
+    /// Get count of users
+    /// @param[out]     pVal            count of users
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall Count( LONG *pVal ) = 0;
 };
 
+
+/// IRobotMessage Interface
 struct IRobotMessage : public IUnknown
 {
-    virtual  HRESULT __stdcall get_Signature( 
-         BSTR *pVal) = 0;
+    /// Get robot message preface. eg: xxx says.
+    /// @param[out]    pVal             Signature
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_Signature( BSTR *pVal ) = 0;
     
-    virtual  HRESULT __stdcall put_Signature( 
-         BSTR newVal) = 0;
+    /// Set robot message preface
+    /// @param[in]    newVal            Signature
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall put_Signature( BSTR newVal ) = 0;
     
-    virtual  HRESULT __stdcall get_FontStyle( 
-         LONG *pVal) = 0;
+    /// Get font style of the message, as bold, italic, strikeout, underline
+    /// @param[out]    pVal             FontStyle
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// @see FONT_STYLE
+    virtual HRESULT __stdcall get_FontStyle( LONG *pVal ) = 0;
     
-    virtual  HRESULT __stdcall put_FontStyle( 
-         LONG newVal) = 0;
+    /// Set font style of the message, as bold, italic,strikeout, underline
+    /// @param[in]    newVal            FontStyle
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// @see FONT_STYLE
+    virtual HRESULT __stdcall put_FontStyle( LONG newVal ) = 0;
     
-    virtual  HRESULT __stdcall get_FontName( 
-         BSTR *pVal) = 0;
+    /// Get font name of the message
+    /// @param[out]    pVal             FontName
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_FontName( BSTR *pVal ) = 0;
     
-    virtual  HRESULT __stdcall put_FontName( 
-         BSTR newVal) = 0;
+    /// Set font name of the message
+    /// @param[in]    newVal            FontName
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall put_FontName( BSTR newVal ) = 0;
     
-    virtual  HRESULT __stdcall get_FontColor( 
-         LONG *pVal) = 0;
+    /// Get font color of the message
+    /// @param[out]    pVal             FontColor
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_FontColor( LONG *pVal ) = 0;
     
-    virtual  HRESULT __stdcall put_FontColor( 
-         LONG newVal) = 0;
+    /// Set font color of the message
+    /// @param[in]    newVal            FontColor
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall put_FontColor( LONG newVal ) = 0;
     
-    virtual  HRESULT __stdcall get_Text( 
-         BSTR *pVal) = 0;
+    /// Get the plain text of the message
+    /// @param[out]    pVal             Text
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_Text( BSTR *pVal ) = 0;
     
-    virtual  HRESULT __stdcall put_Text( 
-         BSTR newVal) = 0;
+    /// Set the plain text of the message
+    /// @param[in]    newVal            Text
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall put_Text( BSTR newVal ) = 0;
     
-    virtual  HRESULT __stdcall RegisterEmoticon( 
-         BSTR shortcut,
-         BSTR filename) = 0;
+    /// Register custom emoticon
+    /// @param[in]    shortcut          The shortcut of the emoticon. If shortcut appears in message, it'll show as an icon corresponding to your 'filename'.
+    /// @param[in]    filename          The filename of emotion. Submitted to INCE by SP, and a certified file of INCE
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall RegisterEmoticon( BSTR shortcut, BSTR filename ) = 0;
     
-    virtual  HRESULT __stdcall DeregisterEmoticon( 
-         BSTR shortcut) = 0;
-    
+    /// Deregister the emoticon After the invocation of this function, the shortcut appearing in the message will show as plain text.
+    /// @param[in]    shortcut          The shortcut of the emoticon. If shortcut appears in message, it'll show as an icon corresponding to your 'filename'.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual  HRESULT __stdcall DeregisterEmoticon( BSTR shortcut ) = 0;
 };
 
+
+/// IRobotFileDescriptor Interface
 struct IRobotFileDescriptor : public IUnknown
 {
-    virtual  HRESULT __stdcall get_TransferId( 
-         BSTR *pVal) = 0;
+    /// Get id of the current transfer.
+    /// @param[out]    pVal             TransferId
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_TransferId( BSTR *pVal ) = 0;
     
-    virtual  HRESULT __stdcall get_Name( 
-         BSTR *pVal) = 0;
+    /// Get name of the current transfer.
+    /// @param[out]    pVal             Name
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_Name( BSTR *pVal ) = 0;
     
-    virtual  HRESULT __stdcall get_Size( 
-         LONG *pVal) = 0;
+    /// Get size of the current transfer.
+    /// @param[out]    pVal             Size
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_Size( LONG *pVal ) = 0;
     
-    virtual  HRESULT __stdcall get_Thumbnail( 
-         BSTR *pVal) = 0;
-    
+    /// Get thumbnail of the current transfer (if available)
+    /// @param[out]    pVal             Thumbnail
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    virtual HRESULT __stdcall get_Thumbnail( BSTR *pVal ) = 0;
 };
-    
-    
-enum OPEN_MODE_UNKONW
-    {	OPEN_MODE_UNKONW	= 0,
-	OPEN_MODE_CONV_OPEN	= 1,
-	OPEN_MODE_TIMEOUT	= 2,
-	OPEN_MODE_ROBOT	= 3
-    };
 
 
+/// OPEN_MODE enum
+enum OPEN_MODE
+{
+    OPEN_MODE_UNKONW    = 0, ///<- A flag indicates that a new conversation started by unkonw reason.
+    OPEN_MODE_CONV_OPEN = 1, ///<- A flag indicates that a new conversation started by user.
+    OPEN_MODE_TIMEOUT   = 2, ///<- A flag indicates that a new conversation started by reconnecting after session timeout.
+    OPEN_MODE_ROBOT     = 3  ///<- A flag indicates that a new conversation started by robot.
+};
+
+
+/// FONT_STYLE enum
 enum FONT_STYLE
-    {	STYLE_BOLD	= 1,
-	STYLE_ITALIC	= 2,
-	STYLE_UNDERLINE	= 4,
-	STYLE_STRIKE	= 8,
-	STYLE_BOLD_ITALIC	= 3,
-	STYLE_ALL	= 15
-    } 	;
+{
+    STYLE_BOLD          = 1, ///<- Font style - bold
+    STYLE_ITALIC        = 2, ///<- Font style - italic
+    STYLE_UNDERLINE     = 4, ///<- Font style - underline
+    STYLE_STRIKE        = 8, ///<- Font style - strikeout
+    STYLE_BOLD_ITALIC   = 3, ///<- Font style - bold + underline
+    STYLE_ALL           = 15 ///<- Font style - bold + italic + strikeout + underline
+};
 
-
+/// _IRobotServerEvents interface
 struct _IRobotServerEvents : public IDispatch
 {
     HRESULT SessionOpened (
