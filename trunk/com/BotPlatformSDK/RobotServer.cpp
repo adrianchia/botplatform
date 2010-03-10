@@ -65,7 +65,7 @@ void CRobotServer::makeToken( std::string& token, const std::string& challenge, 
 
 bool CRobotServer::login( const std::string& strspid, const std::string& strsppwd, long timeout )
 {
-    if ( !strspid.empty() )
+    if ( strspid.empty() )
         return false;
 
     bool wantConnect = true;
