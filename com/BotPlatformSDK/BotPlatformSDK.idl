@@ -1,5 +1,7 @@
-// BotPlatformSDK.idl
-//
+//////////////////////////////////////////////////////////////////////////
+/// @file       BotPlatformSDK.idl
+/// @brief      BotPlatform SDK Com IDL
+//////////////////////////////////////////////////////////////////////////
 
 
 import "oaidl.idl";
@@ -10,6 +12,7 @@ interface IRobotUsers;
 interface IRobotMessage;
 interface IRobotResource;
 
+/// IRobotServerFactory Interface
 [
 	object,
 	uuid(0FC14674-3B40-4557-93DE-B46A4AC19F8A),
@@ -17,10 +20,24 @@ interface IRobotResource;
 	pointer_default(unique)
 ]
 interface IRobotServerFactory : IUnknown{
+    /// Init robot server factory
+    /// @param[in]  threadCount Count of work threads
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [helpstring("Method Init")] HRESULT Init([in] LONG threadCount);
+
+    /// Destroy robot server factory    
+    /// @return     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method Destroy")] HRESULT Destroy();
+
+    /// Create a RobotServer instance
+    /// @param[in]      ip              IP of BOTPLATFORM for RobotServer to login
+    /// @param[in]      port            Port of BOTPLATFORM for RobotServer to login
+    /// @param[out]     ppRobotServer   A pointer that receives a pointer to a new instance of the IRobotServer
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method CreateRobotServer")] HRESULT CreateRobotServer([in] BSTR ip, [in] LONG port, [out,retval] IRobotServer** ppRobotServer);
 };
+
+/// IRobotServer Interface
 [
 	object,
 	uuid(2946B103-2983-478C-B64A-E1F91E7FAEFA),
@@ -28,19 +45,82 @@ interface IRobotServerFactory : IUnknown{
 	pointer_default(unique)
 ]
 interface IRobotServer : IUnknown{
+    /// Calling this function, Robot Server will login BOTPLATFORM. It's a synchronous operation.
+    /// @param[in]  spid    The unique ID assigned by INCESOFT
+    /// @param[in]  sppwd   The password assigned by INCESOFT
+    /// @param[in]  timeout Login timeout, the unit is millisecond. If the value less than or equal to 0, use default 1 minute
+    /// @return             Returns S_OK if successful, or an error value otherwise
     [helpstring("Method Login")] HRESULT Login([in] BSTR spid, [in] BSTR sppwd, [in] LONG timeout);
+
+    /// Robot server logout BOTPLATFORM
+    /// @return             Returns S_OK if successful, or an error value otherwise
     [helpstring("Method Logout")] HRESULT Logout(void);
+
+    /// Set robot's display name
+    /// @param[in]  robotAccount    specify a robot account to be modified, NULL for all robots
+    /// @param[in]  displayName     a preferred display name
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SetDisplayName")] HRESULT SetDisplayName([in] BSTR robotAccount, [in] BSTR displayName);
+
+    /// Set robot's personal message 
+    /// @param[in]  robotAccount    specify a robot account to be modified, NULL for all robots
+    /// @param[in]  personalMessage a preferred personal message
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SetPersonalMessage")] HRESULT SetPersonalMessage([in] BSTR robotAccount, [in] BSTR personalMessage);
+
+    /// Set robot's display picture 
+    /// @param[in]  robotAccount    specify a robot account to be modified, NULL for all robots
+    /// @param[in]  displayPicture  unique name of the dp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SetDisplayPicture")] HRESULT SetDisplayPicture([in] BSTR robotAccount, [in] BSTR displayPicture);
+    
+    /// Set robot's display picture 
+    /// @param[in]  robotAccount    specify a robot account to be modified, NULL for all robots
+    /// @param[in]  displayPicture  unique name of the dp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+    /// @param[in]  largePicture    unique name of the ddp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM 
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SetDisplayPictureEx")] HRESULT SetDisplayPictureEx([in] BSTR robotAccount, [in] BSTR displayPicture, [in] BSTR largePicture);
+    
+    /// Set robot's scene
+    /// @param[in]  robotAccount    specify a robot account to be modified, NULL for all robots
+    /// @param[in]  scene           uri of the scene
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SetScene")] HRESULT SetScene([in] BSTR robotAccount, [in] BSTR scene);
+    
+    /// Set robot's color scheme
+    /// @param[in]  robotAccount    specify a robot account to be modified, NULL for all robots
+    /// @param[in]  colorScheme     a preferred color
+    /// @return     
     [helpstring("Method SetColorScheme")] HRESULT SetColorScheme([in] BSTR robotAccount, [in] LONG colorScheme);
+    
+    /// Create a robot session.
+    /// @param[in]  strRobot    robot id
+    /// @param[in]  user        user id 
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [helpstring("Method CreateSession")] HRESULT CreateSession([in] BSTR strRobot, [in] BSTR user);
+
+    /// Push message to user. may be msn offline message,email message, etc. 
+    /// @param[in]  strRobot    robot id
+    /// @param[in]  user        user id
+    /// @param[in]  message     message
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [helpstring("Method PushMessage")] HRESULT PushMessage([in] BSTR strRobot, [in] BSTR user, [in] BSTR message);
+
+    /// Get the contact list of the specified robot.
+    /// @param[in]  strRobot    robot id
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [helpstring("Method RequestContactList")] HRESULT RequestContactList([in] BSTR strRobot);
+
+    /// Get the contact list of the specified robot.
+    /// @param[in]  strRobot    robot id
+    /// @param[in]  user        user id
+    /// @param[in]  resource    the resource to get
+    /// @param[in]  saveUrl     a url receives a HTTP POST request which contains the resource data
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [helpstring("Method RequestResource")] HRESULT RequestResource([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource, [in] BSTR saveUrl);
 };
+
+/// IRobotResource Interface
 [
 	object,
 	uuid(7D4CABF5-F710-43F4-AA31-EC10D89CCB04),
@@ -48,10 +128,23 @@ interface IRobotServer : IUnknown{
 	pointer_default(unique)
 ]
 interface IRobotResource : IUnknown{
+    /// Get the name of the resource
+    /// @param[out]  pVal       Name
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR* pVal);
+
+    /// Get the digest of the resource
+    /// @param[out]  pVal       Digest
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Digest")] HRESULT Digest([out, retval] BSTR* pVal);
+
+    /// Get the size of the resource
+    /// @param[out]  pVal       Size
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Size")] HRESULT Size([out, retval] LONG* pVal);
 };
+
+/// IRobotUser Interface
 [
 	object,
 	uuid(FCD31720-D9A9-4570-AEAB-BACA0A4E8122),
@@ -59,11 +152,28 @@ interface IRobotResource : IUnknown{
 	pointer_default(unique)
 ]
 interface IRobotUser : IUnknown{
+    /// Get user's identifier (MSN account) 
+    /// @param[out]  pVal       User's identifier
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property ID")] HRESULT ID([out, retval] BSTR* pVal);
+
+    /// Get user's friendly name
+    /// @param[out]  pVal       User's friendly name
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property FriendlyName")] HRESULT FriendlyName([out, retval] BSTR* pVal);
+
+    /// Get user's status
+    /// @param[out]  pVal       User's status \n NLN - online \n FLN - offline \n HDN - hidden \n BSY - busy \n IDL - idle \n BRB - be right back \n AWY - away \n PHN - on the phone \n LUN - out to lunch
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Status")] HRESULT Status([out, retval] BSTR* pVal);
+
+    /// Get user's client capabilities
+    /// @param[out]  pVal       User's client capabilities \n 0x00000001 - User is online via Mobile \n 0x00000002 - User online with the MSN client \n 0x00000004 - User online GIF/ink awareness \n 0x00000008 - User online ISF/ink awareness \n 0x00000010 - There is a web camera on user's machine \n 0x00000020 - Support of message chunking (to allow larger messages over SB) \n 0x00000040 - Mobile IMs permitted flag \n 0x00000080 - Direct Watch enabled flag \n 0x00000200 - The user is online via the web client \n 0x00000400 - The user is a mobile buddy.The flag can be thought of as the Mobile buddy bit which indicates that the buddy is on a mobile device and the mobile properties \n 0x00000800 - The user is a federated client.The flag can be thought of as the Federated client bit which indicates that the buddy is connected on a client that does not connect directly to the MSN Messenger service \n 0x00001000 - The user has its HasSpace bit set \n 0x00004000 - The user supports Peer-to-Peer IM \n 0x00008000 - The user supports Winks \n 0x10000000 - Client version 6.0 \n 0x20000000 - Client version 6.1 \n 0x30000000 - Client version 6.2 \n 0x40000000 - Client version 7.0 
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property ClientID")] HRESULT ClientID([out, retval] LONG* pVal);
 };
+
+/// IRobotSession Interface
 [
 	object,
 	uuid(4BC1EC51-F46D-4C28-8CB6-2F9DD3D786E5),
@@ -71,30 +181,131 @@ interface IRobotUser : IUnknown{
 	pointer_default(unique)
 ]
 interface IRobotSession : IUnknown{
+    /// Create a message
+    /// @param[out]     message     A pointer that receives a pointer to a new instance of the IRobotMessage
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method CreateMessage")] HRESULT CreateMessage([out,retval] IRobotMessage** message);
+
+    /// Send plain text message
+    /// @param[in]     message      message
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendText")] HRESULT SendText([in] BSTR message);
+
+    /// Send RobotMessage
+    /// @param[in]     message      RobotMessage
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendMsg")] HRESULT SendIM([in]IRobotMessage* message);
+
+    /// Send nudge
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendNudge")] HRESULT SendNudge(void);
+
+    /// Show the content of network resource in MSN Activity window
+    /// @param[in]     url              network resource to be shown (generally are webpages or pictures)
+    /// @param[in]     strFriendlyName  friendly name which represents the network resource in the activity invitation, can be NULL.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendActivity")] HRESULT SendActivity([in] BSTR url, [in] BSTR strFriendlyName);
+
+    /// Show the content of network resource in MSN Activity window
+    /// @param[in]     appid        id of the MSN Activity
+    /// @param[in]     appname      name of the MSN Activity
+    /// @param[in]     data         network resource to be shown (generally are webpages or pictures) 
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendActivityEx")] HRESULT SendActivityEx([in] BSTR appid, [in] BSTR appname, [in] BSTR data);
+
+    /// Check whether the activity window opened
+    /// @param[out]     pVal    ActivityOpened
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property ActivityOpened")] HRESULT ActivityOpened([out,retval] VARIANT_BOOL* pVal);
+
+    /// Send a typing infomation which will be presented on the bottom of the conversation panel
+    /// @return                 Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendTyping")] HRESULT SendTyping(void);
+
+    /// Get a user in session
+    /// @param[in]      userid      user id
+    /// @param[out]     ppUser      user
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method GetUser")] HRESULT GetUser([in] BSTR userid, [out,retval] IRobotUser** ppUser);
+
+    /// Get a users' collection in session 
+    /// @param[out]     ppUsers     users
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Users")] HRESULT Users([out,retval] IRobotUsers** ppUsers);
+
+    /// Get the robot account(MSN Passport) associated with this session
+    /// @param[out]     pStr        robot account
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Robot")] HRESULT Robot([out,retval] BSTR* pStr);
+
+    /// Get the open mode of session
+    /// @param[out]     pVal        0 - Unknown \n 1 - Indicates that user opens a conversation window \n 2 - Indicates that session timeout and then reconnects
+    /// @return                     Returns S_OK if successful, or an error value otherwise
+    /// @see OPEN_MODE
     [propget, helpstring("property OpenMode")] HRESULT OpenMode([out,retval] LONG* pVal);
+
+    /// Check whether the session is closed. If session is closed, you cannot send any messages.
+    /// @param[out]     pVal        closed
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Closed")] HRESULT Closed([out,retval] VARIANT_BOOL* pVal);
+
+    /// Close this session.
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method Close")] HRESULT Close(void);
+
+    /// Invite a user into the current conversation.
+    /// @param[in]     user         user
+    /// @return                     Returns S_OK if successful, or an error value otherwise
     [helpstring("Method InviteUser")] HRESULT InviteUser([in] BSTR user);
+
+    /// Send a file
+    /// @param[in]     uri              unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+    /// @param[in]     strFriendlyName  friendly name which represents the file in the file transfer invitation, can be NULL
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendFile")] HRESULT SendFile([in] BSTR uri, [in] BSTR strFriendlyName);
+
+    /// Accept a file transfer request, and a url should be specified for saving the file data.
+    /// @param[in]     transferId       id of the current file transfer.
+    /// @param[in]     saveUrl          a url to receive a HTTP POST request to get the data of the file.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendFileAcceptance")] HRESULT SendFileAcceptance([in] BSTR transferId, [in] BSTR saveUrl);
+
+    /// Reject a file transfer request.
+    /// @param[in]     transferId       id of the current file transfer.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendFileRejection")] HRESULT SendFileRejection([in] BSTR transferId);
+
+    /// Cancel a file transfer.
+    /// @param[in]     transferId       id of the current file transfer.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendFileCancellation")] HRESULT SendFileCancellation([in] BSTR transferId);
+
+    /// Send a ink message
+    /// @param[in]     inkData          data of the ink message. 
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendInk")] HRESULT SendInk([in] BSTR inkData);
+
+    /// Send a msn wink
+    /// @param[in]     uri              unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+    /// @param[in]     stamp            base64 encoded signature of the file.It is a S/MIME signature of the Base64 encoded hash of the Content. If this parameter is NULL, wink is default.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendWink")] HRESULT SendWink([in] BSTR uri, [in] BSTR stamp);
+
+    /// Send a voice clip
+    /// @param[in]     uri              unique name of the resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendVoiceclip")] HRESULT SendVoiceclip([in] BSTR uri);
+
+    /// Send webcam Once the connection is established, the client that connected to the other peer should authenticate himself with sending the message (no header, no nothing) : "recipientid=X&sessionid=Y\r\n\r\n" The other peer should then send (if correctly authenticated) the message "connected\r\n\r\n" The connecting peer should also send "connected\r\n\r\n" From this point the connection is done and The connecting peer is authenticated Subsequently, the server may send the encoded data of the webcam in mimic format 
+    /// @param[in]     serverIP         webcam resource server IP address
+    /// @param[in]     serverPort       webcam resource server port
+    /// @param[in]     recipientid      the authentication info, should be between 100 and 199
+    /// @param[in]     sessionid        the authentication info, should be between 9000 and 9999
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method SendWebcam")] HRESULT SendWebcam([in] BSTR serverIP, [in] LONG serverPort, [in] LONG recipientid, [in] LONG sessionid);
 };
+
+/// IRobotUsers Interface
 [
 	object,
 	uuid(1AAA6D20-7304-4171-BC35-A2B67968FCBC),
@@ -102,9 +313,19 @@ interface IRobotSession : IUnknown{
 	pointer_default(unique)
 ]
 interface IRobotUsers : IUnknown{
+    /// Get user by index
+    /// @param[in]     idx              idx
+    /// @param[out]    ppUser           user
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method Item")] HRESULT Item([in] LONG idx, [out,retval] IRobotUser** ppUser);
+
+    /// Get count of users
+    /// @param[out]     pVal            count of users
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method Count")] HRESULT Count([out,retval] LONG* pVal);
 };
+
+/// IRobotMessage Interface
 [
 	object,
 	uuid(2B04A06E-F876-4753-A586-76FFB972F8D1),
@@ -112,19 +333,71 @@ interface IRobotUsers : IUnknown{
 	pointer_default(unique)
 ]
 interface IRobotMessage : IUnknown{
+    /// Get robot message preface. eg: xxx says.
+    /// @param[out]    pVal             Signature
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Signature")] HRESULT Signature([out, retval] BSTR* pVal);
+
+    /// Set robot message preface
+    /// @param[in]    newVal            Signature
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propput, helpstring("property Signature")] HRESULT Signature([in] BSTR newVal);
+
+    /// Get font style of the message, as bold, italic, strikeout, underline
+    /// @param[out]    pVal             FontStyle
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// @see FONT_STYLE
     [propget, helpstring("property FontStyle")] HRESULT FontStyle([out, retval] LONG* pVal);
+
+    /// Set font style of the message, as bold, italic,strikeout, underline
+    /// @param[in]    newVal            FontStyle
+    /// @return                         Returns S_OK if successful, or an error value otherwise
+    /// @see FONT_STYLE
     [propput, helpstring("property FontStyle")] HRESULT FontStyle([in] LONG newVal);
+
+    /// Get font name of the message
+    /// @param[out]    pVal             FontName
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property FontName")] HRESULT FontName([out, retval] BSTR* pVal);
+
+    /// Set font name of the message
+    /// @param[in]    newVal            FontName
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propput, helpstring("property FontName")] HRESULT FontName([in] BSTR newVal);
+
+    /// Get font color of the message
+    /// @param[out]    pVal             FontColor
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property FontColor")] HRESULT FontColor([out, retval] LONG* pVal);
+
+    /// Set font color of the message
+    /// @param[in]    newVal            FontColor
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propput, helpstring("property FontColor")] HRESULT FontColor([in] LONG newVal);
+
+    /// Get the plain text of the message
+    /// @param[out]    pVal             Text
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Text")] HRESULT Text([out, retval] BSTR* pVal);
+
+    /// Set the plain text of the message
+    /// @param[in]    newVal            Text
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propput, helpstring("property Text")] HRESULT Text([in] BSTR newVal);
+
+    /// Register custom emoticon
+    /// @param[in]    shortcut          The shortcut of the emoticon. If shortcut appears in message, it'll show as an icon corresponding to your 'filename'.
+    /// @param[in]    filename          The filename of emotion. Submitted to INCE by SP, and a certified file of INCE
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method RegisterEmoticon")] HRESULT RegisterEmoticon([in] BSTR shortcut, [in] BSTR filename);
+
+    /// Deregister the emoticon After the invocation of this function, the shortcut appearing in the message will show as plain text.
+    /// @param[in]    shortcut          The shortcut of the emoticon. If shortcut appears in message, it'll show as an icon corresponding to your 'filename'.
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [helpstring("Method DeregisterEmoticon")] HRESULT DeregisterEmoticon([in] BSTR shortcut);
 };
+
+/// IRobotFileDescriptor Interface
 [
 	object,
 	uuid(EE89BCB6-C403-433E-A032-61D92F126AD9),
@@ -132,11 +405,28 @@ interface IRobotMessage : IUnknown{
 	pointer_default(unique)
 ]
 interface IRobotFileDescriptor : IUnknown{
+    /// Get id of the current transfer.
+    /// @param[out]    pVal             TransferId
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property TransferId")] HRESULT TransferId([out, retval] BSTR* pVal);
+
+    /// Get name of the current transfer.
+    /// @param[out]    pVal             Name
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR* pVal);
+
+    /// Get size of the current transfer.
+    /// @param[out]    pVal             Size
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Size")] HRESULT Size([out, retval] LONG* pVal);
+
+    /// Get thumbnail of the current transfer (if available)
+    /// @param[out]    pVal             Thumbnail
+    /// @return                         Returns S_OK if successful, or an error value otherwise
     [propget, helpstring("property Thumbnail")] HRESULT Thumbnail([out, retval] BSTR* pVal);
 };
+
+
 [
 	uuid(3B6053CA-50DC-4BBC-BB6E-EE2680B8A882),
 	version(1.0),
@@ -261,24 +551,26 @@ library BotPlatformSDKLib
 	//	[default] interface IRobotMessage;
 	//};
 
+    
     typedef [public]
     enum 
     {
-        OPEN_MODE_UNKONW    = 0,
-        OPEN_MODE_CONV_OPEN = 1,
-        OPEN_MODE_TIMEOUT   = 2,
-        OPEN_MODE_ROBOT     = 3
-    } OPEN_MODE;
+        OPEN_MODE_UNKONW    = 0, ///<- A flag indicates that a new conversation started by unkonw reason.
+        OPEN_MODE_CONV_OPEN = 1, ///<- A flag indicates that a new conversation started by user.
+        OPEN_MODE_TIMEOUT   = 2, ///<- A flag indicates that a new conversation started by reconnecting after session timeout.
+        OPEN_MODE_ROBOT     = 3  ///<- A flag indicates that a new conversation started by robot.
+    } OPEN_MODE; /// OPEN_MODE enum
 
+    
     typedef [public]
     enum
     {
-        STYLE_BOLD          = 1,
-        STYLE_ITALIC        = 2,
-        STYLE_UNDERLINE     = 4,
-        STYLE_STRIKE        = 8,
-        STYLE_BOLD_ITALIC   = 3,
-        STYLE_ALL           = 15
-    } FONT_STYLE;
+        STYLE_BOLD          = 1, ///<- Font style - bold
+        STYLE_ITALIC        = 2, ///<- Font style - italic
+        STYLE_UNDERLINE     = 4, ///<- Font style - underline
+        STYLE_STRIKE        = 8, ///<- Font style - strikeout
+        STYLE_BOLD_ITALIC   = 3, ///<- Font style - bold + underline
+        STYLE_ALL           = 15 ///<- Font style - bold + italic + strikeout + underline
+    } FONT_STYLE; /// FONT_STYLE enum
 };
 
