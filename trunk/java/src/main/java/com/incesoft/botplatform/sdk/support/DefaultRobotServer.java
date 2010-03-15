@@ -252,6 +252,8 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 					handler.fileTransferError(session,eventObj);
 				else if (P2PEvent.CANCEL.equals(event))
 					handler.fileTransferCancelled(session,eventObj);
+				else if(P2PEvent.RECEIVE.equals(event))
+					handler.fileReceived(robotId, userId, eventObj, eventObj.getSaveUrl());
 			}
 		}
 	}
@@ -347,6 +349,12 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 			String sessionId, String psm) throws RobotException {
 		if (handler != null)
 			handler.personalMessageUpdated(robotId, userId, psm);
+	}
+	
+	public void process_resource(String robotId, String userId,
+			String sessionId, ResourceInfo resource) {
+		if (handler != null)
+			handler.resourceReceived(robotId, userId, resource, resource.getSaveUrl());
 	}
 	
 	public void login(String spid, String sppwd) throws RobotException {
