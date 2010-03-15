@@ -172,4 +172,14 @@ public class RobotAdapter implements RobotHandler {
 
 	}
 
+	public void fileReceived(String robot, String user, RobotFileDescriptor fileDescriptor, String saveUrl) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void resourceReceived(String robot, String user, RobotResource resource, String saveUrl) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

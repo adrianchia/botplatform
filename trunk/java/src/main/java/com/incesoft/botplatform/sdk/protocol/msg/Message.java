@@ -21,6 +21,7 @@ public class Message implements Serializable {
 	public static final String GETUSERLIST = "getuserlist";
 	public static final String USERLIST = "userlist";
 	public static final String GETRESOURCE = "getresource";
+	public static final String RESOURCE = "resource";
 	public static final String SESSIONOPENED = "sessionopened";
 	public static final String SESSIONCLOSED = "sessionclosed";
 	public static final String JOIN = "join";
@@ -168,6 +169,7 @@ public class Message implements Serializable {
 		BODY_MAP.put(DPUPDATED, ResourceInfo.class);
 		BODY_MAP.put(SCENEUPDATED, ResourceInfo.class);
 		BODY_MAP.put(COLORUPDATED, Integer.class);
+		BODY_MAP.put(RESOURCE, ResourceInfo.class);
 	};
 
 	public String toString() {

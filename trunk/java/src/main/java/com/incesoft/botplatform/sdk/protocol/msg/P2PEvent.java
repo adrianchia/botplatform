@@ -8,4 +8,5 @@ public class P2PEvent {
 	public static final String READY = "ready";
 	public static final String CANCEL = "cancel";
 	public static final String ERROR = "error";
+	public static final String RECEIVE = "receive";
 }

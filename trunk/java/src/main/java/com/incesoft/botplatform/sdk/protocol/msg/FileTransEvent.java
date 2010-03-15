@@ -13,6 +13,7 @@ public class FileTransEvent implements RobotFileDescriptor, Serializable {
 	private long size;
 	private String name;
 	private String thumbnail;
+	private String saveUrl;
 
 	public String getName() {
 		return name;
@@ -52,6 +53,14 @@ public class FileTransEvent implements RobotFileDescriptor, Serializable {
 
 	public void setEvent(String event) {
 		this.event = event;
+	}
+
+	public String getSaveUrl() {
+		return saveUrl;
+	}
+
+	public void setSaveUrl(String saveUrl) {
+		this.saveUrl = saveUrl;
 	}
 
 }
