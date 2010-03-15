@@ -120,6 +120,11 @@ public interface RobotHandler {
 	public void fileTransferError(RobotSession session, RobotFileDescriptor fileDescriptor) throws RobotException;
 
 	/**
+	 * Occurs when a file has been saved to the saveUrl.
+	 */
+	public void fileReceived(String robot, String user, RobotFileDescriptor fileDescriptor, String saveUrl);
+	
+	/**
 	 * Occurs when a file invite request is received.
 	 */
 	public void fileInvited(RobotSession session, RobotFileDescriptor fileDescriptor) throws RobotException;
@@ -202,4 +207,9 @@ public interface RobotHandler {
 	 */
 	public void contactListReceived(String robot, List<RobotUser> contactList) throws RobotException;
 
+	
+	/**
+	 * Occurs when a resource has been saved to the saveUrl. 
+	 */
+	public void resourceReceived(String robot, String user,RobotResource resource, String saveUrl);
 }
