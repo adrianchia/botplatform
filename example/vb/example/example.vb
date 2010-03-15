@@ -80,6 +80,7 @@ Module example
         AddHandler robotServer.FileTransferEnded, AddressOf FileTransferEnded
         AddHandler robotServer.FileTransferCancelled, AddressOf FileTransferCancelled
         AddHandler robotServer.FileTransferError, AddressOf FileTransferError
+        AddHandler robotServer.FileReceived, AddressOf FileReceived
         AddHandler robotServer.FileInvited, AddressOf FileInvited
 
         AddHandler robotServer.WebcamAccepted, AddressOf WebcamAccepted
@@ -91,6 +92,7 @@ Module example
         AddHandler robotServer.PersonalMessageUpdated, AddressOf PersonalMessageUpdated
 
         AddHandler robotServer.ContactListReceived, AddressOf ContactListReceived
+        AddHandler robotServer.ResourceReceived, AddressOf ResourceReceived
         AddHandler robotServer.InkReceived, AddressOf InkReceived
         AddHandler robotServer.WinkReceived, AddressOf WinkReceived
         AddHandler robotServer.VoiceclipReceived, AddressOf VoiceclipReceived
@@ -257,27 +259,31 @@ Module example
     End Sub
 
     Sub FileAccepted(ByVal session As IRobotSession, ByVal fileDescriptor As IRobotFileDescriptor)
-        DebugEvent("FileAccepted", "transferId=" + fileDescriptor.transferId + "name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
+        DebugEvent("FileAccepted", "transferId=" + fileDescriptor.transferId + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
     End Sub
 
     Sub FileRejected(ByVal session As IRobotSession, ByVal fileDescriptor As IRobotFileDescriptor)
-        DebugEvent("FileRejected", "transferId=" + fileDescriptor.transferId + "name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
+        DebugEvent("FileRejected", "transferId=" + fileDescriptor.transferId + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
     End Sub
 
     Sub FileTransferEnded(ByVal session As IRobotSession, ByVal fileDescriptor As IRobotFileDescriptor)
-        DebugEvent("FileTransferEnded", "transferId=" + fileDescriptor.transferId + "name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
+        DebugEvent("FileTransferEnded", "transferId=" + fileDescriptor.transferId + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
     End Sub
 
     Sub FileTransferCancelled(ByVal session As IRobotSession, ByVal fileDescriptor As IRobotFileDescriptor)
-        DebugEvent("FileTransferCancelled", "transferId=" + fileDescriptor.transferId + "name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
+        DebugEvent("FileTransferCancelled", "transferId=" + fileDescriptor.transferId + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
     End Sub
 
     Sub FileTransferError(ByVal session As IRobotSession, ByVal fileDescriptor As IRobotFileDescriptor)
-        DebugEvent("FileTransferCancelled", "transferId=" + fileDescriptor.transferId + "name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
+        DebugEvent("FileTransferCancelled", "transferId=" + fileDescriptor.transferId + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
+    End Sub
+
+    Sub FileReceived(ByVal robot As String, ByVal user As String, ByVal fileDescriptor As IRobotFileDescriptor, ByVal saveUrl As String)
+        DebugEvent("FileReceived", "robot=" + robot + ",user=" + user + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size) + ",url=" + saveUrl)
     End Sub
 
     Sub FileInvited(ByVal session As IRobotSession, ByVal fileDescriptor As IRobotFileDescriptor)
-        DebugEvent("FileInvited", "transferId=" + fileDescriptor.transferId + "name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size) + ",thumbnail=" + fileDescriptor.Thumbnail)
+        DebugEvent("FileInvited", "transferId=" + fileDescriptor.transferId + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size) + ",thumbnail=" + fileDescriptor.Thumbnail)
     End Sub
 
     Sub WebcamAccepted(ByVal session As IRobotSession)
@@ -313,6 +319,10 @@ Module example
             Dim user As IRobotUser = contactList.Item(i)
             Console.WriteLine(user.FriendlyName)
         Next i
+    End Sub
+
+    Sub ResourceReceived(ByVal robot As String, ByVal user As String, ByVal resource As IRobotResource, ByVal saveUrl As String)
+        DebugEvent("ResourceReceived", "robot=" + robot + ",user" + user + ",name=" + resource.Name + ",size=" + CStr(resource.Size) + ",url=" + saveUrl)
     End Sub
 
     Sub InkReceived(ByVal session As IRobotSession, ByVal ink As String)

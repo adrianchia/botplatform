@@ -88,6 +88,7 @@ _ATL_FUNC_INFO  s_info_onFileRejected           = { CC_STDCALL, VT_EMPTY, 2, { V
 _ATL_FUNC_INFO  s_info_onFileTransferEnded      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onFileTransferCancelled  = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onFileTransferError      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onFileReceived           = { CC_STDCALL, VT_EMPTY, 4, { VT_BSTR, VT_BSTR, VT_UNKNOWN, VT_BSTR } };
 _ATL_FUNC_INFO  s_info_onFileInvited            = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 
 _ATL_FUNC_INFO  s_info_onWebcamAccepted         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
@@ -99,6 +100,7 @@ _ATL_FUNC_INFO  s_info_onUserUpdated            = { CC_STDCALL, VT_EMPTY, 2, { V
 _ATL_FUNC_INFO  s_info_onPersonalMessageUpdated = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_BSTR } };
 
 _ATL_FUNC_INFO  s_info_onContactListReceived    = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_UNKNOWN } };
+_ATL_FUNC_INFO  s_info_onResourceReceived       = { CC_STDCALL, VT_EMPTY, 4, { VT_BSTR, VT_BSTR, VT_UNKNOWN, VT_BSTR } };
 _ATL_FUNC_INFO  s_info_onInkReceived            = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_BSTR } };
 _ATL_FUNC_INFO  s_info_onWinkReceived           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onVoiceclipReceived      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
@@ -163,25 +165,27 @@ public:
         MY_SINK_ENTRY_INFO(17, onFileTransferEnded)
         MY_SINK_ENTRY_INFO(18, onFileTransferCancelled)
         MY_SINK_ENTRY_INFO(19, onFileTransferError)
-        MY_SINK_ENTRY_INFO(20, onFileInvited)
+        MY_SINK_ENTRY_INFO(20, onFileReceived)
+        MY_SINK_ENTRY_INFO(21, onFileInvited)
         
-        MY_SINK_ENTRY_INFO(21, onWebcamAccepted)
-        MY_SINK_ENTRY_INFO(22, onWebcamRejected)
-        MY_SINK_ENTRY_INFO(23, onWebcamClosed)
-        MY_SINK_ENTRY_INFO(24, onWebcamError)
+        MY_SINK_ENTRY_INFO(22, onWebcamAccepted)
+        MY_SINK_ENTRY_INFO(23, onWebcamRejected)
+        MY_SINK_ENTRY_INFO(24, onWebcamClosed)
+        MY_SINK_ENTRY_INFO(25, onWebcamError)
 
-        MY_SINK_ENTRY_INFO(25, onUserUpdated)
-        MY_SINK_ENTRY_INFO(26, onPersonalMessageUpdated)
+        MY_SINK_ENTRY_INFO(26, onUserUpdated)
+        MY_SINK_ENTRY_INFO(27, onPersonalMessageUpdated)
  
-        MY_SINK_ENTRY_INFO(27, onContactListReceived)
-        MY_SINK_ENTRY_INFO(28, onInkReceived)
-        MY_SINK_ENTRY_INFO(29, onWinkReceived)
-        MY_SINK_ENTRY_INFO(30, onVoiceclipReceived)
-        MY_SINK_ENTRY_INFO(31, onTypingReceived)
+        MY_SINK_ENTRY_INFO(28, onContactListReceived)
+        MY_SINK_ENTRY_INFO(29, onResourceReceived)
+        MY_SINK_ENTRY_INFO(30, onInkReceived)
+        MY_SINK_ENTRY_INFO(31, onWinkReceived)
+        MY_SINK_ENTRY_INFO(32, onVoiceclipReceived)
+        MY_SINK_ENTRY_INFO(33, onTypingReceived)
 
-        MY_SINK_ENTRY_INFO(32, onSceneUpdated)
-        MY_SINK_ENTRY_INFO(33, onDisplayPictureUpdated)
-        MY_SINK_ENTRY_INFO(34, onColorSchemeUpdated)
+        MY_SINK_ENTRY_INFO(34, onSceneUpdated)
+        MY_SINK_ENTRY_INFO(35, onDisplayPictureUpdated)
+        MY_SINK_ENTRY_INFO(36, onColorSchemeUpdated)
     END_SINK_MAP()
 
 private:
@@ -404,42 +408,49 @@ private:
     HRESULT __stdcall onFileAccepted(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
         BEGIN_(onFileAccepted)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
+        PRINT_EVENT( std::string("transferId=") + fileDescriptor->transferId + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
         END_
     }
 
     HRESULT __stdcall onFileRejected(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
         BEGIN_(onFileRejected)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
+        PRINT_EVENT( std::string("transferId=") + fileDescriptor->transferId + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
         END_
     }
 
     HRESULT __stdcall onFileTransferEnded(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
         BEGIN_(onFileTransferEnded)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
+        PRINT_EVENT( std::string("transferId=") + fileDescriptor->transferId + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
         END_
     }
 
     HRESULT __stdcall onFileTransferCancelled(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
         BEGIN_(onFileTransferCancelled)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
+        PRINT_EVENT( std::string("transferId=") + fileDescriptor->transferId + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
         END_
     }
 
     HRESULT __stdcall onFileTransferError(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
         BEGIN_(onFileTransferError)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
+        PRINT_EVENT( std::string("transferId=") + fileDescriptor->transferId + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) );
+        END_
+    }
+
+    HRESULT __stdcall onFileReceived(BSTR robot, BSTR user, IRobotFileDescriptor* fileDescriptor, BSTR saveUrl)
+    {
+        BEGIN_(onFileReceived)
+        PRINT_EVENT( std::string("robot=") + bstr2A(robot) + ",user=" + bstr2A(user) + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) + ",url=" + bstr2A(saveUrl) );
         END_
     }
 
     HRESULT __stdcall onFileInvited(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
         BEGIN_(onFileInvited)
-        PRINT_EVENT( std::string("transferId") + fileDescriptor->transferId + "name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) + ",thumbnail=" + fileDescriptor->Thumbnail );
+        PRINT_EVENT( std::string("transferId=") + fileDescriptor->transferId + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) + ",thumbnail=" + fileDescriptor->Thumbnail );
         END_
     }
 
@@ -490,6 +501,13 @@ private:
             std::cout << user->FriendlyName << std::endl;
         }
 
+        END_
+    }
+
+    HRESULT __stdcall onResourceReceived(BSTR robot, BSTR user, IRobotResource* resource, BSTR saveUrl)
+    {
+        BEGIN_(onResourceReceived)
+        PRINT_EVENT( "robot=" + bstr2A(robot) + ",user" + bstr2A(user) + ",name=" + resource->Name + ",size=" + numToStr(resource->Size) + ",url=" + bstr2A(saveUrl) );
         END_
     }
 
