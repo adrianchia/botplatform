@@ -400,7 +400,7 @@ public:
     }
 };
 
-// file transport invite/accepted/rejected/canceled/error from one user
+// file transport invite/accepted/rejected/canceled/error/receive from one user
 class JSonCmdFileevent: public JSonCmdServerBase
 {
     JSON_CMD_TYPE_NAME("fileevent")
@@ -434,6 +434,8 @@ public:
             pServer->Fire_FileTransferCancelled( session, desc );
         else if ( eve == "error" )
             pServer->Fire_FileTransferError( session, desc );
+        else if ( eve == "receive" )
+            pServer->Fire_FileReceived( UTF8_2_BSTR(robotId), UTF8_2_BSTR(userId), desc, UTF8_2_BSTR(root["body"]["saveUrl"].asString()) );
     }
 };
 
@@ -495,6 +497,26 @@ public:
     }
 };
 
+// resource event
+class JSonCmdResource: public JSonCmdServerBase
+{
+    JSON_CMD_TYPE_NAME("resource")
+
+public:
+    virtual void doTask( CRobotServer* pServer, const std::string& robotId, const std::string& userId, const std::string& sessionId, Json::Value& root )
+    {
+        CComPtr<IRobotResource> res;
+        CRobotResource* realRes = NULL;
+
+        HRESULT hr = createInnerObject( &res, &realRes );
+        if ( FAILED(hr) )
+            return;
+
+        realRes->setAll( root["body"] );
+        pServer->Fire_ResourceReceived( UTF8_2_BSTR(robotId), UTF8_2_BSTR(userId), res, UTF8_2_BSTR(root["body"]["saveUrl"].asString()) );
+    }
+};
+
 // error
 class JSonCmdError: public JSonCmdServerBase
 {
@@ -541,6 +563,7 @@ void RegisterAllJSonCmds( ManagerBase* man )
     REGISTER_CMD(JSonCmdFileevent);
     REGISTER_CMD(JSonCmdWebcamevent);
     REGISTER_CMD(JSonCmdUserlist);
+    REGISTER_CMD(JSonCmdResource);
     REGISTER_CMD(JSonCmdError);
 }
 

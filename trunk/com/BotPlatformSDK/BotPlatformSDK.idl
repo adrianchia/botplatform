@@ -501,79 +501,93 @@ library BotPlatformSDKLib
             /// @param[in] fileDescriptor    file descriptor
             [id(19), helpstring("Method FileTransferError")] HRESULT FileTransferError([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
             
+            /// Occurs when a file has been saved to the saveUrl.
+	        /// @param[in] robot            robot
+            /// @param[in] user             user
+            /// @param[in] fileDescriptor   file descriptor
+            /// @param[in] saveUrl          a url to receive a HTTP POST request to get the data of the file
+	        [id(20), helpstring("Method FileReceived")] HRESULT  FileReceived([in] BSTR robot, [in] BSTR user, [in] IRobotFileDescriptor* fileDescriptor, [in] BSTR saveUrl);
+
             /// Occurs when a file invite request is received
             /// @param[in] session           session
             /// @param[in] fileDescriptor    file descriptor
-            [id(20), helpstring("Method FileInvited")] HRESULT FileInvited([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
+            [id(21), helpstring("Method FileInvited")] HRESULT FileInvited([in] IRobotSession* session, [in] IRobotFileDescriptor* fileDescriptor);
             
             /// Occurs when user accepts a webcam invitation.
             /// @param[in] session           session
-            [id(21), helpstring("Method WebcamAccepted")] HRESULT WebcamAccepted([in] IRobotSession* session);
+            [id(22), helpstring("Method WebcamAccepted")] HRESULT WebcamAccepted([in] IRobotSession* session);
 
             /// Occurs when user rejects a webcam invitation.
             /// @param[in] session           session
-            [id(22), helpstring("Method WebcamRejected")] HRESULT WebcamRejected([in] IRobotSession* session);
+            [id(23), helpstring("Method WebcamRejected")] HRESULT WebcamRejected([in] IRobotSession* session);
 
             /// Occurs when a webcam closed.
             /// @param[in] session           session
-            [id(23), helpstring("Method WebcamClosed")] HRESULT WebcamClosed([in] IRobotSession* session);
+            [id(24), helpstring("Method WebcamClosed")] HRESULT WebcamClosed([in] IRobotSession* session);
 
             /// Occurs when a webcam error occurred.
             /// @param[in] session           session
-            [id(24), helpstring("Method WebcamError")] HRESULT WebcamError([in] IRobotSession* session);
+            [id(25), helpstring("Method WebcamError")] HRESULT WebcamError([in] IRobotSession* session);
 
             /// Occurs when user changes nickname or status.
             /// @param[in] strRobot          robot
             /// @param[in] user              user
-            [id(25), helpstring("Method UserUpdated")] HRESULT UserUpdated([in] BSTR strRobot, [in] IRobotUser* user);
+            [id(26), helpstring("Method UserUpdated")] HRESULT UserUpdated([in] BSTR strRobot, [in] IRobotUser* user);
 
             /// Occurs when user changes personal message.
             /// @param[in] strRobot          robot
             /// @param[in] user              user
             /// @param[in] personalMessage   personal message
-            [id(26), helpstring("Method PersonalMessageUpdated")] HRESULT PersonalMessageUpdated([in] BSTR strRobot, [in] BSTR user, [in] BSTR personalMessage);
+            [id(27), helpstring("Method PersonalMessageUpdated")] HRESULT PersonalMessageUpdated([in] BSTR strRobot, [in] BSTR user, [in] BSTR personalMessage);
             
             /// Occurs when robot receives contact list.
             /// @param[in] strRobot          robot
             /// @param[in] contactList       contact list
-            [id(27), helpstring("Method ContactListReceived")] HRESULT ContactListReceived([in] BSTR strRobot, [in] IRobotUsers* contactList);
+            [id(28), helpstring("Method ContactListReceived")] HRESULT ContactListReceived([in] BSTR strRobot, [in] IRobotUsers* contactList);
+
+            /// Occurs when a resource has been saved to the saveUrl. 
+	        /// @param[in] robot            robot
+            /// @param[in] user             user
+            /// @param[in] resource         resource
+            /// @param[in] saveUrl          a url to receive a HTTP POST request to get the data of the file
+	        [id(29), helpstring("Method ResourceReceived")] HRESULT ResourceReceived([in] BSTR robot, [in] BSTR user, [in] IRobotResource* resource, [in] BSTR saveUrl);
 
             /// Occurs when robot receives ink message.
             /// @param[in] session          session
             /// @param[in] ink              the data of the received ink message
-            [id(28), helpstring("Method InkReceived")] HRESULT InkReceived([in] IRobotSession* session, [in] BSTR ink);
+            [id(30), helpstring("Method InkReceived")] HRESULT InkReceived([in] IRobotSession* session, [in] BSTR ink);
 
             /// Occurs when robot receives wink message.
             /// @param[in] session          session
             /// @param[in] resource         a descriptor of the received wink message (see RobotResource).
-            [id(29), helpstring("Method WinkReceived")] HRESULT WinkReceived([in] IRobotSession* session, [in] IRobotResource* resource);
+            [id(31), helpstring("Method WinkReceived")] HRESULT WinkReceived([in] IRobotSession* session, [in] IRobotResource* resource);
 
             /// Occurs when robot receives voice clip.
             /// @param[in] session          session
             /// @param[in] resource         a descriptor of the received wink message (see RobotResource).
-            [id(30), helpstring("Method VoiceclipReceived")] HRESULT VoiceclipReceived([in] IRobotSession* session, [in] IRobotResource* resource);
+            [id(32), helpstring("Method VoiceclipReceived")] HRESULT VoiceclipReceived([in] IRobotSession* session, [in] IRobotResource* resource);
 
             /// Occurs user is inputting messages.
             /// @param[in] session          session
-            [id(31), helpstring("Method TypingReceived")] HRESULT TypingReceived([in] IRobotSession* session);
+            [id(33), helpstring("Method TypingReceived")] HRESULT TypingReceived([in] IRobotSession* session);
 
             /// Occurs when user changes scene.
             /// @param[in] strRobot         robot
             /// @param[in] user             user
             /// @param[in] resource         a descriptor of the received wink message (see RobotResource).
-            [id(32), helpstring("Method SceneUpdated")] HRESULT SceneUpdated([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource);
+            [id(34), helpstring("Method SceneUpdated")] HRESULT SceneUpdated([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource);
 
             /// Occurs when a user changes display picture.
             /// @param[in] strRobot         robot account
             /// @param[in] user             user who changes display picture
             /// @param[in] resource         a descriptor of the received wink message (see RobotResource).
-            [id(33), helpstring("Method DisplayPictureUpdated")] HRESULT DisplayPictureUpdated([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource);
+            [id(35), helpstring("Method DisplayPictureUpdated")] HRESULT DisplayPictureUpdated([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource);
             
             /// Occurs when a user changes color scheme.
             /// @param[in] strRobot         robot account
             /// @param[in] user             user who changes color scheme
             /// @param[in] colorScheme      color
-            [id(34), helpstring("Method ColorSchemeUpdated")] HRESULT ColorSchemeUpdated([in] BSTR strRobot, [in] BSTR user, [in] LONG colorScheme);
+            [id(36), helpstring("Method ColorSchemeUpdated")] HRESULT ColorSchemeUpdated([in] BSTR strRobot, [in] BSTR user, [in] LONG colorScheme);
     };
 
     /// RobotServer Class
