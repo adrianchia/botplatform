@@ -116,7 +116,7 @@ public interface RobotSession {
     
     /**
      * Get the robot account(MSN Passport) associated with this session
-     * @return
+     * @return robot account.
      */
     public String getRobot();
     
