@@ -189,7 +189,8 @@ public class MyHandler extends RobotAdapter{
 
 	public void fileInvited(RobotSession session, RobotFileDescriptor fileDescriptor) throws RobotException{
 		debugEvent("name=" + fileDescriptor.getName() + ",size=" + fileDescriptor.getSize());
-		session.sendFileRejection(fileDescriptor.getTransferId());
+//		session.sendFileRejection(fileDescriptor.getTransferId());
+		session.sendFileAcceptance(fileDescriptor.getTransferId(), null);
 	}
 
 	public void fileAccepted(RobotSession session, RobotFileDescriptor fileDescriptor) throws RobotException {
@@ -239,7 +240,7 @@ public class MyHandler extends RobotAdapter{
 
 	public void displayPictureUpdated(String robot, String user, RobotResource resource) throws RobotException {
 		debugEvent("robot=" + robot + ",user=" + user + ",resname="	+ resource.getName());
-		this.server.requestResource(robot, user, resource, "http://www.xiaoi.com");
+		this.server.requestResource(robot, user, resource, null);
 	}
 
 	public void sceneUpdated(String robot, String user, RobotResource resource) throws RobotException {
@@ -258,6 +259,17 @@ public class MyHandler extends RobotAdapter{
 	}
 
 	
+	
+	@Override
+	public void fileReceived(String robot, String user, RobotFileDescriptor fileDescriptor, String saveUrl) {
+		debugEvent("robot=" + robot + ",user=" + user + ",fileName=" + fileDescriptor.getName() + ",saveUrl=" + saveUrl);
+	}
+
+	@Override
+	public void resourceReceived(String robot, String user, RobotResource resource, String saveUrl) {
+		debugEvent("robot=" + robot + ",user=" + user + ",resource=" + resource.getName() + ",saveUrl=" + saveUrl);
+	}
+
 	public void exceptionCaught(RobotSession session, Throwable cause) throws RobotException {
 		debugEvent(cause.getMessage());
 		cause.printStackTrace();
