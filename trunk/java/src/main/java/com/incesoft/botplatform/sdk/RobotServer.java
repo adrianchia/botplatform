@@ -108,7 +108,7 @@ public interface RobotServer {
     /**
      * Set all robots' display picture
      * @param displayPicture unique name of the dp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
-     * @param largeDisplayPic unique name of the ddp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+     * @param largePicture unique name of the ddp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
      */
     public void setDisplayPictureEx(String displayPicture, String largePicture) throws RobotException;
 
@@ -116,7 +116,7 @@ public interface RobotServer {
      * Set display picture of a specified robot account.
      * @param robotAccount specify a robot account to be modified.
      * @param displayPicture unique name of the dp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
-     * @param largeDisplayPic unique name of the ddp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
+     * @param largePicture unique name of the ddp resource pre-uploaded to BOTPLATFORM and verified by BOTPLATFORM
      */    
     public void setDisplayPictureEx(String robotAccount, String displayPicture, String largePicture) throws RobotException;
     
