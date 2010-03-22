@@ -256,12 +256,11 @@ STDMETHODIMP CRobotServer::RequestContactList(BSTR robot)
 
 STDMETHODIMP CRobotServer::RequestResource(BSTR robot, BSTR user, IRobotResource* resource, BSTR saveUrl)
 {
-    if ( !isValidStr(robot) || !isValidStr(user) || !resource || !isValidStr(saveUrl) )
+    if ( !isValidStr(robot) || !isValidStr(user) || !resource )
         return E_INVALIDARG;
 
-    std::string u8_robot   = unicToUtf8(robot);
-    std::string u8_user    = unicToUtf8(user);
-    std::string u8_saveUrl = unicToUtf8(saveUrl);
+    std::string u8_robot = unicToUtf8(robot);
+    std::string u8_user  = unicToUtf8(user);
 
     CRobotResource* realRes = static_cast<CRobotResource*>(resource);
 
@@ -270,7 +269,9 @@ STDMETHODIMP CRobotServer::RequestResource(BSTR robot, BSTR user, IRobotResource
     body["name"]    = realRes->getName();
     body["digest"]  = realRes->getDigest();
     body["size"]    = numToStr(realRes->getSize());
-    body["saveUrl"] = u8_saveUrl;
+
+    if ( isValidStr(saveUrl) )
+        body["saveUrl"] = unicToUtf8(saveUrl);
 
     if ( !sendCmd( u8_robot, u8_user, "", "getresource", &body ) )
         return E_FAIL;
