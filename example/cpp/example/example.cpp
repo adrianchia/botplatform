@@ -2,6 +2,7 @@
 #include <atlbase.h>
 #include <atlcom.h>
 #include <atlconv.h>
+#include <conio.h>
 #include <string>
 #include <iostream>
 
@@ -9,13 +10,27 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-#define BEGIN_(func)    std::string funcName = #func; try {
-#define END_            } catch(const _com_error& e) { printLn( std::string("[ERROR:") + funcName + "] " + e.ErrorMessage() ); } return S_OK;
+#define BEGIN_(func) \
+    std::string funcName = #func; \
+    try \
+    {
+
+#define END_ \
+    } \
+    catch ( const _com_error& e ) \
+    { \
+        printLn( std::string("[ERROR:") + funcName + "] " + (e.ErrorInfo() ? e.Description() : e.ErrorMessage()) ); \
+        _getch(); \
+    } \
+    return S_OK;
+
 #define E_IF(hr)        if ( FAILED(hr) ) throw _com_error(hr);
+
 #define PRINT_EVENT(x)  printLn( std::string("[EVENT:") + funcName + "] " + x );
 #define PRINT_NULL(x)   BEGIN_(x) PRINT_EVENT(""); END_
 
 #define MY_SINK_ENTRY_INFO(id, name) SINK_ENTRY_INFO(1, DIID__IRobotServerEvents, id, &RobotServerEventsImpl::name, &s_info_##name)
+
 
 //////////////////////////////////////////////////////////////////////////
 const std::string numToStr( int num )
@@ -54,6 +69,7 @@ const std::string operator+( const std::string& lhs, const _bstr_t& rhs )
 {
     return lhs + (LPCSTR)rhs;
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 class CoInit
@@ -127,7 +143,7 @@ static const char commandList[] =
     " name ------ set friendly name.\r"
     " psm ------- set personal message.\r"
     " dp -------- set display picture.\r"
-    " ddp ------- set delux display picture.\r"
+    " ddp ------- set deluxe display picture.\r"
     " scene ----- set scene.\r"
     " color ----- set color scheme.\r"
     " invite ---- invite user.\r"
@@ -242,10 +258,12 @@ private:
         else if ( cmd == "emo" )
         {
             IRobotMessagePtr msg = session->CreateMessage();
-            msg->RegisterEmoticon("(1)", "bear.png");
-            msg->RegisterEmoticon("(2)", "beaver.png");
-            msg->RegisterEmoticon("(3)", "balloon.png");
-            msg->Text = "a(1)b(2)c(3)d";
+            msg->RegisterEmoticon("(1)", "emo1.png");
+            msg->RegisterEmoticon("(2)", "emo2.png");
+            msg->RegisterEmoticon("(3)", "emo3.png");
+            msg->RegisterEmoticon("(4)", "emo4.png");
+            msg->RegisterEmoticon("(5)", "emo5.png");
+            msg->Text = "a(1)b(2)c(3)d(4)e(5)f";
             session->SendIM( msg );
         }
         else if ( cmd == "typing" )
@@ -259,11 +277,11 @@ private:
         else if ( cmd == "wink" )
         {
             const char* k = "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";
-            session->SendWink( "wink.data", k );
+            session->SendWink( "wink.cab", k );
         }
         else if ( cmd == "ink" )
         {
-            session->SendInk( "AEwcA4CABB0DugEKAwRIEUVkGRQyCACAFAIAACBCMwgAwAwCAAAgQhWrqtNBq6rTQQAAAD4AAFY+\r\nHgMCBDQKBgEJSYAHVgoGAQl2AAdY" );
+            session->SendInk( "AMgCHAOAgAQdA9ABbgMESBFFZBkUMggAgBACAAAAQjMIAIAMAgAAAEIVq6rTQauq00EAACq9AAAAvx4HCIL8UficAAoXGoL8qflUAAAAgvwR+CcvLYJstllLmwAKFBKC/Kn5TuWblMtlmoL8efj0ALAACholgv0J+hQAAAAAAIL8DfgUlJUVFly2FJSxQAo/aoL9QfqGBYsqUAWFRUspLLKiwAAAACUCVJuUsssAgvyZ+TQLCpZZUsspLKgsAllliyyxYWWWLKSykssKJQAAChcbgv2R+yQAWAAAgvwN+B8JYWJsbCrLAAoWGoL9zfucAAAAgvwR+CYlhLLmspTZQAo3S4L+AAP4ABssFgASyyxZc2WXNlliygAVLFCWAIL8cfje5bLFly2BZZYoAssVKlllJUsspLLLAAoQCoL+ACP4AJssqIL8bfjcAA==" );
         }
         else if ( cmd == "voice" )
         {
@@ -271,7 +289,7 @@ private:
         }
         else if ( cmd == "file" )
         {
-            session->SendFile( "file.txt", "" );
+            session->SendFile( "file.pdf", "BotPlatform SDK Protocol.pdf" );
         }
         else if ( cmd == "p4" )
         {
@@ -293,19 +311,19 @@ private:
         }
         else if ( cmd == "dp" )
         {
-            m_server->SetDisplayPicture( "", "dp.png" );
+            m_server->SetDisplayPicture( "", "dp1.png" );
         }
         else if ( cmd == "ddp" )
         {
-            m_server->SetDisplayPictureEx( "", "dp.png", "ddp.dat" );
+            m_server->SetDisplayPictureEx( "", "dp1.png", "ddp1.cab" );
         }
         else if ( cmd == "scene" )
         {
-            m_server->SetScene( "", "scene.png" );
+            m_server->SetScene( "", "scene1.jpg" );
         }
         else if ( cmd == "color" )
         {
-            m_server->SetColorScheme( "", 0xFF0000 );
+            m_server->SetColorScheme( "", GetTickCount() );
         }
         else if ( cmd == "invite" )
         {
@@ -451,6 +469,7 @@ private:
     {
         BEGIN_(onFileInvited)
         PRINT_EVENT( std::string("transferId=") + fileDescriptor->transferId + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) + ",thumbnail=" + fileDescriptor->Thumbnail );
+        session->SendFileRejection(fileDescriptor->transferId);
         END_
     }
 
@@ -549,7 +568,6 @@ private:
     {
         BEGIN_(onDisplayPictureUpdated)
         PRINT_EVENT( "robot=" + bstr2A(robot) + ",user=" + bstr2A(user) + ",resname=" + resource->Name );
-        m_server->RequestResource( robot, user, resource, "http://www.xiaoi.com" );
         END_
     }
 
@@ -582,10 +600,10 @@ int _tmain(int argc, _TCHAR* argv[])
     E_IF( spRobotServerFactory.CoCreateInstance( CLSID_RobotServerFactory, NULL, CLSCTX_INPROC ) );
     spRobotServerFactory->Init( 2 );
 
-    IRobotServerPtr spRobotServer = spRobotServerFactory->CreateRobotServer( "bottest.com", 6602 );
+    IRobotServerPtr spRobotServer = spRobotServerFactory->CreateRobotServer( "server.botplatform.com", 6602 );
     RobotServerEventsImpl eventImpl;
     E_IF( eventImpl.setServer( spRobotServer ) );
-    spRobotServer->Login( "SP000125", "test111", 60000 );
+    spRobotServer->Login( "SP106825", "123qwe", 60000 );
 
     std::string cmd;
     while ( true )
@@ -599,6 +617,5 @@ int _tmain(int argc, _TCHAR* argv[])
     spRobotServerFactory->Destroy();
 
     END_
-	return 0;
 }
 
