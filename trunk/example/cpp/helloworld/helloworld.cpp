@@ -33,10 +33,10 @@ int _tmain(int argc, _TCHAR* argv[])
         spRobotServerFactory.CoCreateInstance( CLSID_RobotServerFactory, NULL, CLSCTX_INPROC );
         spRobotServerFactory->Init( 2 );
 
-        IRobotServerPtr spRobotServer = spRobotServerFactory->CreateRobotServer( "bottest.com", 6602 );
+        IRobotServerPtr spRobotServer = spRobotServerFactory->CreateRobotServer( "server.botplatform.com", 6602 );
         RobotServerEventsImpl eventImpl;
         eventImpl.DispEventAdvise( spRobotServer );
-        spRobotServer->Login( "SP000125", "test111", 60000 );
+        spRobotServer->Login( "SP106825", "123qwe", 60000 );
 
         std::string cmd;
         while ( true )
