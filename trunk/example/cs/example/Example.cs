@@ -13,25 +13,35 @@ namespace botplatform.example
 
         static void Main(string[] args)
         {
-            string host = "192.168.1.174";
+            string host = "server.botplatform.com";
             int port = 6602;
-            string spid = "SP000125";
-            string sppwd = "test111";
+            string spid = "SP106822";
+            string sppwd = "123qwe";
+
+            Console.WriteLine("Robot Server Starting...");
 
             serverFactory = new RobotServerFactory();
             serverFactory.Init(2);
             server = serverFactory.CreateRobotServer(host, port);
             RegisterEvent(server);
-            server.Login(spid, sppwd,60000);
-
-            string cmd = null;
-            while ((cmd = Console.ReadLine()) != null)
+            try
             {
-                if (cmd.Equals("exit"))
-                    break;
+                server.Login(spid, sppwd, 60000);
+                Console.WriteLine("Robot Server Logged In.");
+                string cmd = null;
+                while ((cmd = Console.ReadLine()) != null)
+                {
+                    if (cmd.Equals("exit"))
+                        break;
+                }
+                server.Logout();
+            } 
+            catch (Exception e) 
+            {
+                Console.WriteLine("Robot Server Logged Error:" + e);
             }
-            server.Logout();
             serverFactory.Destroy();
+            Console.WriteLine("Robot Server Stopped.");
         }
 
         static void RegisterEvent(RobotServer server) 
@@ -65,8 +75,11 @@ namespace botplatform.example
             server.SceneUpdated += new _IRobotServerEvents_SceneUpdatedEventHandler(server_SceneUpdated);
             server.ColorSchemeUpdated += new _IRobotServerEvents_ColorSchemeUpdatedEventHandler(server_ColorSchemeUpdated);
             server.ContactListReceived += new _IRobotServerEvents_ContactListReceivedEventHandler(server_ContactListReceived);
+            server.ResourceReceived += new _IRobotServerEvents_ResourceReceivedEventHandler(server_ResourceReceived);
             server.ExceptionCaught += new _IRobotServerEvents_ExceptionCaughtEventHandler(server_ExceptionCaught);
         }
+
+        
 
         static void server_SessionClosed(IRobotSession session)
         {
@@ -102,17 +115,19 @@ namespace botplatform.example
             else if ("preface".Equals(command))
             {
                 IRobotMessage msg = session.CreateMessage();
-                msg.Signature = "preface-" + new Random().Next(100);
+                msg.Signature = "preface-" + new Random().Next();
                 msg.Text = "test change preface";
                 session.SendIM(msg);
             }
             else if ("emo".Equals(command))
             {
                 IRobotMessage msg = session.CreateMessage();
-                msg.RegisterEmoticon("(1)", "bear.png");
-                msg.RegisterEmoticon("(2)", "beaver.png");
-                msg.RegisterEmoticon("(3)", "balloon.png");
-                msg.Text = "a(1)b(2)c(3)d";
+                msg.RegisterEmoticon("(1)", "emo1.png");
+                msg.RegisterEmoticon("(2)", "emo2.png");
+                msg.RegisterEmoticon("(3)", "emo3.png");
+                msg.RegisterEmoticon("(4)", "emo5.png");
+                msg.RegisterEmoticon("(5)", "emo5.png");
+                msg.Text = "a(1)b(2)c(3)d(4)e(5)f";
                 session.SendIM(msg);
             }
             else if ("typing".Equals(command))
@@ -126,11 +141,11 @@ namespace botplatform.example
             else if ("wink".Equals(command))
             {
                 String k = "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";
-                session.SendWink("wink.dat", k);
+                session.SendWink("wink.cab", k);
             }
             else if ("ink".Equals(command))
             {
-                session.SendInk("ink.dat");
+                session.SendInk("AMgCHAOAgAQdA9ABbgMESBFFZBkUMggAgBACAAAAQjMIAIAMAgAAAEIVq6rTQauq00EAACq9AAAAvx4HCIL8UficAAoXGoL8qflUAAAAgvwR+CcvLYJstllLmwAKFBKC/Kn5TuWblMtlmoL8efj0ALAACholgv0J+hQAAAAAAIL8DfgUlJUVFly2FJSxQAo/aoL9QfqGBYsqUAWFRUspLLKiwAAAACUCVJuUsssAgvyZ+TQLCpZZUsspLKgsAllliyyxYWWWLKSykssKJQAAChcbgv2R+yQAWAAAgvwN+B8JYWJsbCrLAAoWGoL9zfucAAAAgvwR+CYlhLLmspTZQAo3S4L+AAP4ABssFgASyyxZc2WXNlliygAVLFCWAIL8cfje5bLFly2BZZYoAssVKlllJUsspLLLAAoQCoL+ACP4AJssqIL8bfjcAA==");
             }
             else if ("voice".Equals(command))
             {
@@ -138,41 +153,37 @@ namespace botplatform.example
             }
             else if ("file".Equals(command))
             {
-                session.SendFile("file.txt","testfile");
+                session.SendFile("file.pdf","BotPlatform SDK Protocol.pdf");
             }
             else if ("p4".Equals(command))
             {
                 session.SendActivity("http://botplatform.com", "botplatform home");
             }
-            else if ("webcam".Equals(command))
-            {
-                session.SendWebcam("192.168.1.26", 81, 101, 9001);
-            }
             else if ("name".Equals(command))
             {
-                if (param == null) param = "name-" + new Random().Next(1000);
+                if (param == null) param = "name-" + new Random().Next();
                 server.SetDisplayName(session.Robot, param);
             }
             else if ("psm".Equals(command))
             {
-                if (param == null) param = "psm-" + new Random().Next(1000);
+                if (param == null) param = "psm-" + new Random().Next();
                 server.SetPersonalMessage(session.Robot, param);
             }
             else if ("dp".Equals(command))
             {
-                server.SetDisplayPicture(null,"dp.png");
+                server.SetDisplayPicture(null, "dp1.png");
             }
             else if ("ddp".Equals(command))
             {
-                server.SetDisplayPictureEx(null,"dp.png", "ddp.dat");
+                server.SetDisplayPictureEx(null,"dp1.png", "ddp1.cab");
             }
             else if ("scene".Equals(command))
             {
-                server.SetScene(null,"scene.png");
+                server.SetScene(null,"scene1.jpg");
             }
             else if ("color".Equals(command))
             {
-                server.SetColorScheme(null,0xFF0000);
+                server.SetColorScheme(null,new Random().Next());
             }
             else if ("invite".Equals(command))
             {
@@ -205,7 +216,7 @@ namespace botplatform.example
             {
                 string text = "FontName: " + message.FontName + "\r";
                 text = text + "FontStyle: " + message.FontStyle + "\r";
-                string hex = ""+message.FontColor;////int..toHexString((0xFFFFFF & message.FontColor));
+                string hex = message.FontColor.ToString("X8");
                 for (int k = hex.Length; k < 6; k++) hex = "0" + hex;
                 text = text + "FontColor: 0x" + hex + "\r";
                 text = text + "Text: " + message.Text + "\r";
@@ -223,7 +234,7 @@ namespace botplatform.example
         }
         static void server_InkReceived(IRobotSession session, string ink)
         {
-            DebugEvent("size=" + ink.Length);
+            DebugEvent(ink);
             session.SendInk(ink);
         }
         static void server_WinkReceived(IRobotSession session, IRobotResource resource)
@@ -317,11 +328,15 @@ namespace botplatform.example
         }
         static void server_ContactListReceived(string robot, IRobotUsers contactList)
         {
-            DebugEvent("robot=" + robot + ", size=" + contactList.Count() + ")");
+            DebugEvent("robot=" + robot + ", size=" + contactList.Count());
+        }
+        static void server_ResourceReceived(string robot, string user, IRobotResource resource, string saveUrl)
+        {
+            DebugEvent("robot=" + robot + ", user=" + user + ", saveUrl=" + saveUrl);
         }
         static void server_ExceptionCaught(IRobotSession session, int cause)
         {
-            throw new NotImplementedException();
+            DebugEvent("session=" + session + ", cause=" + cause);
         }
 
         static void DebugEvent()
@@ -353,13 +368,14 @@ namespace botplatform.example
             + " name ------ set friendly name.\r"
             + " psm ------- set personal message.\r"
             + " dp -------- set display picture.\r"
-            + " ddp ------- set delux display picture.\r"
+            + " ddp ------- set deluxe display picture.\r"
             + " scene ----- set scene.\r"
             + " color ----- set color scheme.\r"
             + " invite ---- invite user.\r"
             + " push ------ push message.\r"
             + " create ---- create session.\r"
             + " close ----- close session.\r"
+            + " fl -------- get the contact list.\r"
             + " help ------ print this command list.\r"
             + " ? --------- print this command list.\r";
        
