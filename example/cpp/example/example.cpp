@@ -596,6 +596,8 @@ int _tmain(int argc, _TCHAR* argv[])
     CoInit coinit_;
     BEGIN_(main)
 
+    std::cout << "Robot Server Starting...\n";
+
     CComPtr<IRobotServerFactory> spRobotServerFactory;
     E_IF( spRobotServerFactory.CoCreateInstance( CLSID_RobotServerFactory, NULL, CLSCTX_INPROC ) );
     spRobotServerFactory->Init( 2 );
@@ -604,6 +606,8 @@ int _tmain(int argc, _TCHAR* argv[])
     RobotServerEventsImpl eventImpl;
     E_IF( eventImpl.setServer( spRobotServer ) );
     spRobotServer->Login( "SP106825", "123qwe", 60000 );
+
+    std::cout << "Robot Server Logged In.\n";
 
     std::string cmd;
     while ( true )
@@ -615,6 +619,8 @@ int _tmain(int argc, _TCHAR* argv[])
     
     spRobotServer->Logout();
     spRobotServerFactory->Destroy();
+
+    std::cout << "Robot Server Stopped.\n";
 
     END_
 }
