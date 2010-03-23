@@ -13,9 +13,9 @@ Module helloworld
         Dim robotServerFactory As RobotServerFactory = New RobotServerFactory
         robotServerFactory.Init(2)
 
-        Dim robotServer As RobotServer = robotServerFactory.CreateRobotServer("bottest.com", 6602)
+        Dim robotServer As RobotServer = robotServerFactory.CreateRobotServer("server.botplatform.com", 6602)
         AddHandler robotServer.MessageReceived, AddressOf MessageReceived
-        robotServer.Login("SP000125", "test111", 60000)
+        robotServer.Login("SP106825", "123qwe", 60000)
 
         Dim cmd As String = ""
         Do While cmd <> "exit"

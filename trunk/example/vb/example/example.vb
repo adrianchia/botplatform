@@ -368,12 +368,16 @@ Module example
 
     <MTAThread()> Sub Main()
         Try
+            Console.WriteLine("Robot Server Starting...")
+
             Dim robotServerFactory As RobotServerFactory = New RobotServerFactory
             robotServerFactory.Init(2)
 
             m_server = robotServerFactory.CreateRobotServer("server.botplatform.com", 6602)
             SetAllEvents(m_server)
             m_server.Login("SP106825", "123qwe", 60000)
+
+            Console.WriteLine("Robot Server Logged In.")
 
             Dim cmd As String = ""
             Do While cmd <> "exit"
@@ -382,6 +386,8 @@ Module example
 
             m_server.Logout()
             robotServerFactory.Destroy()
+
+            Console.WriteLine("Robot Server Stopped.")
 
         Catch e As Exception
             Console.WriteLine(e.Message)
