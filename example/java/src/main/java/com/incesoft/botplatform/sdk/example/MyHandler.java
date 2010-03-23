@@ -103,7 +103,7 @@ public class MyHandler extends RobotAdapter{
 		} else if ("voice".equals(command)) {
 			session.sendVoiceclip("voiceclip.wav");
 		} else if ("file".equals(command)) {
-			session.sendFile("file.txt");
+			session.sendFile("file.pdf");
 		} else if ("p4".equals(command)) {
 			session.sendActivity("http://botplatform.com","botplatform home");
 		} else if ("name".equals(command)) {
