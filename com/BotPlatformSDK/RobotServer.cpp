@@ -17,6 +17,21 @@ struct PackHead
     WORD payloadLength;
 };
 
+STDMETHODIMP CRobotServer::InterfaceSupportsErrorInfo(REFIID riid)
+{
+    static const IID* arr[] = 
+    {
+        &IID_IRobotServer
+    };
+
+    for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+    {
+        if (InlineIsEqualGUID(*arr[i],riid))
+            return S_OK;
+    }
+    return S_FALSE;
+}
+
 void CRobotServer::FinalRelease()
 {
     Logout();
@@ -63,10 +78,15 @@ void CRobotServer::makeToken( std::string& token, const std::string& challenge, 
     token = makeMd5( total );
 }
 
-bool CRobotServer::login( const std::string& strspid, const std::string& strsppwd, long timeout )
+bool CRobotServer::login( const std::string& strspid, const std::string& strsppwd, long timeout, std::wstring* errInfo )
 {
+#define SET_ERROR_INFO(s) if ( errInfo ) *errInfo = s;
+
     if ( strspid.empty() )
+    {
+        SET_ERROR_INFO(L"invalid spid");
         return false;
+    }
 
     bool wantConnect = true;
     bool firstFailed = true;
@@ -85,17 +105,26 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
         {
             wantConnect = false;
             if ( !connect( m_serverMan->getIOService(), m_ip, m_port ) )
+            {
+                SET_ERROR_INFO(L"connect failed");
                 break;
+            }
         }
 
         // login
         if ( !sendCmd( "", "", "", "login", &bodyLogin, F_DATA, false ) )
+        {
+            SET_ERROR_INFO(L"request failed");
             break;
+        }
 
         // receive reply
         Json::Value data;
         if ( !syncRecv(data) )
+        {
+            SET_ERROR_INFO(L"server disconnected, invalid spid or password");
             break;
+        }
 
         int status;
         std::string connId, challenge;
@@ -109,7 +138,10 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
             {
                 // receive data first
                 if ( !recvNext() )
+                {
+                    SET_ERROR_INFO(L"receive failed");
                     break;
+                }
 
                 // clear fail flag
                 clearFailed();
@@ -134,6 +166,7 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
             else
             {
                 // failed again
+                SET_ERROR_INFO(L"server disconnected, invalid spid or password");
                 break;
             }
         }
@@ -146,6 +179,7 @@ bool CRobotServer::login( const std::string& strspid, const std::string& strsppw
         }
         else // unkown
         {
+            SET_ERROR_INFO(L"unkown error");
             break;
         }
     }
@@ -167,8 +201,9 @@ STDMETHODIMP CRobotServer::Login(BSTR spid, BSTR sppwd, LONG timeout)
 
     m_timeout = timeout;
 
-    if ( !login( m_strspid, m_strsppwd, m_timeout ) )
-        return E_FAIL;
+    std::wstring errInfo;
+    if ( !login( m_strspid, m_strsppwd, m_timeout, &errInfo ) )
+        return Error( errInfo.c_str() );
     
     return S_OK;
 }

@@ -19,6 +19,7 @@ class ATL_NO_VTABLE CRobotServer :
 	public CComObjectRootEx<CComMultiThreadModel>,
 	public CComCoClass<CRobotServer, &CLSID_RobotServer>,
 	public IConnectionPointContainerImpl<CRobotServer>,
+    public ISupportErrorInfo,
     public IRobotServer,
     public ClientBase,
     public CProxy_IRobotServerEvents<CRobotServer>
@@ -54,12 +55,15 @@ DECLARE_REGISTRY_RESOURCEID(IDR_ROBOTSERVER)
 BEGIN_COM_MAP(CRobotServer)
 	COM_INTERFACE_ENTRY(IRobotServer)
 	COM_INTERFACE_ENTRY(IConnectionPointContainer)
+    COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
 BEGIN_CONNECTION_POINT_MAP(CRobotServer)
     CONNECTION_POINT_ENTRY(__uuidof(_IRobotServerEvents))
 END_CONNECTION_POINT_MAP()
 
+    // ISupportsErrorInfo
+    STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -110,7 +114,7 @@ private:
     bool checkLoginResp( Json::Value& data, int& status, std::string& connId, std::string& challenge );
     bool checkRedirect( Json::Value& data, std::string& newip );
     void makeToken( std::string& token, const std::string& challenge, const std::string& strspid, const std::string& connId, const std::string& strsppwd );
-    bool login( const std::string& spid, const std::string& sppwd, long timeout );
+    bool login( const std::string& spid, const std::string& sppwd, long timeout, std::wstring* errInfo = NULL );
     
     bool updaterobot( BSTR robotAccount, LONG* status = NULL, BSTR displayName = NULL, BSTR personalMessage = NULL,
         BSTR displayPicture = NULL, BSTR largePicture = NULL, BSTR scene = NULL, LONG* colorScheme = NULL );
