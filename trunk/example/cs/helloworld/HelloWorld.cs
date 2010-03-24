@@ -12,9 +12,9 @@ namespace botplatform.helloworld
         {
             RobotServerFactory serverFactory = new RobotServerFactory();
             serverFactory.Init(2);
-            RobotServer server = serverFactory.CreateRobotServer("192.168.1.174", 6602);
+            RobotServer server = serverFactory.CreateRobotServer("server.botplatform.com", 6602);
             server.MessageReceived += new _IRobotServerEvents_MessageReceivedEventHandler(server_MessageReceived);
-            server.Login("SP000125", "test111", 60000);
+            server.Login("SP106824", "123qwe", 60000);
             string cmd = null;
             while ((cmd = Console.ReadLine()) != null)
                 if (cmd.Equals("exit")) break;
