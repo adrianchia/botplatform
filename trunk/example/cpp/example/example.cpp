@@ -104,19 +104,11 @@ _ATL_FUNC_INFO  s_info_onFileRejected           = { CC_STDCALL, VT_EMPTY, 2, { V
 _ATL_FUNC_INFO  s_info_onFileTransferEnded      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onFileTransferCancelled  = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onFileTransferError      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_onFileReceived           = { CC_STDCALL, VT_EMPTY, 4, { VT_BSTR, VT_BSTR, VT_UNKNOWN, VT_BSTR } };
 _ATL_FUNC_INFO  s_info_onFileInvited            = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
-
-_ATL_FUNC_INFO  s_info_onWebcamAccepted         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_onWebcamRejected         = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_onWebcamClosed           = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_onWebcamError            = { CC_STDCALL, VT_EMPTY, 1, { VT_UNKNOWN } };
 
 _ATL_FUNC_INFO  s_info_onUserUpdated            = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onPersonalMessageUpdated = { CC_STDCALL, VT_EMPTY, 3, { VT_BSTR, VT_BSTR, VT_BSTR } };
 
-_ATL_FUNC_INFO  s_info_onContactListReceived    = { CC_STDCALL, VT_EMPTY, 2, { VT_BSTR, VT_UNKNOWN } };
-_ATL_FUNC_INFO  s_info_onResourceReceived       = { CC_STDCALL, VT_EMPTY, 4, { VT_BSTR, VT_BSTR, VT_UNKNOWN, VT_BSTR } };
 _ATL_FUNC_INFO  s_info_onInkReceived            = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_BSTR } };
 _ATL_FUNC_INFO  s_info_onWinkReceived           = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
 _ATL_FUNC_INFO  s_info_onVoiceclipReceived      = { CC_STDCALL, VT_EMPTY, 2, { VT_UNKNOWN, VT_UNKNOWN } };
@@ -147,9 +139,6 @@ static const char commandList[] =
     " scene ----- set scene.\r"
     " color ----- set color scheme.\r"
     " invite ---- invite user.\r"
-    " push ------ push message.\r"
-    " create ---- create session.\r"
-    " close ----- close session.\r"
     " help ------ print this command list.\r"
     " ? --------- print this command list.\r";
 
@@ -181,19 +170,11 @@ public:
         MY_SINK_ENTRY_INFO(17, onFileTransferEnded)
         MY_SINK_ENTRY_INFO(18, onFileTransferCancelled)
         MY_SINK_ENTRY_INFO(19, onFileTransferError)
-        MY_SINK_ENTRY_INFO(20, onFileReceived)
         MY_SINK_ENTRY_INFO(21, onFileInvited)
-        
-        MY_SINK_ENTRY_INFO(22, onWebcamAccepted)
-        MY_SINK_ENTRY_INFO(23, onWebcamRejected)
-        MY_SINK_ENTRY_INFO(24, onWebcamClosed)
-        MY_SINK_ENTRY_INFO(25, onWebcamError)
 
         MY_SINK_ENTRY_INFO(26, onUserUpdated)
         MY_SINK_ENTRY_INFO(27, onPersonalMessageUpdated)
  
-        MY_SINK_ENTRY_INFO(28, onContactListReceived)
-        MY_SINK_ENTRY_INFO(29, onResourceReceived)
         MY_SINK_ENTRY_INFO(30, onInkReceived)
         MY_SINK_ENTRY_INFO(31, onWinkReceived)
         MY_SINK_ENTRY_INFO(32, onVoiceclipReceived)
@@ -311,15 +292,15 @@ private:
         }
         else if ( cmd == "dp" )
         {
-            m_server->SetDisplayPicture( "", "dp1.png" );
+            m_server->SetDisplayPicture( "", "dp.png" );
         }
         else if ( cmd == "ddp" )
         {
-            m_server->SetDisplayPictureEx( "", "dp1.png", "ddp1.cab" );
+            m_server->SetDisplayPictureEx( "", "dp.png", "ddp.cab" );
         }
         else if ( cmd == "scene" )
         {
-            m_server->SetScene( "", "scene1.jpg" );
+            m_server->SetScene( "", "scene.jpg" );
         }
         else if ( cmd == "color" )
         {
@@ -329,24 +310,6 @@ private:
         {
             if ( !param.empty() )
                 session->InviteUser( param.c_str() );
-        }
-        else if ( cmd == "fl" )
-        {
-            m_server->RequestContactList( session->Robot );
-        }
-        else if ( cmd == "push" )
-        {
-            if ( !param.empty() )
-                m_server->PushMessage( session->Robot, param.c_str(), "hello" );
-        }
-        else if ( cmd == "create" )
-        {
-            if ( !param.empty() )
-                m_server->CreateSession( session->Robot, param.c_str() );
-        }
-        else if ( cmd =="close" )
-        {
-            session->Close();
         }
         else
         {
@@ -458,39 +421,12 @@ private:
         END_
     }
 
-    HRESULT __stdcall onFileReceived(BSTR robot, BSTR user, IRobotFileDescriptor* fileDescriptor, BSTR saveUrl)
-    {
-        BEGIN_(onFileReceived)
-        PRINT_EVENT( std::string("robot=") + bstr2A(robot) + ",user=" + bstr2A(user) + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) + ",url=" + bstr2A(saveUrl) );
-        END_
-    }
-
     HRESULT __stdcall onFileInvited(IRobotSession* session, IRobotFileDescriptor* fileDescriptor)
     {
         BEGIN_(onFileInvited)
         PRINT_EVENT( std::string("transferId=") + fileDescriptor->transferId + ",name=" + fileDescriptor->Name + ",size=" + numToStr(fileDescriptor->Size) + ",thumbnail=" + fileDescriptor->Thumbnail );
         session->SendFileRejection(fileDescriptor->transferId);
         END_
-    }
-
-    HRESULT __stdcall onWebcamAccepted(IRobotSession* session)
-    {
-        PRINT_NULL(onWebcamAccepted);
-    }
-
-    HRESULT __stdcall onWebcamRejected(IRobotSession* session)
-    {
-        PRINT_NULL(onWebcamRejected);
-    }
-
-    HRESULT __stdcall onWebcamClosed(IRobotSession* session)
-    {
-        PRINT_NULL(onWebcamClosed);
-    }
-
-    HRESULT __stdcall onWebcamError(IRobotSession* session)
-    {
-        PRINT_NULL(onWebcamError);
     }
 
     HRESULT __stdcall onUserUpdated(BSTR robot, IRobotUser* user)
@@ -504,29 +440,6 @@ private:
     {
         BEGIN_(onPersonalMessageUpdated)
         PRINT_EVENT("robot=" + bstr2A(robot) + ",user=" + bstr2A(user) + ",psm=" + bstr2A(personalMessage));
-        END_
-    }
-
-    HRESULT __stdcall onContactListReceived(BSTR robot, IRobotUsers* contactList)
-    {
-        BEGIN_(onContactListReceived)
-
-        size_t count = contactList->Count();
-        PRINT_EVENT( "robot=" + bstr2A(robot) + ", size=" + numToStr(count) );
-        
-        for ( size_t i = 0; i < count; ++i )
-        {
-            IRobotUserPtr user = contactList->Item(i);
-            std::cout << user->FriendlyName << std::endl;
-        }
-
-        END_
-    }
-
-    HRESULT __stdcall onResourceReceived(BSTR robot, BSTR user, IRobotResource* resource, BSTR saveUrl)
-    {
-        BEGIN_(onResourceReceived)
-        PRINT_EVENT( "robot=" + bstr2A(robot) + ",user" + bstr2A(user) + ",name=" + resource->Name + ",size=" + numToStr(resource->Size) + ",url=" + bstr2A(saveUrl) );
         END_
     }
 
