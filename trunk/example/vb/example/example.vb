@@ -27,9 +27,6 @@ Module example
             " scene ----- set scene." + vbCr + _
             " color ----- set color scheme." + vbCr + _
             " invite ---- invite user." + vbCr + _
-            " push ------ push message." + vbCr + _
-            " create ---- create session." + vbCr + _
-            " close ----- close session." + vbCr + _
             " help ------ print this command list." + vbCr + _
             " ? --------- print this command list." + vbCr
     End Function
@@ -80,19 +77,11 @@ Module example
         AddHandler robotServer.FileTransferEnded, AddressOf FileTransferEnded
         AddHandler robotServer.FileTransferCancelled, AddressOf FileTransferCancelled
         AddHandler robotServer.FileTransferError, AddressOf FileTransferError
-        AddHandler robotServer.FileReceived, AddressOf FileReceived
         AddHandler robotServer.FileInvited, AddressOf FileInvited
-
-        AddHandler robotServer.WebcamAccepted, AddressOf WebcamAccepted
-        AddHandler robotServer.WebcamRejected, AddressOf WebcamRejected
-        AddHandler robotServer.WebcamClosed, AddressOf WebcamClosed
-        AddHandler robotServer.WebcamError, AddressOf WebcamError
 
         AddHandler robotServer.UserUpdated, AddressOf UserUpdated
         AddHandler robotServer.PersonalMessageUpdated, AddressOf PersonalMessageUpdated
 
-        AddHandler robotServer.ContactListReceived, AddressOf ContactListReceived
-        AddHandler robotServer.ResourceReceived, AddressOf ResourceReceived
         AddHandler robotServer.InkReceived, AddressOf InkReceived
         AddHandler robotServer.WinkReceived, AddressOf WinkReceived
         AddHandler robotServer.VoiceclipReceived, AddressOf VoiceclipReceived
@@ -180,29 +169,17 @@ Module example
                 End If
                 m_server.SetPersonalMessage(session.Robot, param)
             ElseIf cmd = "dp" Then
-                m_server.SetDisplayPicture(Nothing, "dp1.png")
+                m_server.SetDisplayPicture(Nothing, "dp.png")
             ElseIf cmd = "ddp" Then
-                m_server.SetDisplayPictureEx(Nothing, "dp1.png", "ddp1.cab")
+                m_server.SetDisplayPictureEx(Nothing, "dp.png", "ddp.cab")
             ElseIf cmd = "scene" Then
-                m_server.SetScene(Nothing, "scene1.png")
+                m_server.SetScene(Nothing, "scene.png")
             ElseIf cmd = "color" Then
                 m_server.SetColorScheme("", Rnd())
             ElseIf cmd = "invite" Then
                 If Not IsNothing(param) Then
                     session.InviteUser(param)
                 End If
-            ElseIf cmd = "fl" Then
-                m_server.RequestContactList(session.Robot)
-            ElseIf cmd = "push" Then
-                If Not IsNothing(param) Then
-                    m_server.PushMessage(session.Robot, param, "hello")
-                End If
-            ElseIf cmd = "create" Then
-                If Not IsNothing(param) Then
-                    m_server.CreateSession(session.Robot, param)
-                End If
-            ElseIf cmd = "close" Then
-                session.Close()
             Else
                 Dim text As String
                 text = "fontname: " + message.FontName + "" + vbCr
@@ -280,29 +257,9 @@ Module example
         DebugEvent("FileTransferCancelled", "transferId=" + fileDescriptor.transferId + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size))
     End Sub
 
-    Sub FileReceived(ByVal robot As String, ByVal user As String, ByVal fileDescriptor As IRobotFileDescriptor, ByVal saveUrl As String)
-        DebugEvent("FileReceived", "robot=" + robot + ",user=" + user + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size) + ",url=" + saveUrl)
-    End Sub
-
     Sub FileInvited(ByVal session As IRobotSession, ByVal fileDescriptor As IRobotFileDescriptor)
         DebugEvent("FileInvited", "transferId=" + fileDescriptor.transferId + ",name=" + fileDescriptor.Name + ",size=" + CStr(fileDescriptor.Size) + ",thumbnail=" + fileDescriptor.Thumbnail)
         session.SendFileRejection(fileDescriptor.transferId)
-    End Sub
-
-    Sub WebcamAccepted(ByVal session As IRobotSession)
-        DebugEvent("WebcamAccepted")
-    End Sub
-
-    Sub WebcamRejected(ByVal session As IRobotSession)
-        DebugEvent("WebcamRejected")
-    End Sub
-
-    Sub WebcamClosed(ByVal session As IRobotSession)
-        DebugEvent("WebcamClosed")
-    End Sub
-
-    Sub WebcamError(ByVal session As IRobotSession)
-        DebugEvent("WebcamError")
     End Sub
 
     Sub UserUpdated(ByVal robot As String, ByVal user As IRobotUser)
@@ -311,21 +268,6 @@ Module example
 
     Sub PersonalMessageUpdated(ByVal robot As String, ByVal user As String, ByVal personalMessage As String)
         DebugEvent("PersonalMessageUpdated", "robot=" + robot + ",user=" + user + ",psm=" + personalMessage)
-    End Sub
-
-    Sub ContactListReceived(ByVal robot As String, ByVal contactList As IRobotUsers)
-        Dim count As Integer = contactList.Count
-
-        DebugEvent("ContactListReceived", "robot=" + robot + ", size=" + CStr(count))
-
-        For i As Integer = 0 To count
-            Dim user As IRobotUser = contactList.Item(i)
-            Console.WriteLine(user.FriendlyName)
-        Next i
-    End Sub
-
-    Sub ResourceReceived(ByVal robot As String, ByVal user As String, ByVal resource As IRobotResource, ByVal saveUrl As String)
-        DebugEvent("ResourceReceived", "robot=" + robot + ",user" + user + ",name=" + resource.Name + ",size=" + CStr(resource.Size) + ",url=" + saveUrl)
     End Sub
 
     Sub InkReceived(ByVal session As IRobotSession, ByVal ink As String)
