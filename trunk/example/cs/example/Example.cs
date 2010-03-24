@@ -15,7 +15,7 @@ namespace botplatform.example
         {
             string host = "server.botplatform.com";
             int port = 6602;
-            string spid = "SP106822";
+            string spid = "SP106824";
             string sppwd = "123qwe";
 
             Console.WriteLine("Robot Server Starting...");
@@ -74,8 +74,6 @@ namespace botplatform.example
             server.DisplayPictureUpdated += new _IRobotServerEvents_DisplayPictureUpdatedEventHandler(server_DisplayPictureUpdated);
             server.SceneUpdated += new _IRobotServerEvents_SceneUpdatedEventHandler(server_SceneUpdated);
             server.ColorSchemeUpdated += new _IRobotServerEvents_ColorSchemeUpdatedEventHandler(server_ColorSchemeUpdated);
-            server.ContactListReceived += new _IRobotServerEvents_ContactListReceivedEventHandler(server_ContactListReceived);
-            server.ResourceReceived += new _IRobotServerEvents_ResourceReceivedEventHandler(server_ResourceReceived);
             server.ExceptionCaught += new _IRobotServerEvents_ExceptionCaughtEventHandler(server_ExceptionCaught);
         }
 
@@ -171,15 +169,15 @@ namespace botplatform.example
             }
             else if ("dp".Equals(command))
             {
-                server.SetDisplayPicture(null, "dp1.png");
+                server.SetDisplayPicture(null, "dp.png");
             }
             else if ("ddp".Equals(command))
             {
-                server.SetDisplayPictureEx(null,"dp1.png", "ddp1.cab");
+                server.SetDisplayPictureEx(null,"dp.png", "ddp.cab");
             }
             else if ("scene".Equals(command))
             {
-                server.SetScene(null,"scene1.jpg");
+                server.SetScene(null,"scene.jpg");
             }
             else if ("color".Equals(command))
             {
@@ -191,26 +189,6 @@ namespace botplatform.example
                 {
                     session.InviteUser(param);
                 }
-            }
-            else if ("fl".Equals(command))
-            {
-                server.RequestContactList(session.Robot);
-            }
-            else if ("push".Equals(command))
-            {
-                if (param != null)
-                {
-                    server.PushMessage(session.Robot, param, "hello");
-                }
-            }
-            else if ("create".Equals(command))
-            {
-                if (param != null)
-                    server.CreateSession(session.Robot, param);
-            }
-            else if ("close".Equals(command))
-            {
-                session.Close();
             }
             else
             {
@@ -326,14 +304,6 @@ namespace botplatform.example
         {
             DebugEvent("robot=" + robot + ",user=" + user + ",colorScheme=" + colorScheme);
         }
-        static void server_ContactListReceived(string robot, IRobotUsers contactList)
-        {
-            DebugEvent("robot=" + robot + ", size=" + contactList.Count());
-        }
-        static void server_ResourceReceived(string robot, string user, IRobotResource resource, string saveUrl)
-        {
-            DebugEvent("robot=" + robot + ", user=" + user + ", saveUrl=" + saveUrl);
-        }
         static void server_ExceptionCaught(IRobotSession session, int cause)
         {
             DebugEvent("session=" + session + ", cause=" + cause);
@@ -372,10 +342,6 @@ namespace botplatform.example
             + " scene ----- set scene.\r"
             + " color ----- set color scheme.\r"
             + " invite ---- invite user.\r"
-            + " push ------ push message.\r"
-            + " create ---- create session.\r"
-            + " close ----- close session.\r"
-            + " fl -------- get the contact list.\r"
             + " help ------ print this command list.\r"
             + " ? --------- print this command list.\r";
        
