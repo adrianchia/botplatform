@@ -83,10 +83,12 @@ public class MyHandler extends RobotAdapter{
 			session.send(msg);
 		} else if ("emo".equals(command)) {
 			RobotMessage msg = session.createMessage();
-			msg.registerEmoticon("(1)", "bear.png");
-			msg.registerEmoticon("(2)", "beaver.png");
-			msg.registerEmoticon("(3)", "balloon.png");
-			msg.setString("a(1)b(2)c(3)d");
+			msg.registerEmoticon("(1)", "emo1.png");
+			msg.registerEmoticon("(2)", "emo2.png");
+			msg.registerEmoticon("(3)", "emo3.png");
+			msg.registerEmoticon("(3)", "emo4.png");
+			msg.registerEmoticon("(3)", "emo5.png");
+			msg.setString("a(1)b(2)c(3)d(4)e(5)f");
 			session.send(msg);
 		} else if ("typing".equalsIgnoreCase(command)) {
 			session.sendTyping();
