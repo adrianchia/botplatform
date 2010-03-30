@@ -51,6 +51,8 @@ public class DefaultRobotSession implements RobotSession {
 	}
 
 	public void send(String message) throws RobotException {
+		if(message == null)
+			throw new NullPointerException();
 		RobotMessage msg = createMessage();
 		msg.setString(message);
 		send(msg);
@@ -140,9 +142,10 @@ public class DefaultRobotSession implements RobotSession {
 	}
 
 	public void send(RobotMessage message) throws RobotException {
+		if(message == null)
+			throw new NullPointerException();
 		DefaultRobotMessage msg = (DefaultRobotMessage) message;
 		sendMessage(Message.MSG, msg.getProtocolMessage());
-
 	}
 
 	public void sendNudge() throws RobotException {
@@ -155,6 +158,8 @@ public class DefaultRobotSession implements RobotSession {
 
 	public void sendActivity(String data, String friendlyName)
 			throws RobotException {
+		if(data == null)
+			throw new NullPointerException();
 		AppMessage msg = new AppMessage();
 		msg.setData(data);
 		if (friendlyName != null)
@@ -171,6 +176,8 @@ public class DefaultRobotSession implements RobotSession {
 	}
 
 	public void sendFile(String uri, String friendlyName) throws RobotException {
+		if(uri == null)
+			throw new NullPointerException();
 		ResourceMessage msg = new ResourceMessage();
 		msg.setLocation(uri);
 		if (friendlyName != null)
@@ -179,6 +186,8 @@ public class DefaultRobotSession implements RobotSession {
 	}
 
 	public void sendFileAcceptance(String transferId,String saveUrl)  throws RobotException {
+		if(transferId == null)
+			throw new NullPointerException();
 		FileTransCommand cmd = new FileTransCommand();
 		cmd.setCmd(P2PEvent.ACCEPT);
 		cmd.setTransferId(transferId);
@@ -187,12 +196,16 @@ public class DefaultRobotSession implements RobotSession {
 	}
     
     public void sendFileRejection(String transferId) throws RobotException {
+    	if(transferId == null)
+			throw new NullPointerException();
     	FileTransCommand cmd = new FileTransCommand();
 		cmd.setCmd(P2PEvent.REJECT);
 		cmd.setTransferId(transferId);
 		sendMessage(Message.FILECMD, cmd);
     }
     public void sendFileCancellation(String transferId) throws RobotException {
+    	if(transferId == null)
+			throw new NullPointerException();
     	FileTransCommand cmd = new FileTransCommand();
 		cmd.setCmd(P2PEvent.CANCEL);
 		cmd.setTransferId(transferId);
@@ -200,6 +213,8 @@ public class DefaultRobotSession implements RobotSession {
     }
     
 	public void sendInk(byte[] inkData) throws RobotException {
+		if(inkData == null)
+			throw new NullPointerException();
 		String ink = new BASE64Encoder().encode(inkData);
 		sendMessage(Message.INKMSG, ink);
 	}
@@ -209,6 +224,8 @@ public class DefaultRobotSession implements RobotSession {
 	}
 
 	public void sendWink(String uri, String stamp) throws RobotException {
+		if(uri == null)
+			throw new NullPointerException();
 		ResourceMessage msg = new ResourceMessage();
 		msg.setLocation(uri);
 		if (stamp != null)
@@ -217,6 +234,8 @@ public class DefaultRobotSession implements RobotSession {
 	}
 
 	public void sendVoiceclip(String uri) throws RobotException {
+		if(uri == null)
+			throw new NullPointerException();
 		ResourceMessage msg = new ResourceMessage();
 		if (uri != null) {
 			msg.setLocation(uri);
@@ -248,11 +267,15 @@ public class DefaultRobotSession implements RobotSession {
 	}
 
 	public void inviteUser(String user) throws RobotException {
+		if(user == null)
+			throw new NullPointerException();
 		sendMessage(Message.INVITE, user);
 	}
 
 	public void sendActivity(int appid, String appname, String data)
 			throws RobotException {
+		if(data == null)
+			throw new NullPointerException();
 		AppMessage msg = new AppMessage();
 		msg.setId(String.valueOf(appid));
 		msg.setName(appname);
