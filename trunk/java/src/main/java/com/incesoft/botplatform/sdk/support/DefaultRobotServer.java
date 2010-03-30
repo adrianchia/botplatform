@@ -451,6 +451,8 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 	public void setDisplayName(String displayName) throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (displayName == null)
+			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setDisplayName(displayName);
 		sendMessage(new Message(Message.UPDATEROBOT, req));
@@ -460,6 +462,8 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 			throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (displayName == null)
+			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setDisplayName(displayName);
 		sendMessage(new Message(robotAccount, null, null, Message.UPDATEROBOT,
@@ -470,6 +474,8 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 			throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (personalMessage == null)
+			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setPersonalMessage(personalMessage);
 		sendMessage(new Message(Message.UPDATEROBOT, req));
@@ -479,6 +485,8 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 			throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (personalMessage == null)
+			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setPersonalMessage(personalMessage);
 		sendMessage(new Message(robotAccount, null, null, Message.UPDATEROBOT,
@@ -497,6 +505,8 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 	public void createSession(String robot, String user) throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (robot == null || user == null)
+			throw new NullPointerException();
 		sendMessage(new Message(robot, user, null, Message.CREATESESSION, null));
 	}
 
@@ -504,18 +514,24 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 			throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (robot == null || user == null || message == null)
+			throw new NullPointerException();
 		sendMessage(new Message(robot, user, null, Message.PUSH, message));
 	}
 
 	public void requestContactList(String robot) throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not loggedin.");
+		if (robot == null)
+			throw new NullPointerException();
 		sendMessage(new Message(robot, null, null, Message.GETUSERLIST, null));
 	}
 	
 	public void requestResource(String robot, String user, RobotResource resource, String saveUrl) throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not loggedin.");
+		if (robot == null || user == null || resource == null)
+			throw new NullPointerException();
 		ResourceInfo info = new ResourceInfo();
 		info.setDigest(resource.getDigest());
 		info.setName(resource.getName());
@@ -758,6 +774,8 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 	public void setScene(String scene) throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (scene == null)
+			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setScene(scene);
 		sendMessage(new Message(null, null, null, Message.UPDATEROBOT, req));
@@ -767,31 +785,35 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 			throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (scene == null)
+			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setScene(scene);
 		sendMessage(new Message(robotAccount, null, null, Message.UPDATEROBOT,
 				req));
 	}
 
-	public void setDisplayPictureEx(String displayPicture, String largePicture)
+	public void setDisplayPictureEx(String displayPicture, String deluxePicture)
 			throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (displayPicture == null || deluxePicture == null)
+			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setDisplayPicture(displayPicture);
-		if (null != largePicture)
-			req.setLargePicture(largePicture);
+		req.setLargePicture(deluxePicture);
 		sendMessage(new Message(Message.UPDATEROBOT, req));
 	}
 
 	public void setDisplayPictureEx(String robotAccount, String displayPicture,
-			String largePicture) throws RobotException {
+			String deluxePicture) throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
+		if (displayPicture == null || deluxePicture == null)
+			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setDisplayPicture(displayPicture);
-		if (null != largePicture)
-			req.setLargePicture(largePicture);
+		req.setLargePicture(deluxePicture);
 		sendMessage(new Message(robotAccount, null, null, Message.UPDATEROBOT,
 				req));
 	}
