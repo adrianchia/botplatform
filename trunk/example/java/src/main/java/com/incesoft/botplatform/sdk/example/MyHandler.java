@@ -242,7 +242,6 @@ public class MyHandler extends RobotAdapter{
 
 	public void displayPictureUpdated(String robot, String user, RobotResource resource) throws RobotException {
 		debugEvent("robot=" + robot + ",user=" + user + ",resname="	+ resource.getName());
-		this.server.requestResource(robot, user, resource, null);
 	}
 
 	public void sceneUpdated(String robot, String user, RobotResource resource) throws RobotException {
