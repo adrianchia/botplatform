@@ -86,8 +86,8 @@ public class MyHandler extends RobotAdapter{
 			msg.registerEmoticon("(1)", "emo1.png");
 			msg.registerEmoticon("(2)", "emo2.png");
 			msg.registerEmoticon("(3)", "emo3.png");
-			msg.registerEmoticon("(3)", "emo4.png");
-			msg.registerEmoticon("(3)", "emo5.png");
+			msg.registerEmoticon("(4)", "emo4.png");
+			msg.registerEmoticon("(5)", "emo5.png");
 			msg.setString("a(1)b(2)c(3)d(4)e(5)f");
 			session.send(msg);
 		} else if ("typing".equalsIgnoreCase(command)) {
@@ -191,8 +191,7 @@ public class MyHandler extends RobotAdapter{
 
 	public void fileInvited(RobotSession session, RobotFileDescriptor fileDescriptor) throws RobotException{
 		debugEvent("name=" + fileDescriptor.getName() + ",size=" + fileDescriptor.getSize());
-//		session.sendFileRejection(fileDescriptor.getTransferId());
-		session.sendFileAcceptance(fileDescriptor.getTransferId(), null);
+		session.sendFileRejection(fileDescriptor.getTransferId());
 	}
 
 	public void fileAccepted(RobotSession session, RobotFileDescriptor fileDescriptor) throws RobotException {
