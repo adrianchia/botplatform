@@ -797,8 +797,6 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 			throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
-		if (displayPicture == null || deluxePicture == null)
-			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setDisplayPicture(displayPicture);
 		req.setLargePicture(deluxePicture);
@@ -809,8 +807,6 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 			String deluxePicture) throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
-		if (displayPicture == null || deluxePicture == null)
-			throw new NullPointerException();
 		UpdateRobotRequest req = new UpdateRobotRequest();
 		req.setDisplayPicture(displayPicture);
 		req.setLargePicture(deluxePicture);
