@@ -36,7 +36,7 @@ int _tmain(int argc, _TCHAR* argv[])
         IRobotServerPtr spRobotServer = spRobotServerFactory->CreateRobotServer( "server.botplatform.com", 6602 );
         RobotServerEventsImpl eventImpl;
         eventImpl.DispEventAdvise( spRobotServer );
-        spRobotServer->Login( "SP106825", "123qwe", 60000 );
+        spRobotServer->Login( "YourSP", "Password", 60000 );
 
         std::string cmd;
         while ( true )

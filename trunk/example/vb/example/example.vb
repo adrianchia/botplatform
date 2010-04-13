@@ -317,7 +317,7 @@ Module example
 
             m_server = robotServerFactory.CreateRobotServer("server.botplatform.com", 6602)
             SetAllEvents(m_server)
-            m_server.Login("SP106825", "123qwe", 60000)
+            m_server.Login("YourSP", "Password", 60000)
 
             Console.WriteLine("Robot Server Logged In.")
 

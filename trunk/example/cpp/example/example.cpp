@@ -518,7 +518,7 @@ int _tmain(int argc, _TCHAR* argv[])
     IRobotServerPtr spRobotServer = spRobotServerFactory->CreateRobotServer( "server.botplatform.com", 6602 );
     RobotServerEventsImpl eventImpl;
     E_IF( eventImpl.setServer( spRobotServer ) );
-    spRobotServer->Login( "SP106825", "123qwe", 60000 );
+    spRobotServer->Login( "YourSP", "Password", 60000 );
 
     std::cout << "Robot Server Logged In.\n";
 
