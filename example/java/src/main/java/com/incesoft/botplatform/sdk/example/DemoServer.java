@@ -13,8 +13,8 @@ public class DemoServer {
 		
 		String host = "server.botplatform.com";
 		int port = 6602;
-		String spid = "SP000125";
-		String sppwd = "test111";
+		String spid = "you spid";
+		String sppwd = "your sppwd";
 
 		System.out.println("RobotServer starting");
 		
