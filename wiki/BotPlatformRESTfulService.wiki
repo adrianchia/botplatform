@@ -10,7 +10,7 @@ In this page, we will show you how to add, retrieve,modify and delete your resou
 
 = Details =
 
-The RESTful Service we provided is simply a URL which can be called through the HTTP methods(GET,POST,PUT and DELETE).
+The RESTful Service we provided is simply a URL which can be called in your code through the HTTP methods(GET,POST,PUT and DELETE).
 
 *The URl pattern is : http://botplatform.com/rest/{SPid}/{type}/{name}
 
