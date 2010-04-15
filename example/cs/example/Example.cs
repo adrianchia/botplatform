@@ -15,8 +15,8 @@ namespace botplatform.example
         {
             string host = "server.botplatform.com";
             int port = 6602;
-            string spid = "SP106824";
-            string sppwd = "123qwe";
+            string spid = "your spid";
+            string sppwd = "your sppwd";
 
             Console.WriteLine("Robot Server Starting...");
 

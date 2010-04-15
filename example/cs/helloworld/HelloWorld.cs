@@ -14,7 +14,7 @@ namespace botplatform.helloworld
             serverFactory.Init(2);
             RobotServer server = serverFactory.CreateRobotServer("server.botplatform.com", 6602);
             server.MessageReceived += new _IRobotServerEvents_MessageReceivedEventHandler(server_MessageReceived);
-            server.Login("SP106824", "123qwe", 60000);
+            server.Login("your spid", "your sppwd", 60000);
             string cmd = null;
             while ((cmd = Console.ReadLine()) != null)
                 if (cmd.Equals("exit")) break;
