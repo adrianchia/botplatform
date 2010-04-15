@@ -50,8 +50,7 @@ try {
 	} else {
 		System.out.println("error : " + status);
 	}
-} catch (HttpException e) {
-	e.printStackTrace();
+} catch (HttpException ignored) {
 } finally {
 	gm.releaseConnection();
 }
@@ -81,10 +80,8 @@ try {
 	} else {
 		System.out.println("error : " + status);
 	}
-} catch (HttpException e) {
-	e.printStackTrace();
-} catch (IOException e) {
-	e.printStackTrace();
+} catch (HttpException ignored) {
+} catch (IOException ignored) {
 } finally {
 	pm.releaseConnection();
 }
