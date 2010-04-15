@@ -16,7 +16,7 @@ The RESTful Service we provided is simply a URL which can be used in your code t
 
 *spid* : Your registered account in our website.
 
-*type* : Resources' type for short, which can be one of the below.
+*type* : Resources' type for short, which should be one of the below.
           * dp -- desplay picture
           * ddp -- deluxe display picture
           * emo -- emoticons
