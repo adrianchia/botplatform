@@ -60,7 +60,7 @@ try {
 *POST example*
 {{{
 HttpClient client = getHttpClient("UTF-8");
-String postUrl = "http://botplatform.com/rest/SP106827/dp/" + URLEncoder.encode("hsq.jpg", "UTF-8");
+String postUrl = "http://botplatform.com/rest/SP106827/dp/" + URLEncoder.encode("dota.jpg", "UTF-8");
 try {
         PostMethod pm = new PostMethod(postUrl);
 	FileInputStream is = new FileInputStream("your file path");
