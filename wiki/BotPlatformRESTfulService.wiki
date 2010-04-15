@@ -88,4 +88,4 @@ try {
 }
 }}}
 
-PUT and DELETE examples will not be listed here, but they are something similar, you may try it by yourself. :)
+PUT and DELETE examples will not be listed here, but they are something similar, you may have it a go by yourself. :)
