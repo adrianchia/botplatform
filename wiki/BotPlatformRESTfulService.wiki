@@ -1,5 +1,5 @@
 #summary RESTful service for service provider to manage resources.
-#labels BotPlatform,ServiceProviderResources,RESTfulService
+#labels BotPlatform,ServiceProvider,RESTful
 
 = Introduction =
 
