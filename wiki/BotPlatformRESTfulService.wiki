@@ -27,7 +27,7 @@ The RESTful Service we provided is simply a URL which can be called in your code
 
 *name* : Name of your resource.
           
-*Here is an example URL : `http://botplatform.com/rest/SP106827/dp/dota.jpg`
+*Here is an example URL : `http://botplatform.com/rest/SP106827/dp/dota.jpg`*
 
 *Notice : When your make a call, you will encounter with a HTTP digest authentication.*
 
