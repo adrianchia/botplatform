@@ -12,9 +12,9 @@ In this page, we will show you how to add, retrieve,modify and delete your resou
 
 The RESTful Service we provided is simply a URL which can be called in your code through the HTTP methods(GET,POST,PUT and DELETE).
 
-*The URl pattern is : http://botplatform.com/rest/{SPid}/{type}/{name}
+*The URl pattern is : http://botplatform.com/rest/{spid}/{type}/{name}
 
-*SPid* : Your registered account in our website.
+*spid* : Your registered account in our website.
 
 *type* : Resources' type for short, which can be one of the below.
           * dp -- desplay picture
