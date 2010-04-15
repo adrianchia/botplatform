@@ -47,6 +47,7 @@ try {
 	int status = client.executeMethod(gm);
 	if (status == 200) {
 		byte[] result = gm.getResponseBody();
+                //process the result
 	} else {
 		System.out.println("error : " + status);
 	}
