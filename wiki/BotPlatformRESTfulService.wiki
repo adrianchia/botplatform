@@ -1,5 +1,5 @@
 #summary One-sentence summary of this page.
-#labels BotPlatform,RESTful
+#labels BotPlatform,SPResources,RESTfulService
 
 = Introduction =
 
