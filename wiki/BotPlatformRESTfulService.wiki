@@ -33,7 +33,7 @@ The RESTful Service we provided is simply a URL which can be called in your code
 
 = Example =
 
-Here are some java examples implemented by Apache HttpClient.
+Here are some java examples implemented by `Apache HttpClient`.
 
 *GET example*
 
