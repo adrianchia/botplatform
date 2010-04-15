@@ -87,3 +87,5 @@ try {
 	pm.releaseConnection();
 }
 }}}
+
+PUT and DELETE examples will not be listed here, but they are something similar, you may try it by yourself. :)
