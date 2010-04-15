@@ -3,7 +3,9 @@
 
 = Introduction =
 
-Hi there,we suppose you are one of the service providers signed up in our website(http://botplatform.com).In this page, we will show you how to add, retrieve,modify and delete your resources.These resources you may have previously uploaded in our website.
+Hi there,we suppose you are one of the service providers signed up in our website(http://botplatform.com) . 
+
+In this page, we will show you how to add, retrieve,modify and delete your resources.These resources you may have previously uploaded in our website.
 
 
 = Details =
