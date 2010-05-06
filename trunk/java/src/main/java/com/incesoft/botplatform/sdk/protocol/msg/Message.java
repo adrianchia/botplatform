@@ -136,7 +136,7 @@ public class Message implements Serializable {
 		BODY_MAP.put(USERREMOVED, null);
 		BODY_MAP.put(GETUSERLIST, null);
 		BODY_MAP.put(USERLIST, User[].class);
-		BODY_MAP.put(PUSH, String.class);
+		BODY_MAP.put(PUSH, TextMessage.class);
 		BODY_MAP.put(GETRESOURCE, ResourceInfo.class);
 
 		BODY_MAP.put(SESSIONOPENED, SessionOpenedEvent.class);

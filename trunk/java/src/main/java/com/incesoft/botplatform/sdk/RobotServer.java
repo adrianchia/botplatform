@@ -163,7 +163,7 @@ public interface RobotServer {
      * @param user user id
      * @param message message
      */
-    public void pushMessage(String robot, String user, String message) throws RobotException;
+    public void pushMessage(String robot, String user, RobotMessage message) throws RobotException;
     /** 
      * Get the contact list of the specified robot.
      * @param robot robot id

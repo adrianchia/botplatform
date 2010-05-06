@@ -20,6 +20,7 @@ import sun.misc.BASE64Decoder;
 import com.incesoft.botplatform.sdk.RobotConnectionListener;
 import com.incesoft.botplatform.sdk.RobotException;
 import com.incesoft.botplatform.sdk.RobotHandler;
+import com.incesoft.botplatform.sdk.RobotMessage;
 import com.incesoft.botplatform.sdk.RobotResource;
 import com.incesoft.botplatform.sdk.RobotServer;
 import com.incesoft.botplatform.sdk.RobotSession;
@@ -510,13 +511,14 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 		sendMessage(new Message(robot, user, null, Message.CREATESESSION, null));
 	}
 
-	public void pushMessage(String robot, String user, String message)
+	public void pushMessage(String robot, String user, RobotMessage message)
 			throws RobotException {
 		if (!this.isLoggedIn())
 			throw new RobotException("robot server not logged in.");
 		if (robot == null || user == null || message == null)
 			throw new NullPointerException();
-		sendMessage(new Message(robot, user, null, Message.PUSH, message));
+		DefaultRobotMessage msg = (DefaultRobotMessage) message;
+		sendMessage(new Message(robot, user, null, Message.PUSH, msg.getProtocolMessage()));
 	}
 
 	public void requestContactList(String robot) throws RobotException {
