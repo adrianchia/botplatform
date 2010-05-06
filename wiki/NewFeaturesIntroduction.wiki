@@ -7,6 +7,7 @@ In this page, we're going to introduce the new features of our latest SDK(Java v
 = Details =
 
 1. RobotServer
+
 First let's take a quick look over the three methods listed below:
 {{{
 public void setDisplayPictureEx(String displayPicture, String deluxePicture) throws RobotException;
