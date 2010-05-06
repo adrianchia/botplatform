@@ -50,3 +50,5 @@ public void inkReceived(RobotSession session,byte[] ink) throws RobotException;
 public void voiceclipReceived(RobotSession session,RobotResource resource) throws RobotException;
 public void typingReceived(RobotSession session) throws RobotException;
 }}}
+
+If you have any problems in working with these events, please let us know ASAP.
