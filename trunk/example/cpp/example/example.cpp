@@ -139,6 +139,7 @@ static const char commandList[] =
     " scene ----- set scene.\r"
     " color ----- set color scheme.\r"
     " invite ---- invite user.\r"
+    " push ------ push message.\r"
     " help ------ print this command list.\r"
     " ? --------- print this command list.\r";
 
@@ -310,6 +311,17 @@ private:
         {
             if ( !param.empty() )
                 session->InviteUser( param.c_str() );
+        }
+        else if ( cmd == "push" )
+        {
+            if ( !param.empty() )
+            {
+                IRobotMessagePtr msg = session->CreateMessage();
+                msg->Text      = "hello";
+                msg->FontColor = 0xe34eff;
+                msg->FontStyle = STYLE_ITALIC;
+                m_server->PushMessage( session->Robot, param.c_str(), msg );
+            }
         }
         else
         {
