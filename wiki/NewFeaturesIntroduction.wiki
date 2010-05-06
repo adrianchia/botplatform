@@ -34,7 +34,7 @@ public void sendInk(byte[] inkData) throws RobotException;
 
 ===3.RobotHandler===
 
-The RobotHandler now is more functional than previous one. We don't explain these events here as you will get well informed when you take a look at them.
+Now this class is more functional than previous one. We don't explain these events here as you will get well informed when you take a look at them.
 
 {{{
 public void resourceReceived(String robot, String user,RobotResource resource, String saveUrl);
