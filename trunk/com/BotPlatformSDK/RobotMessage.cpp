@@ -109,3 +109,30 @@ void CRobotMessage::setAll( Json::Value& val )
     END_JSON_PARSE()
 }
 
+bool CRobotMessage::toValue( Json::Value& val ) const
+{
+    if ( getText().empty() )
+        return false;
+
+    val["text"] = getText();
+    
+    if ( !getFontName().empty() )
+        val["fontName"] = getFontName();
+    
+    if ( hasFontColor() )
+        val["fontColor"] = getFontColor();
+    
+    if ( getFontStyle() != 0 )
+        val["fontStyle"] = getFontStyle();
+
+    if ( !getSignature().empty() )
+        val["signature"] = getSignature();
+
+    for ( StringMap::const_iterator it = getEmoticons().begin(); it != getEmoticons().end(); ++it )
+    {
+        val["emoticons"][it->first] = it->second;
+    }
+
+    return true;
+}
+

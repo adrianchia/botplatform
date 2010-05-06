@@ -104,7 +104,7 @@ interface IRobotServer : IUnknown{
     /// @param[in]  user        user id
     /// @param[in]  message     message
     /// @return                 Returns S_OK if successful, or an error value otherwise
-    [helpstring("Method PushMessage")] HRESULT PushMessage([in] BSTR strRobot, [in] BSTR user, [in] BSTR message);
+    [helpstring("Method PushMessage")] HRESULT PushMessage([in] BSTR strRobot, [in] BSTR user, [in] IRobotMessage* message);
 
     /// Get the contact list of the specified robot.
     /// @param[in]  strRobot    robot id

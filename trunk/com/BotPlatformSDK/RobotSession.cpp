@@ -55,28 +55,8 @@ STDMETHODIMP CRobotSession::SendIM(IRobotMessage* message)
     Json::Value body;
 
     CRobotMessage* msg = static_cast<CRobotMessage*>(message);
-
-    if ( !msg->getText().empty() )
-        body["text"] = msg->getText();
-    else
+    if ( !msg->toValue( body ) )
         return S_OK;
-
-    if ( !msg->getFontName().empty() )
-        body["fontName"] = msg->getFontName();
-    
-    if ( msg->hasFontColor() )
-        body["fontColor"] = msg->getFontColor();
-    
-    if ( msg->getFontStyle() != 0 )
-        body["fontStyle"] = msg->getFontStyle();
-
-    if ( !msg->getSignature().empty() )
-        body["signature"] = msg->getSignature();
-
-    for ( CRobotMessage::StringMap::const_iterator it = msg->getEmoticons().begin(); it != msg->getEmoticons().end(); ++it )
-    {
-        body["emoticons"][it->first] = it->second;
-    }
 
     if ( !sendCmd( "msg", &body ) )
         return E_FAIL;

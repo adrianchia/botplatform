@@ -67,6 +67,8 @@ public:
 public:
     void setAll( Json::Value& val );
 
+    bool toValue( Json::Value& val ) const;
+
     bool hasFontColor() const { return m_fontColor != NULL; }
 
     int  getFontColor() const { return m_fontColor ? *m_fontColor : 0; }
