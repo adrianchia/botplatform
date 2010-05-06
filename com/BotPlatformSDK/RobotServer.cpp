@@ -3,6 +3,7 @@
 #include "ManagerBase.h"
 #include "RobotSession.h"
 #include "RobotResource.h"
+#include "RobotMessage.h"
 #include "Misc.h"
 
 
@@ -258,14 +259,16 @@ STDMETHODIMP CRobotServer::CreateSession(BSTR robot, BSTR user)
     return S_OK;
 }
 
-STDMETHODIMP CRobotServer::PushMessage(BSTR robot, BSTR user, BSTR message)
+STDMETHODIMP CRobotServer::PushMessage(BSTR robot, BSTR user, IRobotMessage* message)
 {
-    if ( !isValidStr(robot) || !isValidStr(user) || !isValidStr(message) )
+    if ( !isValidStr(robot) || !isValidStr(user) || !message )
         return E_INVALIDARG;
 
     Json::Value body;
 
-    body = unicToUtf8(message);
+    CRobotMessage* msg = static_cast<CRobotMessage*>(message);
+    if ( !msg->toValue( body ) )
+        return S_OK;
 
     std::string u8_robot = unicToUtf8(robot);
     std::string u8_user  = unicToUtf8(user);
