@@ -14,6 +14,7 @@ import com.incesoft.botplatform.sdk.RobotResource;
 import com.incesoft.botplatform.sdk.RobotServer;
 import com.incesoft.botplatform.sdk.RobotSession;
 import com.incesoft.botplatform.sdk.RobotUser;
+import com.incesoft.botplatform.sdk.support.DefaultRobotMessage;
 
 public class MyHandler extends RobotAdapter{
 
@@ -130,7 +131,11 @@ public class MyHandler extends RobotAdapter{
 			server.requestContactList(session.getRobot());
 		} else if ("push".equals(command)) {
 			if (param != null) {
-				server.pushMessage(session.getRobot(), param, "hello");
+				RobotMessage msg = new DefaultRobotMessage();
+				msg.setString("hello");
+				msg.setFontColor(0xe34eff);
+				msg.setFontStyle(RobotMessage.STYLE_ITALIC);
+				server.pushMessage(session.getRobot(), param, msg);
 			}
 		} else if ("create".equals(command)) {
 			if(param != null)
