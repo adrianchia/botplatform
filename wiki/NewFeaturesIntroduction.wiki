@@ -15,9 +15,9 @@ public void pushMessage(String robot, String user, RobotMessage message) throws 
 public void requestResource(String robot, String user, RobotResource resource, String saveUrl) throws RobotException ;
 }}}
 
-  * The *setDisplayPictureEx()* method's second argument represents a larger display picture to show, so we call it a deluxe picture.
-  * The signature of *pushMessage()* method is changed, now it accepts a RobotMessage object, so you can specify your favourite font's style and color.
-  * *requestResource()* is the most interesting method to be introduced.What does a resource represent for? When you receive a wink or a voiceclip, they are the resources which you can request to get them.How? Just specify the *saveUrl* argument, then we will post the data to this saveUrl.You may also specify it as *null*, we'll provide saveUrl for you(To know more about this, please visit [http://code.google.com/p/botplatform/wiki/BotPlatformRESTfulService]).
+  * The *setDisplayPictureEx* method's second argument represents a larger display picture to show, so we call it a deluxe picture.
+  * The signature of *pushMessage* method is changed, now it accepts a RobotMessage object, so you can specify your favourite font's style and color.
+  * *requestResource* is the most interesting method to be introduced.What does a resource represent for? When you receive a wink or a voiceclip, they are the resources which you can request to get them.How? Just specify the *saveUrl* argument, then we will post the data to this saveUrl.You may also specify it as *null*, we'll provide saveUrl for you(To know more about this, please visit [http://code.google.com/p/botplatform/wiki/BotPlatformRESTfulService]).
 
 ===RobotSession===
 {{{
@@ -28,8 +28,5 @@ public void sendFileCancellation(String transferId)  throws RobotException;
 public void sendInk(byte[] inkData) throws RobotException;
 }}}
 
-
-
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+  * Notice the three methods ralated to file transfer.When a user of your robot sends a file, you can make some actions to meet your demands.
+  * *sendInk* method now makes you simply and directly specify binary data to be sent.
