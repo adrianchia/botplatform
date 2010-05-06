@@ -20,6 +20,13 @@ public void requestResource(String robot, String user, RobotResource resource, S
   * *requestResource()* is the most interesting method to be introduced.What does a resource represent for? When you receive a wink or a voiceclip, they are the resources which you can request to get them.How? Just specify the *saveUrl* argument, then we will post the data to this saveUrl.You may also specify it as *null*, we'll provide saveUrl for you(To know more about this, please visit [http://code.google.com/p/botplatform/wiki/BotPlatformRESTfulService]).
 
 ===RobotSession===
+{{{
+public void sendFileAcceptance(String transferId, String saveUrl) throws RobotException;
+public void sendFileRejection(String transferId)  throws RobotException;
+public void sendFileCancellation(String transferId)  throws RobotException;
+
+public void sendInk(byte[] inkData) throws RobotException;
+}}}
 
 
 
