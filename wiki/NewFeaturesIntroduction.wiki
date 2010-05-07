@@ -51,4 +51,4 @@ public void voiceclipReceived(RobotSession session,RobotResource resource) throw
 public void typingReceived(RobotSession session) throws RobotException;
 }}}
 
-If you have any problems in working with these events, please let us know ASAP.
+If you have any problem in working with these events, please let us know ASAP.
