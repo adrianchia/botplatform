@@ -8,4 +8,4 @@ The SessionOpenEvent will be fired under the circumstances shown blow:
 
 To avoid your business logic written for the SessionOpenEvent has a nagative effect(as the logic performs frequently, your users may get annoyed), we suggest you to take some measures to store the user's information when the SessionOpenEvent is fired for the first time.
 
-eg: You want your bot to simply say 'hello' to the user when the SessionOpenEvent is fired, just save the current user's id and make it expired after 24 hours, then the user won't receive any 'hello' in a day.
+eg: You want your bot to simply say 'hello' to the user when the SessionOpenEvent is fired, just save the current user's id and make it expired after 24 hours, then the current user won't receive any 'hello' in a day.
