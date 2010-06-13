@@ -316,7 +316,7 @@ private:
         {
             if ( !param.empty() )
             {
-                IRobotMessagePtr msg = session->CreateMessage();
+                IRobotMessagePtr msg = m_server->CreateMessage();
                 msg->Text      = "hello";
                 msg->FontColor = 0xe34eff;
                 msg->FontStyle = STYLE_ITALIC;
