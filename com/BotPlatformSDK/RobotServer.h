@@ -85,6 +85,7 @@ public:
     STDMETHOD(SetScene)(BSTR robotAccount, BSTR scene);
     STDMETHOD(SetColorScheme)(BSTR robotAccount, LONG colorScheme);
     STDMETHOD(CreateSession)(BSTR robot, BSTR user);
+    STDMETHOD(CreateMessage)(IRobotMessage** message);
     STDMETHOD(PushMessage)(BSTR robot, BSTR user, IRobotMessage* message);
     STDMETHOD(RequestContactList)(BSTR robot);
     STDMETHOD(RequestResource)(BSTR robot, BSTR user, IRobotResource* resource, BSTR saveUrl);
