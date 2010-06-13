@@ -57,10 +57,13 @@ public interface RobotServer {
     public void setRobotHandler(RobotHandler handler);
     
     /**
+     * @deprecated
      * Add robot server connection listener 
      */
     public void addConnectionListener(RobotConnectionListener listener);
+    
     /**
+     * @deprecated
      * Remove robot server connection listener
      */
     public void removeConnectionistener(RobotConnectionListener listener);
@@ -181,4 +184,9 @@ public interface RobotServer {
      */
     public void requestResource(String robot, String user, RobotResource resource, String saveUrl) throws RobotException ;
     
+    /**
+     * Create a message
+     * @return RobotMessage {@link com.incesoft.botplatform.sdk.RobotMessage}
+     */
+    public RobotMessage createMessage();
 }
