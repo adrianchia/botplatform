@@ -259,6 +259,11 @@ STDMETHODIMP CRobotServer::CreateSession(BSTR robot, BSTR user)
     return S_OK;
 }
 
+STDMETHODIMP CRobotServer::CreateMessage(IRobotMessage** message)
+{
+    return createInnerObject<CRobotMessage>( message );
+}
+
 STDMETHODIMP CRobotServer::PushMessage(BSTR robot, BSTR user, IRobotMessage* message)
 {
     if ( !isValidStr(robot) || !isValidStr(user) || !message )

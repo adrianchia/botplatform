@@ -99,6 +99,11 @@ interface IRobotServer : IUnknown{
     /// @return                 Returns S_OK if successful, or an error value otherwise
     [helpstring("Method CreateSession")] HRESULT CreateSession([in] BSTR strRobot, [in] BSTR user);
 
+     /// Create a message
+    /// @param[out]     message     A pointer that receives a pointer to a new instance of the IRobotMessage
+    /// @return                     Returns S_OK if successful, or an error value otherwise
+    [helpstring("Method CreateMessage")] HRESULT CreateMessage([out,retval] IRobotMessage** message);
+
     /// Push message to user. may be msn offline message,email message, etc. 
     /// @param[in]  strRobot    robot id
     /// @param[in]  user        user id
