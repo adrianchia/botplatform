@@ -52,7 +52,7 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 	protected String host;
 	protected int port;
 	protected boolean loggedIn;
-	protected boolean reconnectedSupport;
+	protected boolean reconnectedSupport = true;
 
 	protected ScheduledExecutorService scheduledExecutor = null;
 	@SuppressWarnings("unchecked")
@@ -816,4 +816,8 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 				req));
 	}
 
+	public RobotMessage createMessage() {
+		return new DefaultRobotMessage();
+	}
+	
 }
