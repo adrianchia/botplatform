@@ -40,6 +40,22 @@ _Examples of our XML data for POST:_
 </response>
 }}}
 
+  * File Message :
+{{{
+<response>
+  <robotId>bot@hotmail.com</robotId>
+  <userId>abc@hotmail.com</userId>
+  <sessionId>5257573032606033981</sessionId>
+  <type>fileevent</type>
+  <fileevent>
+    <event>reject</event><!-- invite, accpet, reject or cancel  -->
+    <transferId>{8225A476-CEDC-41BD-BC93-30964C0CE442}</transferId>
+    <size>7544</size>
+    <name>appengine.txt</name>
+  </fileevent>
+</response>
+}}}
+
   * Wink Message :
 {{{
 <response>
