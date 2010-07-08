@@ -25,7 +25,7 @@ _Examples of our XML data for POST:_
     <fontStyle>0</fontStyle>
     <fontName>宋体</fontName>
     <fontColor>0</fontColor>
-    <text>file</text>
+    <text>some plain text</text>
   </msg>
 </response>
 }}}
@@ -73,7 +73,7 @@ _Examples of our XML data for POST:_
   <userId>abc@hotmail.com</userId>
   <sessionId>5257573032606033981</sessionId>
   <type>appevent</type>
-  <appevent>accept</appevent>
+  <appevent>accept</appevent><!-- user accepts the activity window invite. -->
 </response>
 
 <response>
@@ -81,7 +81,7 @@ _Examples of our XML data for POST:_
   <userId>abc@hotmail.com</userId>
   <sessionId>5257573032606033981</sessionId>
   <type>appevent</type>
-  <appevent>ready</appevent>
+  <appevent>ready</appevent><!-- the activity window loaded -->
 </response>
 }}}
 
