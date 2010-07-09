@@ -12,91 +12,99 @@ When you get ready for this, we will transer XML data through HTTP POST to the s
 *We will post almost all of the 'Session Level' messages between your bot and your users to the specified URL. The XML's structure is clear and easy to understand (You may compare it with its corresponding Class file we difined in SDK), the 'type' element indicates the kind of the current message. *
 
 _Examples of our XML data for POST:_
-  * TestMessage : 
+
+  * SessionOpenEvent: 
 {{{
-<response>
-  <robotId>bot@hotmail.com</robotId>
-  <userId>abc@hotmail.com</userId>
-  <sessionId>5257573032606033981</sessionId>
-  <type>msg</type>
-  <msg>
-    <fontStyle>0</fontStyle>
-    <fontName>宋体</fontName>
-    <fontColor>0</fontColor>
-    <text>some plain text</text>
-  </msg>
-</response>
+<request>
+  <robotId>incetest3004@hotmail.com</robotId>
+  <userId>erika_mid4@hotmail.com</userId>
+  <sessionId>5257573033346114459</sessionId>
+  <action type="sessionopened" />
+</request>
 }}}
 
-  * Typing Message :
+  * SessionCloseEvent: 
 {{{
-<response>
+<request>
+  <robotId>incetest3004@hotmail.com</robotId>
+  <userId>erika_mid4@hotmail.com</userId>
+  <sessionId>5257573033346114459</sessionId>
+  <action type="sessionclosed" />
+</request>
+}}}
+
+  * TextMessage : 
+{{{
+<request>
   <robotId>bot@hotmail.com</robotId>
   <userId>abc@hotmail.com</userId>
   <sessionId>5257573032606033981</sessionId>
-  <type>typing</type>
-</response>
+  <action type="msg">
+    <fontStyle>0</fontStyle>
+    <fontName>Tohoma</fontName>
+    <fontColor>0</fontColor>
+    <text>some plain text</text>
+  </action>
+</request>
 }}}
 
   * File Message :
 {{{
-<response>
+<request>
   <robotId>bot@hotmail.com</robotId>
   <userId>abc@hotmail.com</userId>
   <sessionId>5257573032606033981</sessionId>
-  <type>fileevent</type>
-  <fileevent>
-    <event>reject</event><!-- invite, accpet, reject or cancel  -->
-    <transferId>{8225A476-CEDC-41BD-BC93-30964C0CE442}</transferId>
-    <size>7544</size>
-    <name>appengine.txt</name>
-  </fileevent>
-</response>
+  <action type="fileevent">
+    <event>invite</event>
+    <transferId>{B1D11ABA-8608-45A5-BD91-1F1ABC685639}</transferId>
+    <size>4998</size>
+    <name>wiki.txt</name>
+  </action>
+</request>
 }}}
 
   * Wink Message :
 {{{
-<response>
+<request>
   <robotId>bot@hotmail.com</robotId>
   <userId>abc@hotmail.com</userId>
   <sessionId>5257573032606033981</sessionId>
-  <type>winkevent</type>
-  <winkevent>
+  <action type="winkevent">
     <digest>Wink digest</digest>
     <name>Wink Name</name>
     <size>30900</size>
-  </winkevent>
-</response>
+  </action >
+</request>
 }}}
 
   * Ink Message :
 {{{
-<response>
+<request>
   <robotId>bot@hotmail.com</robotId>
   <userId>abc@hotmail.com</userId>
   <sessionId>5257573032606033981</sessionId>
-  <type>inkmsg</type>
-  <inkmsg>ink data</inkmsg>
-</response>
+  <action type="inkmsg">ink data here</action>
+</request>
+}}}
+
+  * Nudge Message :
+{{{
+<request>
+  <robotId>bot@hotmail.com</robotId>
+  <userId>abc@hotmail.com</userId>
+  <sessionId>5257573032606033981</sessionId>
+  <action type="nudge" />
+</request>
 }}}
 
   * Application Window Message :
 {{{
-<response>
+<request>
   <robotId>bot@hotmail.com</robotId>
   <userId>abc@hotmail.com</userId>
   <sessionId>5257573032606033981</sessionId>
-  <type>appevent</type>
-  <appevent>accept</appevent><!-- user accepts the activity window invite. -->
-</response>
-
-<response>
-  <robotId>bot@hotmail.com</robotId>
-  <userId>abc@hotmail.com</userId>
-  <sessionId>5257573032606033981</sessionId>
-  <type>appevent</type>
-  <appevent>ready</appevent><!-- the activity window loaded -->
-</response>
+  <action type="appevent">accept</action>
+</request>
 }}}
 
 
@@ -105,7 +113,8 @@ _Examples of our XML data for POST:_
 
 _Definition of the XML structure in HTTP response:_
 {{{
-<actions>
+<response>
+    <actions>
 	<action type="nudge" /><!-- send nudge -->
 	<action type="typing" /><!-- send typing -->
 	<action type="msg"><!-- send text message -->
@@ -140,77 +149,76 @@ _Definition of the XML structure in HTTP response:_
 		<name>BotPlatform</name>
 		<data>http://botplatform.com</data>
 	</action>
-</actions>
+    </actions>
+</response>
 }}}
 
 _Sample code (A simple Java Servlet for AppEngine service) :
 {{{
 try {
 	ServletInputStream is = this.request.getInputStream();
-	byte[] buf = new byte[1024];
-	int i = 0;
-	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	while ((i = is.read(buf)) != -1) {
-		bos.write(buf, 0, i);
+	SAXBuilder builder = new SAXBuilder();
+	Document doc = null;
+	try {
+		doc = builder.build(is);
+	} catch (JDOMException e) {
+		e.printStackTrace();
+		return NONE;
+	} finally {
+		is.close();
 	}
-	is.close();
-	bos.close();
-	String xml = new String(bos.toByteArray(), "UTF-8");
-	Pattern p = Pattern.compile(".*<type>(.*)</type>.*");
-	Matcher matcher = p.matcher(xml);
-	String type = null;
-	while (matcher.find()) {
-		type = matcher.group(1);
-	}
+	Element request = doc.getRootElement();
+	Element action = request.getChild("action");
+	String type = action.getAttributeValue("type");
 	String response = null;
-	if ("typing".equals(type)) {
-		// TODO
-	} else if ("nudge".equals(type)) {
-		response = "<actions><action type=\"nudge\" /></actions>";
+	if ("nudge".equals(type)) {
+		response = "<response><actions><action type=\"nudge\"/></actions></response>";
 	} else if ("fileevent".equals(type)) {
-		if (xml.indexOf("<event>invite</event>") > 0) {
+		if ("invite".equals(action.getChildText("event"))) {
 			Random ran = new Random();
-			p = Pattern.compile(".*<transferId>(.*)</transferId>.*");
-			Matcher mat2 = p.matcher(xml);
-			String tid = null;
-			while (mat2.find()) {
-				tid = mat2.group(1);
-			}
+			String tid = action.getChildText("transferId");
 			int ranInt = ran.nextInt(2);
 			if (0 == ranInt) {
-				response = "<actions><action type=\"filecmd\"><cmd>accept</cmd><transferId>"
-								+ tid + "</transferId></action></actions>";
+				response = "<response><actions><action type=\"filecmd\"><cmd>accept</cmd><transferId>"
+						+ tid
+						+ "</transferId></action></actions></response>";
 			} else if (1 == ranInt) {
-				response = "<actions><action type=\"filecmd\"><cmd>reject</cmd><transferId>"
-								+ tid + "</transferId></action></actions>";
-					}
+				response = "<response><actions><action type=\"filecmd\"><cmd>reject</cmd><transferId>"
+						+ tid
+						+ "</transferId></action></actions></response>";
+			}
 		}
 	} else if ("winkevent".equals(type)) {
-		response = "<actions><action type=\"wink\"><name>wink.dat</name><stamp>omitted here</stamp></action></actions>";
+		response = "<response><actions><action type=\"wink\"><name>wink.dat</name><stamp>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</stamp></action></actions></response>";
 	} else if ("inkmsg".equals(type)) {
-		response = "<actions><action type=\"ink\"><data>omitted here</data></action></actions>";
+		response = "<response><actions><action type=\"ink\"><data>AN8BHAOAgAQdA4gDfAMESBFFZBkUMggAgBQCAAAgQjMIAMAMAgAAIEIVq6rTQauq00EAAAA+AIDqvgoWG4L8jfkcALAAAIL8FfgmWAsWWLLKAAoXGYL9UfqmUAKyiriC/CH4NRcamxuS0toKGRaC/UH6fiSs6i5ouwCC/A34FmallbjLTVAKFhSC/gBb+AF1ixYAAIL8BfgFEmsKUeQKGxuC/gHT+AdRUs3KSwAAgvs+uIXLE247lVudAAolKIL+AuP4C721eVLgiZcSFzVOxvOggvwp+FYpJsUEibI2LzVjQA==</data></action></actions></response>";
 	} else if ("msg".equals(type)) {
-		p = Pattern.compile(".*<text>(.*)</text>.*");
-		Matcher mat3 = p.matcher(xml);
-		String content = null;
-		while (mat3.find()) {
-			content = mat3.group(1);
-		}
+		String content = action.getChildText("text");
 		if ("voice".equals(content))
-			response = "<actions><action type=\"voice\"><name>voiceclip.wav</name></action></actions>";
+			response = "<response><actions><action type=\"voice\"><name>voiceclip.wav</name></action></actions></response>";
 		else if ("app".equals(content))
-			response = "<actions><action type=\"app\"><name>BotPlatform</name><data>http://botplatform.com</data></action></actions>";
+			response = "<response><actions><action type=\"app\"><name>BotPlatform</name><data>http://botplatform.com</data></action></actions></response>";
 		else if ("file".equals(content))
-			response = "<actions><action type=\"file\"><name>demo.txt</name></action></actions>";
+			response = "<response><actions><action type=\"file\"><name>demo.txt</name></action></actions></response>";
 		else if ("typing".equals(content))
-			response = "<actions><action type=\"typing\" /></actions>";
+			response = "<response><actions><action type=\"typing\" /></actions></response>";
 		else
-			response = "<actions><action type=\"msg\"><fontColor>CCCCCC</fontColor><fontStyle>10</fontStyle><fontName>Tahoma</fontName>" + 
-		"<text>hello(1)world(2)</text><emoticons><entry key=\"(1)\" value=\"emo1.png\" /><entry key=\"(2)\" value=\"emo2.png\" /></emoticons></action></actions>";
+			response = "<response><actions><action type=\"msg\"><fontColor>CCCCCC</fontColor><fontStyle>10</fontStyle><fontName>Tahoma</fontName><text>中文hello(1)world(2)</text><emoticons><entry key=\"(1)\" value=\"emo1.png\" /><entry key=\"(2)\" value=\"emo2.png\" /></emoticons></action></actions></response>";
+	} else if ("appevent".equals(type)) {
+		response = "<response><actions><action type=\"msg\"><text>App Window Activity</text></action></actions></response>";
+	} else if ("sessionopened".equals(type)) {
+		response = "<response><actions><action type=\"msg\"><text>Session Opened</text></action></actions></response>";
+	} else if ("sessionclosed".equals(type)) {
+		response = "<response><actions><action type=\"msg\"><text>Session Closed</text></action></actions></response>";
+	} else {
+		response = "<response><actions><action type=\"msg\"><text>"
+				+ type
+				+ " occurs...but do nothing</text></action></actions></response>";
 	}
 	if (response != null)
-		writeResponse(response);//output
+		appendResponse(response);
 } catch (IOException e) {
 	e.printStackTrace();
 }
+return NONE;
 }}}
