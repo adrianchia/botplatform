@@ -89,6 +89,7 @@ public:
     STDMETHOD(PushMessage)(BSTR robot, BSTR user, IRobotMessage* message);
     STDMETHOD(RequestContactList)(BSTR robot);
     STDMETHOD(RequestResource)(BSTR robot, BSTR user, IRobotResource* resource, BSTR saveUrl);
+	STDMETHOD(AddUser)(BSTR robot, BSTR user, BSTR inviteMessage);
 
 public:
     void init( ManagerBase* man, BSTR ip, int port );
@@ -138,6 +139,7 @@ private:
     std::string     m_strspid;
     std::string     m_strsppwd;
     long            m_timeout;
+	
 };
 
 //OBJECT_ENTRY_AUTO(__uuidof(RobotServer), CRobotServer)
