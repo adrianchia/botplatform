@@ -52,6 +52,7 @@ public class Message implements Serializable {
 	public static final String DPUPDATED = "dpupdated";
 	public static final String SCENEUPDATED = "sceneupdated";
 	public static final String COLORUPDATED = "colorupdated";
+	public static final String ADDUSER = "adduser";
 
 	private String robotId;
 	private String userId;
@@ -170,6 +171,7 @@ public class Message implements Serializable {
 		BODY_MAP.put(SCENEUPDATED, ResourceInfo.class);
 		BODY_MAP.put(COLORUPDATED, Integer.class);
 		BODY_MAP.put(RESOURCE, ResourceInfo.class);
+		BODY_MAP.put(ADDUSER, String.class);
 	};
 
 	public String toString() {

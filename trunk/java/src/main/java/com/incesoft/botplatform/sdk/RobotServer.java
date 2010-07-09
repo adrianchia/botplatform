@@ -189,4 +189,12 @@ public interface RobotServer {
      * @return RobotMessage {@link com.incesoft.botplatform.sdk.RobotMessage}
      */
     public RobotMessage createMessage();
+    
+    /**
+	 * Add a user to your bot
+	 * @param robot robot id
+	 * @param user user id
+	 * @param inviteMessage a message shown on the invite panel
+	 */
+	public void addUser(String robot, String user, String inviteMessage);
 }
