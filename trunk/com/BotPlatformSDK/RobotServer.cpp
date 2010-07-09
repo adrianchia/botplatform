@@ -338,6 +338,24 @@ STDMETHODIMP CRobotServer::SetColorScheme(BSTR robotAccount, LONG colorScheme)
     return S_OK;
 }
 
+STDMETHODIMP CRobotServer::AddUser(BSTR robot, BSTR user, BSTR inviteMessage)
+{
+	if ( !isValidStr(robot) || !isValidStr(user))
+		return E_INVALIDARG;
+
+	Json::Value body;
+
+	std::string u8_robot = unicToUtf8(robot);
+	std::string u8_user  = unicToUtf8(user);
+
+	if(inviteMessage)body = unicToUtf8(inviteMessage);
+
+	if ( !sendCmd( u8_robot, u8_user, "", "adduser", &body ) )
+		return E_FAIL;
+
+	return S_OK;
+}
+
 bool CRobotServer::recvNext()
 {
     BOOST_STATIC_ASSERT( sizeof(PackHead) == 6 );
@@ -627,4 +645,6 @@ CRobotSession* CRobotServer::getSession( const std::string& sessionId )
 
     return NULL;
 }
+
+
 
