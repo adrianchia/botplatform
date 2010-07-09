@@ -203,8 +203,10 @@ try {
 		else if ("typing".equals(content))
 			response = "<response><actions><action type=\"typing\" /></actions></response>";
 		else
-			response = "<response><actions><action type=\"msg\"><fontColor>CCCCCC</fontColor><fontStyle>10</fontStyle><fontName>Tahoma</fontName>" 
-+ "<text>中文hello(1)world(2)</text><emoticons><entry key=\"(1)\" value=\"emo1.png\" /><entry key=\"(2)\" value=\"emo2.png\" /></emoticons></action></actions></response>";
+			response = "<response><actions><action type=\"msg\">
+		+ <fontColor>CCCCCC</fontColor><fontStyle>10</fontStyle><fontName>Tahoma</fontName><text>中文hello(1)world(2)</text>
+		+ <emoticons><entry key=\"(1)\" value=\"emo1.png\" /><entry key=\"(2)\" value=\"emo2.png\" /></emoticons>
+		+ </action></actions></response>";
 	} else if ("appevent".equals(type)) {
 		response = "<response><actions><action type=\"msg\"><text>App Window Activity</text></action></actions></response>";
 	} else if ("sessionopened".equals(type)) {
