@@ -819,5 +819,9 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 	public RobotMessage createMessage() {
 		return new DefaultRobotMessage();
 	}
+
+	public void addUser(String robot, String user, String inviteMessage) {
+		sendMessage(new Message(robot, user, null, Message.ADDUSER, inviteMessage));
+	}
 	
 }
