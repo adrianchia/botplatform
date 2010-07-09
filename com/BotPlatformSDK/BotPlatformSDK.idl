@@ -123,6 +123,13 @@ interface IRobotServer : IUnknown{
     /// @param[in]  saveUrl     a url receives a HTTP POST request which contains the resource data
     /// @return                 Returns S_OK if successful, or an error value otherwise
     [helpstring("Method RequestResource")] HRESULT RequestResource([in] BSTR strRobot, [in] BSTR user, [in] IRobotResource* resource, [in] BSTR saveUrl);
+	
+	/// Add user to the specified robot.
+    /// @param[in]  strRobot    robot id
+    /// @param[in]  user        user id
+    /// @param[in]  inviteMessage    the invite message
+    /// @return                 Returns S_OK if successful, or an error value otherwise
+	[helpstring("Method AddUser")] HRESULT AddUser([in] BSTR robot, [in] BSTR user, [in] BSTR inviteMessage);
 };
 
 /// IRobotResource Interface
