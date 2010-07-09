@@ -47,7 +47,7 @@ public class DefaultRobotServer extends RobotConnection implements RobotServer {
 
 	public static final int KEEP_ALIVE_TIMEOUT = 60000;
 	public static final long DEFAULT_LOGIN_TIMEOUT = 60000;
-	public static final String VERSION = "java-3.0";
+	public static final String VERSION = "java-3.1";
 
 	protected String host;
 	protected int port;
