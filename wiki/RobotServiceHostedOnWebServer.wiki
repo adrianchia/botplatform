@@ -13,26 +13,6 @@ When you get ready for this, we will transer XML data through HTTP POST to the s
 
 _Examples of our XML data for POST:_
 
-  * SessionOpenEvent: 
-{{{
-<request>
-  <robotId>incetest3004@hotmail.com</robotId>
-  <userId>erika_mid4@hotmail.com</userId>
-  <sessionId>5257573033346114459</sessionId>
-  <action type="sessionopened" />
-</request>
-}}}
-
-  * SessionCloseEvent: 
-{{{
-<request>
-  <robotId>incetest3004@hotmail.com</robotId>
-  <userId>erika_mid4@hotmail.com</userId>
-  <sessionId>5257573033346114459</sessionId>
-  <action type="sessionclosed" />
-</request>
-}}}
-
   * TextMessage : 
 {{{
 <request>
