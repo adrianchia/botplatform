@@ -72,13 +72,13 @@ try {
 	pm.setParameter("account", "your im account");
 	pm.setParameter("spid", "your spid");
 	DesEncrypt de = new DesEncrypt(); // triple des encryption utility class
-	byte[] pwdBytes = "your sp password".getBytes();
+	byte[] pwdBytes = "your sp's password".getBytes();
 	byte[] key = new byte[24]; // 24 bytes key
 	System.arraycopy(pwdBytes, 0, key, 0, pwdBytes.length);
 	de.setKey(key);
 	pm.setParameter("pwd", de.encrypt("your account's password"));
 	Credentials ct = new UsernamePasswordCredentials("your spid",
-			"your sp password");
+			"your sp's password");
 	client.getState().setCredentials(AuthScope.ANY, ct); // http digest authentication
 	int status = client.executeMethod(pm);
 	if (status == 200) {
