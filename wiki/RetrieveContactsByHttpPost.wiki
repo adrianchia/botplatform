@@ -38,7 +38,7 @@ else {
 try {
 	KeySpec spec = new DESedeKeySpec(keybytes);
 	SecretKeyFactory fac = SecretKeyFactory.getInstance("DESEde");
-	java.security.Key key key = fac.generateSecret(spec);
+	java.security.Key key = fac.generateSecret(spec);
 } catch (Exception ignored) {
 }
 
