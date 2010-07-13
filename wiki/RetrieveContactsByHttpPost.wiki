@@ -1,0 +1,17 @@
+= Introduction =
+
+You may have noticed that in the SDK there's a method called 'requestContactList' in 'RobotServer' class, now we provide another way to do this -- through HTTP Post.
+We provided this as an enhanced function to retrieve your accounts' contacts. 'Enhanced' means it can retrieve contacts of any account as long as you provide the correct corresponding password, not just the robot accounts which you previously bound with our platform.
+
+
+= Details =
+
+Let's take a look at the URl and the Name-Value params for making a HTTP Post.
+*URL : http://botplatform.com/rest/contacts*
+*Params : *
+  * account - the account to be retrieved
+  * spid - your SPID
+  * pwd - your SPID's password, but should be Triple DES encrypted.(Discuss later)
+  * type - type of the account. (As now only msn is supported, so this param could be omitted)
+
+The 'pwd' param is more complicated. As the key for Triple DES encription should be 24 bytes, please transfer your sp's password into byte array first, then if it's length is greater than 24, truncate the byte array from the beginning, if the length is less than 24, please pad the rest with '0x00'.
