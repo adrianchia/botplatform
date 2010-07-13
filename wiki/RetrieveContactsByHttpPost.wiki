@@ -8,7 +8,7 @@ We provided this as an enhanced function to retrieve your accounts' contacts. 'E
 
 Let's take a look at the URl and the Name-Value params for making a HTTP Post.
 
-*URL : http://botplatform.com/rest/contacts*
+*URL : http://botplatform.com/rest/contacts *
 
 *Params : *
   * account - the account to be retrieved
