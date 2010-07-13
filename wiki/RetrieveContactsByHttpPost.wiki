@@ -1,3 +1,4 @@
+#labels BotPlatform,RetrieveContacts,HTTP
 = Introduction =
 
 You may have noticed that in the SDK there's a method called 'requestContactList' in 'RobotServer' class, now we provide another way to do this -- through HTTP Post.
