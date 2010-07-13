@@ -1,4 +1,4 @@
-#labels BotPlatform
+#labels BotPlatform,WebHostedService
 In this page, we will introduce a new feature to you which named 'AppEngine'.
 
 As you may not have your own server which allows you to connect to our platform directly by using our SDK, now there is another way to go, what you need is just a host on which your programs are deployed, and specify the URL in the admin page.(Use your SPID and password and sign in on http://botplatform.com, you will see the 'Web Host Service' option in 'Basic Information ').
