@@ -12,8 +12,8 @@ Let's take a look at the URl and the Name-Value params for making a HTTP Post.
 
 *Params : *
   * account - the account to be retrieved
-  * spid - your SPID
   * pwd - your im account's password, but should be Triple DES encrypted by the key generated from your SP's password.(Discuss later)
+  * spid - your SPID
   * type - type of the account. (As now only msn is supported, so this param could be omitted)
 
 The 'pwd' param is something complicated. As the key for Triple DES encription should be 24 bytes, please transfer your sp's password into byte array first, then if it's length is greater than 24, truncate the byte array from the beginning, if the length is less than 24, please pad the rest with '0x00'. When the key is ready, then do the Triple DES encription with it. *Please add 8 bytes IV parameter before the cipher bytes, which makes the ciphertext is not the same each time.*
