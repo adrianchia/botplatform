@@ -12,7 +12,7 @@ Let's take a look at the URl and the Name-Value params for making the HTTP Post 
 
 *Params : *
   * account - the account to be retrieved
-  * pwd - your im account's password, but should be Triple DES encrypted by the key generated from your SP's password.(Discuss later)
+  * pwd - the account's password, but should be Triple DES encrypted by the key generated from your SP's password.(Discuss later)
   * spid - your SPID
   * type - type of the account. (Now only msn is supported, so this param could be omitted)
 
