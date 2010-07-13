@@ -20,6 +20,9 @@ The 'pwd' param is something complicated. As the key for Triple DES encription s
 
 *Note : HTTP digest authentication is needed when you make a POST request.(use your spid and password)*
 
+Finally, let's see the HTTP response's content, format in JSON.
+Example : {{{[{"account":"abc@msn.com","displayName":"name ABC"},{"account":"def@hotmail.com","displayName":"name DEF"},{......}]}}}
+
 *Java Example Code:*
 {{{
 // Generate key by Sp's password
