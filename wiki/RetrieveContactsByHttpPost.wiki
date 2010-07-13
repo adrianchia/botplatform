@@ -6,7 +6,7 @@ We provided this as an enhanced function to retrieve your accounts' contacts. 'E
 
 = Details =
 
-Let's take a look at the URl and the Name-Value params for making a HTTP Post.
+Let's take a look at the URl and the Name-Value params for making the HTTP Post.
 
 *URL : http://botplatform.com/rest/contacts *
 
