@@ -22,8 +22,7 @@ The 'pwd' param is something complicated. As the key for Triple DES encription s
 
 Finally, let's see the HTTP response's content, format in JSON.
 
-Example : 
-{{{[{"account":"abc@msn.com","displayName":"name ABC"},{"account":"def@hotmail.com","displayName":"name DEF"},{......}]}}}
+_Example : _{{{[{"account":"abc@msn.com","displayName":"name ABC"},{"account":"def@hotmail.com","displayName":"name DEF"},{......}]}}}
 
 *Java Example Code:*
 {{{
