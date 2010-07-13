@@ -189,10 +189,6 @@ try {
 			+ "</action></actions></response>";
 	} else if ("appevent".equals(type)) {
 		response = "<response><actions><action type=\"msg\"><text>App Window Activity</text></action></actions></response>";
-	} else if ("sessionopened".equals(type)) {
-		response = "<response><actions><action type=\"msg\"><text>Session Opened</text></action></actions></response>";
-	} else if ("sessionclosed".equals(type)) {
-		response = "<response><actions><action type=\"msg\"><text>Session Closed</text></action></actions></response>";
 	} else {
 		response = "<response><actions><action type=\"msg\"><text>"
 				+ type
